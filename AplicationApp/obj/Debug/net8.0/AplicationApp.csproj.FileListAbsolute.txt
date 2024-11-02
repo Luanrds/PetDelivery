@@ -1,0 +1,11 @@
+C:\WorkLuan\PetDelivery\AplicationApp\bin\Debug\net8.0\AplicationApp.deps.json
+C:\WorkLuan\PetDelivery\AplicationApp\bin\Debug\net8.0\AplicationApp.dll
+C:\WorkLuan\PetDelivery\AplicationApp\bin\Debug\net8.0\AplicationApp.pdb
+C:\WorkLuan\PetDelivery\AplicationApp\obj\Debug\net8.0\AplicationApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\WorkLuan\PetDelivery\AplicationApp\obj\Debug\net8.0\AplicationApp.AssemblyInfoInputs.cache
+C:\WorkLuan\PetDelivery\AplicationApp\obj\Debug\net8.0\AplicationApp.AssemblyInfo.cs
+C:\WorkLuan\PetDelivery\AplicationApp\obj\Debug\net8.0\AplicationApp.csproj.CoreCompileInputs.cache
+C:\WorkLuan\PetDelivery\AplicationApp\obj\Debug\net8.0\AplicationApp.dll
+C:\WorkLuan\PetDelivery\AplicationApp\obj\Debug\net8.0\refint\AplicationApp.dll
+C:\WorkLuan\PetDelivery\AplicationApp\obj\Debug\net8.0\AplicationApp.pdb
+C:\WorkLuan\PetDelivery\AplicationApp\obj\Debug\net8.0\ref\AplicationApp.dll
