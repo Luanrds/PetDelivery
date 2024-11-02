@@ -7,7 +7,7 @@ public class ServicoDoProduto : IServicoDoProduto
 {
 	private readonly IProduto _IProduto;
 
-    public ServicoDoProduto(IProduto IProduto) 
+    public ServicoDoProduto(IProduto IProduto)
 	{
 		_IProduto = IProduto;
 	}
