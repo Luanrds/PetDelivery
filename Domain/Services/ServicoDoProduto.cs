@@ -11,6 +11,7 @@ public class ServicoDoProduto : IServicoDoProduto
 	{
 		_IProduto = IProduto;
 		var teste = 0;
+		var teste2 = 1;
 	}
 
 	public Task AddProduto(Produto produto)

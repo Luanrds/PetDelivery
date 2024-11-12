@@ -50,23 +50,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\luan_\\.nuget\\packages\\": {},
+    "C:\\Users\\Desktop000\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\WorkLuan\\PetDelivery\\Infrastucture\\Infrastucture.csproj",
+      "projectUniqueName": "C:\\Users\\Desktop000\\Documents\\PetDelivery\\PetDelivery\\Infrastucture\\Infrastucture.csproj",
       "projectName": "Infrastucture",
-      "projectPath": "C:\\WorkLuan\\PetDelivery\\Infrastucture\\Infrastucture.csproj",
-      "packagesPath": "C:\\Users\\luan_\\.nuget\\packages\\",
-      "outputPath": "C:\\WorkLuan\\PetDelivery\\Infrastucture\\obj\\",
+      "projectPath": "C:\\Users\\Desktop000\\Documents\\PetDelivery\\PetDelivery\\Infrastucture\\Infrastucture.csproj",
+      "packagesPath": "C:\\Users\\Desktop000\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Desktop000\\Documents\\PetDelivery\\PetDelivery\\Infrastucture\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\luan_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Desktop000\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

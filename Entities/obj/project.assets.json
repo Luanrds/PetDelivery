@@ -50,23 +50,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\luan_\\.nuget\\packages\\": {},
+    "C:\\Users\\Desktop000\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\WorkLuan\\PetDelivery\\Entities\\Entidades.csproj",
+      "projectUniqueName": "C:\\Users\\Desktop000\\Documents\\PetDelivery\\PetDelivery\\Entities\\Entidades.csproj",
       "projectName": "Entidades",
-      "projectPath": "C:\\WorkLuan\\PetDelivery\\Entities\\Entidades.csproj",
-      "packagesPath": "C:\\Users\\luan_\\.nuget\\packages\\",
-      "outputPath": "C:\\WorkLuan\\PetDelivery\\Entities\\obj\\",
+      "projectPath": "C:\\Users\\Desktop000\\Documents\\PetDelivery\\PetDelivery\\Entities\\Entidades.csproj",
+      "packagesPath": "C:\\Users\\Desktop000\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Desktop000\\Documents\\PetDelivery\\PetDelivery\\Entities\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\luan_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Desktop000\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Infrastucture
-build_property.ProjectDir = C:\WorkLuan\PetDelivery\Infrastucture\
+build_property.ProjectDir = C:\Users\Desktop000\Documents\PetDelivery\PetDelivery\Infrastucture\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
