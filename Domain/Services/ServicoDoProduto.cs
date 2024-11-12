@@ -13,6 +13,7 @@ public class ServicoDoProduto : IServicoDoProduto
 		var teste = 0;
 		var teste2 = 1; var teste3 = 2;
 		var teste4 = 3;
+		var teste5 = 4;
 	}
 
 	public Task AddProduto(Produto produto)
