@@ -105,6 +105,10 @@ _TeamCity*
 _NCrunch_*
 .*crunch*.local.xml
 
+# Ignora arquivos específicos do projeto
+DocumentLayout.json
+DocumentLayout.backup.json
+
 # MightyMoose
 *.mm.*
 AutoTest.Net/
