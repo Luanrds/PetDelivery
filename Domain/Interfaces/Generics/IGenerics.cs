@@ -7,7 +7,7 @@ public interface IGenerics<T> where T : class
 
 	Task Delete(T Objeto);
 
-	Task<T> GetEntityById(int id);
+	Task<T> GetEntityById(int Id);
 
 	Task<List<T>> List();
 }

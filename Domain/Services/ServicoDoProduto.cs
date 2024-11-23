@@ -5,20 +5,35 @@ using Entidades.Entidades;
 namespace Dominio.Services;
 public class ServicoDoProduto : IServicoDoProduto
 {
-	private readonly IProduto _IProduto;
+    private readonly IProduto _IProduto;
 
     public ServicoDoProduto(IProduto IProduto)
-	{
-		_IProduto = IProduto;
-	}
+    {
+        _IProduto = IProduto;
+    }
 
-	public Task AddProduto(Produto produto)
-	{
-		throw new NotImplementedException();
-	}
+    public async Task AddProduto(Produto produto)
+    {
+        bool validaNome = produto.ValidarPropriedadeString(produto.Nome, "Nome");
 
-	public Task UpdateProtudo(Produto produto)
-	{
-		throw new NotImplementedException();
-	}
+        bool validaValor = produto.ValidarPropriedadeDecimal(produto.Valor, "Valor");
+
+        if (validaNome && validaValor)
+        {
+            produto.Estado = true;
+            await _IProduto.Add(produto);
+        }
+    }
+
+    public async Task UpdateProtudo(Produto produto)
+    {
+        bool validaNome = produto.ValidarPropriedadeString(produto.Nome, "Nome");
+
+        bool validaValor = produto.ValidarPropriedadeDecimal(produto.Valor, "Valor");
+
+        if (validaNome && validaValor)
+        {
+            await _IProduto.Update(produto);
+        }
+    }
 }
