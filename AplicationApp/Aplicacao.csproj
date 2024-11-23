@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="OpenApp\" />
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <ProjectReference Include="..\Domain\Dominio.csproj" />
+    <ProjectReference Include="..\Entities\Entidades.csproj" />
   </ItemGroup>
 
 </Project>

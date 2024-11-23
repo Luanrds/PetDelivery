@@ -2,7 +2,7 @@
 using Entidades.Entidades;
 
 namespace Dominio.Interfaces.InterfaceProducts;
-public interface IProduto : IGenerics<Produto>
+public interface IProduct : IGenerics<Produto>
 {
 
 }
