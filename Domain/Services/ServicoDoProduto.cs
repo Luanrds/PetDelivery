@@ -3,14 +3,9 @@ using Dominio.Interfaces.InterfaceServices;
 using Entidades.Entidades;
 
 namespace Dominio.Services;
-public class ServicoDoProduto : IServiceProduct
+public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
 {
-    private readonly IProduct _IProduto;
-
-    public ServicoDoProduto(IProduct IProduto)
-    {
-        _IProduto = IProduto;
-    }
+    private readonly IProduct _IProduto = IProduto;
 
     public async Task AddProduct(Produto produto)
     {
