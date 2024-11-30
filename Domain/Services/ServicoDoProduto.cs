@@ -3,16 +3,16 @@ using Dominio.Interfaces.InterfaceServices;
 using Entidades.Entidades;
 
 namespace Dominio.Services;
-public class ServicoDoProduto : IServicoDoProduto
+public class ServicoDoProduto : IServiceProduct
 {
-    private readonly IProduto _IProduto;
+    private readonly IProduct _IProduto;
 
-    public ServicoDoProduto(IProduto IProduto)
+    public ServicoDoProduto(IProduct IProduto)
     {
         _IProduto = IProduto;
     }
 
-    public async Task AddProduto(Produto produto)
+    public async Task AddProduct(Produto produto)
     {
         bool validaNome = produto.ValidarPropriedadeString(produto.Nome, "Nome");
 
@@ -25,7 +25,7 @@ public class ServicoDoProduto : IServicoDoProduto
         }
     }
 
-    public async Task UpdateProtudo(Produto produto)
+    public async Task UpdateProduct(Produto produto)
     {
         bool validaNome = produto.ValidarPropriedadeString(produto.Nome, "Nome");
 
