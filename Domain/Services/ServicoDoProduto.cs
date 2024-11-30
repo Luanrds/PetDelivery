@@ -9,13 +9,11 @@ public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
 {
     private readonly IProduct _IProduto = IProduto;
 
-    private readonly ProdutoValidator _validator = new();
-
     public async Task AddProduct(Produto produto)
     {
-		ValidationResult result = _validator.Validate(produto);
+		var validationResult = Validate(produto);
 
-        if (result.IsValid)
+		if (validationResult.IsValid)
         {
             produto.Estado = true;
             await _IProduto.Add(produto);
@@ -24,11 +22,17 @@ public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
 
     public async Task UpdateProduct(Produto produto)
     {
-		ValidationResult result = _validator.Validate(produto);
+        var validationResult = Validate(produto);
 
-        if (result.IsValid)
+		if (validationResult.IsValid)
         {
             await _IProduto.Update(produto);
         }
     }
+
+	private static ValidationResult Validate(Produto produto)
+	{
+        ProdutoValidator validator = new();
+		return validator.Validate(produto);
+	}
 }
