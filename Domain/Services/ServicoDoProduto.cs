@@ -2,6 +2,7 @@
 using Dominio.Interfaces.InterfaceServices;
 using Dominio.Validadores;
 using Entidades.Entidades;
+using FluentValidation.Results;
 
 namespace Dominio.Services;
 public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
@@ -12,7 +13,7 @@ public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
 
     public async Task AddProduct(Produto produto)
     {
-        var result = _validator.Validate(produto);
+		ValidationResult result = _validator.Validate(produto);
 
         if (result.IsValid)
         {
@@ -23,7 +24,7 @@ public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
 
     public async Task UpdateProduct(Produto produto)
     {
-        var result = _validator.Validate(produto);
+		ValidationResult result = _validator.Validate(produto);
 
         if (result.IsValid)
         {
