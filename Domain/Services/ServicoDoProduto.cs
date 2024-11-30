@@ -12,9 +12,9 @@ public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
 
     public async Task AddProduct(Produto produto)
     {
-        var validationResult = _validator.Validate(produto);
+        var result = _validator.Validate(produto);
 
-        if (validationResult.IsValid)
+        if (result.IsValid)
         {
             produto.Estado = true;
             await _IProduto.Add(produto);
@@ -23,9 +23,9 @@ public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
 
     public async Task UpdateProduct(Produto produto)
     {
-        var validationResult = _validator.Validate(produto);
+        var result = _validator.Validate(produto);
 
-        if (validationResult.IsValid)
+        if (result.IsValid)
         {
             await _IProduto.Update(produto);
         }
