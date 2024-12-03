@@ -8,5 +8,5 @@ public class Base : Notifica
     public int Id { get; set; }
 
     [Display(Name = "Nome")]
-    public string Nome { get; set; }
+    public required string Nome { get; set; }
 }

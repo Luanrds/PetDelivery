@@ -1,6 +1,8 @@
 ﻿using Dominio.Interfaces.InterfaceProducts;
 using Dominio.Interfaces.InterfaceServices;
+using Dominio.Validadores;
 using Entidades.Entidades;
+using FluentValidation.Results;
 
 namespace Dominio.Services;
 public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
@@ -9,11 +11,9 @@ public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
 
     public async Task AddProduct(Produto produto)
     {
-        bool validaNome = produto.ValidarPropriedadeString(produto.Nome, "Nome");
+		var validationResult = Validate(produto);
 
-        bool validaValor = produto.ValidarPropriedadeDecimal(produto.Valor, "Valor");
-
-        if (validaNome && validaValor)
+		if (validationResult.IsValid)
         {
             produto.Estado = true;
             await _IProduto.Add(produto);
@@ -22,13 +22,17 @@ public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
 
     public async Task UpdateProduct(Produto produto)
     {
-        bool validaNome = produto.ValidarPropriedadeString(produto.Nome, "Nome");
+        var validationResult = Validate(produto);
 
-        bool validaValor = produto.ValidarPropriedadeDecimal(produto.Valor, "Valor");
-
-        if (validaNome && validaValor)
+		if (validationResult.IsValid)
         {
             await _IProduto.Update(produto);
         }
     }
+
+	private static ValidationResult Validate(Produto produto)
+	{
+        ProdutoValidator validator = new();
+		return validator.Validate(produto);
+	}
 }
