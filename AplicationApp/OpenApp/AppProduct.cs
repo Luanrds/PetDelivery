@@ -5,19 +5,13 @@ using Entidades.Entidades;
 
 namespace Aplicacao.OpenApp
 {
-    public class AppProduct : InterfaceProductApp
+    public class AppProduct(IProduct IProduct, IServiceProduct IServiceProduct) : InterfaceProductApp
     {
-        IProduct _IProduct;
-        IServiceProduct _IServiceProduct;
-        public AppProduct(IProduct IProduct , IServiceProduct IServiceProduct) 
-        {
-            _IProduct = IProduct;
-            _IServiceProduct = IServiceProduct;
-        }
+		private readonly IProduct _IProduct = IProduct;
 
+		private readonly IServiceProduct _IServiceProduct = IServiceProduct;
 
-
-        public async Task AddProduct(Produto produto)
+		public async Task AddProduct(Produto produto)
         {
             await _IServiceProduct.AddProduct(produto);
         }
@@ -26,9 +20,6 @@ namespace Aplicacao.OpenApp
         {
             await _IServiceProduct.UpdateProduct(produto);
         }
-
-
-
 
         public async Task Add(Produto Objeto)
         {
@@ -54,6 +45,5 @@ namespace Aplicacao.OpenApp
         {
             await _IProduct.Update(Objeto);
         }
-
     }
 }
