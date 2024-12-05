@@ -21,5 +21,5 @@ public class Produto : Notifica
 
     [Column("PRD_ESTADO")]
     [Display(Name = "Estado")]
-    public bool Estado { get; set; }
+    public bool Estado { get; set; } 
 }
