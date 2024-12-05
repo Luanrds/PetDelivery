@@ -7,13 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Configuracao\" />
-    <Folder Include="Repositorio\Generico\" />
     <Folder Include="Repositorio\Repositorios\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Dominio.csproj" />
+    <ProjectReference Include="..\Entities\Entidades.csproj" />
   </ItemGroup>
 
 </Project>
