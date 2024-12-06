@@ -11,11 +11,10 @@ public class RepositoryGenerics<T> : IGenerics<T>, IDisposable where T : class
     private readonly DbContextOptions<ContextBase> _optionsBuilder;
 
     public RepositoryGenerics()
-        {
+    {
         _optionsBuilder = new DbContextOptions<ContextBase>();
     }
 
-    
     public async Task  Add(T Objeto)
     {
         using (ContextBase data = new ContextBase(_optionsBuilder))
@@ -33,7 +32,6 @@ public class RepositoryGenerics<T> : IGenerics<T>, IDisposable where T : class
             await data.SaveChangesAsync();
         }
     }
-
 
     public async Task<T> GetEntityById(int Id)
     {
@@ -59,7 +57,6 @@ public class RepositoryGenerics<T> : IGenerics<T>, IDisposable where T : class
             await data.SaveChangesAsync();
         }
     }
-
 
     #region Disposed https://docs.microsoft.com/pt-br/dotnet/standard/garbage-collection/implementing-dispose
     // Flag: Has Dispose already been called?
