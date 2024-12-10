@@ -13,20 +13,17 @@ public class ContextBase : IdentityDbContext<ApplicationUser>
 
     public DbSet<Produto> Produtoo { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseNpgsql(GetStringConnectionConfig());
-            base.OnConfiguring(optionsBuilder);
-        }
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	{
+		if (!optionsBuilder.IsConfigured)
+		{
+			optionsBuilder.UseNpgsql(GetStringConnectionConfig());
+			base.OnConfiguring(optionsBuilder);
+		}
+	}
 
-    }
-
-    private string GetStringConnectionConfig()
-    {
-        string strCon = "Host=localhost;Port=5432;Database=DDD_ECOMMERCE;Username=seu_usuario;Password=sua_senha;";
-        return strCon;
-    }
-
+	private string GetStringConnectionConfig()
+	{
+		return "Host=localhost;Port=5432;Database=DDD_ECOMMERCE;Username=seu_usuario;Password=sua_senha;";
+	}
 }
