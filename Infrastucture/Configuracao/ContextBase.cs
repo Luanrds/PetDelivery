@@ -1,9 +1,10 @@
 ﻿using Entidades.Entidades;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastucture.Configuracao;
 
-public class ContextBase : DbContext
+public class ContextBase : IdentityDbContext<ApplicationUser>
 {
 
     public ContextBase(DbContextOptions<ContextBase> options) : base(options)
@@ -13,8 +14,8 @@ public class ContextBase : DbContext
     public DbSet<Produto> Produtoo { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    { 
-         if(!optionsBuilder.IsConfigured)
+    {
+        if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder.UseNpgsql(GetStringConnectionConfig());
             base.OnConfiguring(optionsBuilder);
@@ -24,7 +25,7 @@ public class ContextBase : DbContext
 
     private string GetStringConnectionConfig()
     {
-        string strCon = "Host=localhost;Port=5432;Database=DDD_ECOMMERCE;Username=seu_usuario;Password=sua_senha;"; 
+        string strCon = "Host=localhost;Port=5432;Database=DDD_ECOMMERCE;Username=seu_usuario;Password=sua_senha;";
         return strCon;
     }
 
