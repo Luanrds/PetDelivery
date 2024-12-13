@@ -5,19 +5,26 @@ using Entidades.Entidades;
 using FluentValidation.Results;
 
 namespace Dominio.Services;
-public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
+public class ServicoDoProduto : IServiceProduct
 {
-    private readonly IProduct _IProduto = IProduto;
+    private readonly IProduct _IProduto;
 
-    public async Task AddProduct(Produto produto)
+    public ServicoDoProduto(IProduct product)
     {
-		var validationResult = Validate(produto);
+        _IProduto = product;
+    }
 
-		if (validationResult.IsValid)
+    public async Task<ValidationResult> AddProduct(Produto produto)
+    {
+        var validationResult = Validate(produto);
+
+        if (validationResult.IsValid)
         {
-            produto.Estado = true;
+            produto.Disponivel = true;
             await _IProduto.Add(produto);
         }
+
+        return validationResult;
     }
 
     public async Task UpdateProduct(Produto produto)

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Entidades.Entidades;
 
 [Table("Product")]
-public class Produto : Notifica
+public class Produto 
 {
     [Column("PRD_ID")]
     [Display(Name = "Código")]
@@ -20,6 +20,11 @@ public class Produto : Notifica
     public decimal Valor { get; set; }
 
     [Column("PRD_ESTADO")]
-    [Display(Name = "Estado")]
-    public bool Estado { get; set; } 
+    [Display(Name = "Disponível")]
+    public bool Disponivel { get; set; }
+
+    [Column("PRD_DESCRICAO")]
+    [Display(Name = "Descrição")]
+    [MaxLength(500)]
+    public required string Descricao { get; set; }
 }
