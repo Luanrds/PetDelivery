@@ -4,7 +4,7 @@ using Dominio.Entidades;
 using FluentValidation.Results;
 using Infrastucture.Repositorio.Repositorios;
 
-namespace Aplicacao.Fachadas;
+namespace Aplicacao.Fachadas.UseProduto;
 
 public class ProdutoFacade
 {

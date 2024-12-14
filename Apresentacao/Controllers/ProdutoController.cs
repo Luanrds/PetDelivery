@@ -1,4 +1,4 @@
-﻿using Aplicacao.Fachadas;
+﻿using Aplicacao.Fachadas.UseProduto;
 using Dominio.DTOs;
 using Microsoft.AspNetCore.Mvc;
 

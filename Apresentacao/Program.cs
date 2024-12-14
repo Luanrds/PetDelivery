@@ -1,4 +1,4 @@
-using Aplicacao.Fachadas;
+using Aplicacao.Fachadas.UseProduto;
 using Dominio.Interfaces.InterfaceProduct;
 using Infrastucture.Configuracao;
 using Infrastucture.Repositorio.Repositorios;
