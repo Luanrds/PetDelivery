@@ -1,5 +1,5 @@
 using Aplicacao;
-using Dominio.Interfaces.InterfaceProducts;
+using Dominio.Interfaces.InterfaceProduct;
 using Dominio.Interfaces.InterfaceServices;
 using Dominio.Services;
 using Infrastucture.Configuracao;
@@ -10,8 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ProdutoFacade>();
 
+builder.Services.AddScoped<RepositoryProduct>();
+
 builder.Services.AddScoped<IProduct, RepositoryProduct>();
 builder.Services.AddScoped<IServiceProduct, ServicoDoProduto>();
+
 
 builder.Services.AddControllers();
 

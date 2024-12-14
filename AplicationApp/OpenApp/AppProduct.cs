@@ -1,5 +1,5 @@
 ﻿using Aplicacao.Interfaces;
-using Dominio.Interfaces.InterfaceProducts;
+using Dominio.Interfaces.InterfaceProduct;
 using Dominio.Interfaces.InterfaceServices;
 using Entidades.Entidades;
 

@@ -1,30 +1,23 @@
-﻿using Dominio.Interfaces.InterfaceProducts;
+﻿using Dominio.Interfaces.InterfaceProduct;
 using Dominio.Interfaces.InterfaceServices;
 using Dominio.Validadores;
 using Entidades.Entidades;
 using FluentValidation.Results;
 
 namespace Dominio.Services;
-public class ServicoDoProduto : IServiceProduct
+public class ServicoDoProduto(IProduct IProduto) : IServiceProduct
 {
-    private readonly IProduct _IProduto;
+    private readonly IProduct _IProduto = IProduto;
 
-    public ServicoDoProduto(IProduct product)
+    public async Task AddProduct(Produto produto)
     {
-        _IProduto = product;
-    }
+		var validationResult = Validate(produto);
 
-    public async Task<ValidationResult> AddProduct(Produto produto)
-    {
-        var validationResult = Validate(produto);
-
-        if (validationResult.IsValid)
+		if (validationResult.IsValid)
         {
             produto.Disponivel = true;
             await _IProduto.Add(produto);
         }
-
-        return validationResult;
     }
 
     public async Task UpdateProduct(Produto produto)
@@ -41,5 +34,10 @@ public class ServicoDoProduto : IServiceProduct
 	{
         ProdutoValidator validator = new();
 		return validator.Validate(produto);
+	}
+
+	Task<ValidationResult> IServiceProduct.AddProduct(Produto produto)
+	{
+		throw new NotImplementedException();
 	}
 }

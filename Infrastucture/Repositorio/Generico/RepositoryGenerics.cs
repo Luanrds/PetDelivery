@@ -47,4 +47,19 @@ public class RepositoryGenerics<T> : IGenerics<T>, IDisposable where T : class
     {
         _context?.Dispose();
     }
+
+	Task<bool> IGenerics<T>.Add(T Objeto)
+	{
+		throw new NotImplementedException();
+	}
+
+	Task<bool> IGenerics<T>.Update(T Objeto)
+	{
+		throw new NotImplementedException();
+	}
+
+	Task<bool> IGenerics<T>.Delete(T Objeto)
+	{
+		throw new NotImplementedException();
+	}
 }

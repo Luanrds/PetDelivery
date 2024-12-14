@@ -1,5 +1,6 @@
 ﻿using Dapper;
-using Dominio.Interfaces.InterfaceProducts;
+using Dominio.Interfaces.Generics;
+using Dominio.Interfaces.InterfaceProduct;
 using Entidades.Entidades;
 using Infrastucture.Configuracao;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,7 @@ public class RepositoryProduct : IProduct
             produto.Descricao
         });
 
-        return result < 0;
+        return result > 0;
     }
 
     public async Task<List<Produto>> List()
@@ -74,4 +75,9 @@ public class RepositoryProduct : IProduct
             throw new Exception("Erro ao excluir produto.");
         }
     }
+
+	Task<bool> IGenerics<Produto>.Delete(Produto Objeto)
+	{
+		throw new NotImplementedException();
+	}
 }

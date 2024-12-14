@@ -15,7 +15,7 @@ public class ContextBase : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseNpgsql("Host=my_host;Database=my_db;Username=my_user;Password=my_password");
+            optionsBuilder.UseNpgsql("Host=5432;Database=PetDelivey;Username=postgres;Password=0001");
         }
     }
 
