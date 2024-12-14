@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dominio", "Domain\Dominio.c
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aplicacao", "AplicationApp\Aplicacao.csproj", "{0F34ECFD-38EF-4117-943C-B26BE9569C4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apresentacao", "Apresentacao\Apresentacao.csproj", "{14D2E7E3-1B6F-4269-B94A-8FBBEA60E72C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDelivery.API", "Apresentacao\PetDelivery.API.csproj", "{14D2E7E3-1B6F-4269-B94A-8FBBEA60E72C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
