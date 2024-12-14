@@ -1,7 +1,7 @@
 ﻿using Dapper;
+using Dominio.Entidades;
 using Dominio.Interfaces.Generics;
 using Dominio.Interfaces.InterfaceProduct;
-using Entidades.Entidades;
 using Infrastucture.Configuracao;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;

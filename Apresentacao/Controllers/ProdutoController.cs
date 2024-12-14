@@ -1,6 +1,5 @@
-﻿using Aplicacao;
-using Aplicacao.DTOs;
-using Infrastucture.Configuracao;
+﻿using Aplicacao.Fachadas;
+using Dominio.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Apresentacao.Controllers;
@@ -27,7 +26,7 @@ public class ProdutoController : ControllerBase
 		return BadRequest("Falha ao criar o produto.");
 	}
 
-	[HttpGet]
+	[HttpPut]
 	public async Task<IActionResult> AtualizarProduto([FromBody] DTOProdutos produtoDto)
 	{
 		var resultado = await _produtoFacade.AtualizarProduto(produtoDto);

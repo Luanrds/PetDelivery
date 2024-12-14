@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Entities\Entidades.csproj" />
+    <Folder Include="Services\" />
+    <Folder Include="Repositorios\Produto\" />
   </ItemGroup>
 
 </Project>

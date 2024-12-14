@@ -10,7 +10,6 @@
         "dependencies": {
           "Dapper": "2.1.35",
           "Dominio": "1.0.0",
-          "Entidades": "1.0.0",
           "FluentValidation": "11.10.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.8",
           "Microsoft.EntityFrameworkCore": "9.0.0",
@@ -266,24 +265,10 @@
       "Dominio/1.0.0": {
         "dependencies": {
           "Dapper": "2.1.35",
-          "Entidades": "1.0.0",
           "FluentValidation": "11.10.0"
         },
         "runtime": {
           "Dominio.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "Entidades/1.0.0": {
-        "dependencies": {
-          "Dapper": "2.1.35",
-          "FluentValidation": "11.10.0",
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.8"
-        },
-        "runtime": {
-          "Entidades.dll": {
             "assemblyVersion": "1.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -459,11 +444,6 @@
       "hashPath": "system.diagnostics.diagnosticsource.9.0.0.nupkg.sha512"
     },
     "Dominio/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Entidades/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

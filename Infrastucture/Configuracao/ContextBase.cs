@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Entidades.Entidades;
+using Dominio.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -15,7 +15,7 @@ public class ContextBase : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseNpgsql("Host=5432;Database=PetDelivey;Username=postgres;Password=0001");
+            optionsBuilder.UseNpgsql("Host=5432;Database=petDelivey;Username=postgres;Password=0001");
         }
     }
 

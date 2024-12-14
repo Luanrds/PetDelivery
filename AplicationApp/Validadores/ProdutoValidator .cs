@@ -1,7 +1,7 @@
-﻿using Entidades.Entidades;
+﻿using Dominio.Entidades;
 using FluentValidation;
 
-namespace Dominio.Validadores;
+namespace Aplicacao.Validadores;
 
 public class ProdutoValidator : AbstractValidator<Produto>
 {
@@ -16,5 +16,10 @@ public class ProdutoValidator : AbstractValidator<Produto>
            .GreaterThan(0)
            .WithMessage("Valor deve ser maior que 0")
            .WithName("Valor");
+
+        RuleFor(p => p.Descricao)
+            .NotEmpty()
+            .WithMessage("Campo obrigatório")
+            .WithName("Descrição");
     }
 }

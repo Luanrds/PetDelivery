@@ -1,4 +1,4 @@
-﻿namespace Aplicacao.DTOs;
+﻿namespace Dominio.DTOs;
 
 public class DTOProdutos
 {
