@@ -12,7 +12,6 @@ builder.Services.AddScoped<RepositoryProduct>();
 
 builder.Services.AddScoped<IProduct, RepositoryProduct>();
 
-
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ContextBase>(options =>
