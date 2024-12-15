@@ -7,7 +7,7 @@ namespace Dominio.Entidades;
 public class Produto : EntidadeBase
 {
     [Display(Name = "Nome")]
-    public required string Nome { get; set; }
+    public string Nome { get; set; } = string.Empty;
 
     [Display(Name = "Valor")]
     public decimal Valor { get; set; }
@@ -17,5 +17,5 @@ public class Produto : EntidadeBase
 
     [Display(Name = "Descrição")]
     [MaxLength(500)]
-    public required string Descricao { get; set; }
+    public string Descricao { get; set; } = string.Empty;   
 }
