@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AplicationApp\Aplicacao.csproj" />
+    <ProjectReference Include="..\Domain\Dominio.csproj" />
     <ProjectReference Include="..\Infrastucture\Infrastucture.csproj" />
   </ItemGroup>
 

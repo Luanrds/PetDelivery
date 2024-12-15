@@ -1,20 +1,25 @@
+using Aplicacao;
 using Aplicacao.Fachadas.UseProduto;
-using Dominio.Interfaces.InterfaceProduct;
+using Infrastucture;
 using Infrastucture.Configuracao;
 using Infrastucture.Repositorio.Repositorios;
 using Microsoft.EntityFrameworkCore;
+using PetDelivery.API.Filtros;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ProdutoFacade>();
 
-builder.Services.AddScoped<RepositoryProduct>();
-
-builder.Services.AddScoped<IProduct, RepositoryProduct>();
+builder.Services.AddScoped<ProdutoRepository>();
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<ContextBase>(options =>
+builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
+
+builder.Services.AdicioneAplicacao();
+builder.Services.AdicioneInfraestrutura();
+
+builder.Services.AddDbContext<PetDeliveyContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -26,8 +31,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
