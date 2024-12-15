@@ -1,62 +1,96 @@
-﻿using Aplicacao.Validadores;
-using Dominio.DTOs;
+﻿using Aplicacao.Servicos;
+using Aplicacao.Validadores;
 using Dominio.Entidades;
-using FluentValidation.Results;
-using Infrastucture.Repositorio.Repositorios;
+using Dominio.Repositorios.Produto;
+using PetDelivery.Communication.Request;
+using PetDelivery.Communication.Response;
+using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.Fachadas.UseProduto;
 
 public class ProdutoFacade
 {
-    private readonly RepositoryProduct _repositoryProduct;
+    private readonly IProdutoReadOnly _readOnly;
+    private readonly IProdutoWriteOnly _writeOnly;
 
-    public ProdutoFacade(RepositoryProduct repositoryProduct)
-    {
-        _repositoryProduct = repositoryProduct;
-    }
+    //public async Task<bool> CriarProduto(DTOProdutos produtoDto)
+    //{
+    //    var produto = new Produto
+    //    {
+    //        Nome = produtoDto.Nome,
+    //        Valor = produtoDto.Valor,
+    //        Disponivel = produtoDto.Disponivel,
+    //        Descricao = produtoDto.Descricao
+    //    };
 
-    public async Task<bool> CriarProduto(DTOProdutos produtoDto)
+    //    var validationResult = Validate(produto);
+
+    //    if (validationResult.IsValid)
+    //    {
+    //        return await _repositoryProduct.Add(produto);
+    //    }
+
+    //    return false;
+    //}
+
+    public async Task<ResponseProdutoJson> CrieProduto(RequestProdutoJson request)
     {
-        var produto = new Produto
+        Validate(request);
+
+        var autoMapper = new AutoMapper.MapperConfiguration(options =>
         {
-            Nome = produtoDto.Nome,
-            Valor = produtoDto.Valor,
-            Disponivel = produtoDto.Disponivel,
-            Descricao = produtoDto.Descricao
+            options.AddProfile(new AutoMapping());
+        }).CreateMapper();
+
+        var produto = autoMapper.Map<Produto>(request);
+
+        await _writeOnly.Add(produto);
+
+        return new ResponseProdutoJson
+        {
+            Descricao = request.Descricao,
+            Disponivel = request.Disponivel,
+            Nome = request.Nome,
+            Valor = request.Valor
         };
-
-        var validationResult = Validate(produto);
-
-        if (validationResult.IsValid)
-        {
-            return await _repositoryProduct.Add(produto);
-        }
-
-        return false;
     }
 
-    public async Task<bool> AtualizarProduto(DTOProdutos produtoDto)
+    //public async Task<bool> AtualizarProduto(DTOProdutos produtoDto)
+    //{
+    //    if (produtoDto.Id == null || produtoDto.Valor <= 0)
+    //    {
+    //        return false;
+    //    }
+
+    //    var produto = new Produto
+    //    {
+    //        Id = produtoDto.Id.Value,
+    //        Nome = produtoDto.Nome,
+    //        Valor = produtoDto.Valor,
+    //        Disponivel = produtoDto.Disponivel,
+    //        Descricao = produtoDto.Descricao
+    //    };
+
+    //    return await _repositoryProduct.Update(produto);
+    //}
+
+    //private static ValidationResult Validate(Produto produto)
+    //{
+    //    ProdutoValidator validator = new();
+    //    return validator.Validate(produto);
+    //}
+
+    private static void Validate(RequestProdutoJson request)
     {
-        if (produtoDto.Id == null || produtoDto.Valor <= 0)
+        var validator = new ProdutoValidator();
+
+        var result = validator.Validate(request);
+
+        if (result.IsValid == false)
         {
-            return false;
+            var mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
+
+            throw new ErrorOnValidationException(mensagensDeErro);
         }
-
-        var produto = new Produto
-        {
-            Id = produtoDto.Id.Value,
-            Nome = produtoDto.Nome,
-            Valor = produtoDto.Valor,
-            Disponivel = produtoDto.Disponivel,
-            Descricao = produtoDto.Descricao
-        };
-
-        return await _repositoryProduct.Update(produto);
-    }
-
-    private static ValidationResult Validate(Produto produto)
-    {
-        ProdutoValidator validator = new();
-        return validator.Validate(produto);
     }
 }
