@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
 
 builder.Services.AdicioneAplicacao();
-builder.Services.AdicioneInfraestrutura();
+builder.Services.AdicioneInfraestrutura(builder.Configuration);
 
 //builder.Services.AddDbContext<PetDeliveyContext>(options =>
 //    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

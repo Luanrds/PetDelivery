@@ -3,21 +3,22 @@ using Dominio.Repositorios.Produto;
 using Infrastucture.Configuracao;
 using Infrastucture.Repositorio.Repositorios;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastucture;
 
 public static class InjecaoDeDependenciaExtensao
 {
-    public static void AdicioneInfraestrutura(this IServiceCollection services)
+    public static void AdicioneInfraestrutura(this IServiceCollection services, IConfiguration configuration)
     {
-        AddDbContext_Npga(services);
+        AddDbContext_Npga(services, configuration);
 		AdicioneRepositorios(services);
     }
 
-    private static void AddDbContext_Npga(IServiceCollection services)
+    private static void AddDbContext_Npga(IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = "Host=localhost;Port=5432;Database=PetDelivery;Username=postgres;Password=0001";
+        var connectionString = configuration.GetConnectionString("Connection");
 
         services.AddDbContext<PetDeliveyContext>(dbContext =>
         {
