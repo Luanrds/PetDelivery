@@ -1,6 +1,7 @@
-﻿using Aplicacao.Servicos;
-using Aplicacao.Validadores;
+﻿using Aplicacao.Validadores;
+using AutoMapper;
 using Dominio.Entidades;
+using Dominio.Repositorios;
 using Dominio.Repositorios.Produto;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
@@ -8,43 +9,30 @@ using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.Fachadas.UseProduto;
 
-public class ProdutoFacade
+public class ProdutoFacade : IProdutoUseCase
 {
-    private readonly IProdutoReadOnly _readOnly;
     private readonly IProdutoWriteOnly _writeOnly;
+    private readonly IProdutoReadOnly _readOnly;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    //public async Task<bool> CriarProduto(DTOProdutos produtoDto)
-    //{
-    //    var produto = new Produto
-    //    {
-    //        Nome = produtoDto.Nome,
-    //        Valor = produtoDto.Valor,
-    //        Disponivel = produtoDto.Disponivel,
-    //        Descricao = produtoDto.Descricao
-    //    };
-
-    //    var validationResult = Validate(produto);
-
-    //    if (validationResult.IsValid)
-    //    {
-    //        return await _repositoryProduct.Add(produto);
-    //    }
-
-    //    return false;
-    //}
+    public ProdutoFacade(IProdutoWriteOnly writeOnly, IProdutoReadOnly readOnly, IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _writeOnly = writeOnly;
+        _readOnly = readOnly;
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
 
     public async Task<ResponseProdutoJson> CrieProduto(RequestProdutoJson request)
     {
         Validate(request);
 
-        var autoMapper = new AutoMapper.MapperConfiguration(options =>
-        {
-            options.AddProfile(new AutoMapping());
-        }).CreateMapper();
-
-        var produto = autoMapper.Map<Produto>(request);
+        var produto = _mapper.Map<Produto>(request);
 
         await _writeOnly.Add(produto);
+
+        await _unitOfWork.Commit();
 
         return new ResponseProdutoJson
         {
@@ -54,31 +42,6 @@ public class ProdutoFacade
             Valor = request.Valor
         };
     }
-
-    //public async Task<bool> AtualizarProduto(DTOProdutos produtoDto)
-    //{
-    //    if (produtoDto.Id == null || produtoDto.Valor <= 0)
-    //    {
-    //        return false;
-    //    }
-
-    //    var produto = new Produto
-    //    {
-    //        Id = produtoDto.Id.Value,
-    //        Nome = produtoDto.Nome,
-    //        Valor = produtoDto.Valor,
-    //        Disponivel = produtoDto.Disponivel,
-    //        Descricao = produtoDto.Descricao
-    //    };
-
-    //    return await _repositoryProduct.Update(produto);
-    //}
-
-    //private static ValidationResult Validate(Produto produto)
-    //{
-    //    ProdutoValidator validator = new();
-    //    return validator.Validate(produto);
-    //}
 
     private static void Validate(RequestProdutoJson request)
     {
