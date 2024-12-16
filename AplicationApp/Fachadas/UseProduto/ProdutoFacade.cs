@@ -1,4 +1,4 @@
-﻿using Aplicacao.Validadores;
+﻿﻿using Aplicacao.Validadores;
 using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Repositorios;

@@ -1,5 +1,7 @@
 using Aplicacao;
 using Infrastucture;
+using Infrastucture.Extensoes;
+using Infrastucture.Migrations;
 using PetDelivery.API.Filtros;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,4 +32,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+MigrateDataBase();
+
 app.Run();
+
+void MigrateDataBase()
+{
+    var connectionString = builder.Configuration.ConnectionString();
+
+    BancoDeDadosMigration.Migrate(connectionString);
+}

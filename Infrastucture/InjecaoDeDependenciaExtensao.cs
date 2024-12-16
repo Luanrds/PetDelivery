@@ -1,6 +1,7 @@
 ﻿using Dominio.Repositorios;
 using Dominio.Repositorios.Produto;
 using Infrastucture.Configuracao;
+using Infrastucture.Extensoes;
 using Infrastucture.Repositorio.Repositorios;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +19,7 @@ public static class InjecaoDeDependenciaExtensao
 
     private static void AddDbContext_Npga(IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("Connection");
+        var connectionString = configuration.ConnectionString();
 
         services.AddDbContext<PetDeliveyContext>(dbContext =>
         {
