@@ -17,7 +17,7 @@ public static class InjecaoDeDependenciaExtensao
 
     private static void AddDbContext_Npga(IServiceCollection services)
     {
-        var connectionString = "Host=localhost;Port=5432;Username=postgres;Password=0001";
+        var connectionString = "Host=localhost;Port=5432;Database=PetDelivery;Username=postgres;Password=0001";
 
         services.AddDbContext<PetDeliveyContext>(dbContext =>
         {

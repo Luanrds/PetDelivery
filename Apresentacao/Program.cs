@@ -1,7 +1,5 @@
 using Aplicacao;
 using Infrastucture;
-using Infrastucture.Configuracao;
-using Microsoft.EntityFrameworkCore;
 using PetDelivery.API.Filtros;
 
 var builder = WebApplication.CreateBuilder(args);

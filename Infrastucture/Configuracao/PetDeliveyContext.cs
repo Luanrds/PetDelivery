@@ -5,7 +5,7 @@ namespace Infrastucture.Configuracao;
 
 public class PetDeliveyContext(DbContextOptions options) : DbContext(options)
 {
-    public DbSet<Produto> Produtos { get; set; }
+    public DbSet<Produto> Produto { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
