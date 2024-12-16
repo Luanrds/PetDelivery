@@ -1,6 +1,7 @@
 ﻿using Aplicacao.Fachadas.UseProduto;
-using Dominio.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.Communication.Request;
+using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
 
@@ -8,57 +9,15 @@ namespace PetDelivery.API.Controllers;
 [ApiController]
 public class ProdutoController : ControllerBase
 {
-    private readonly ProdutoFacade _produtoFacade;
+	[HttpPost]
+	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status204NoContent)]
+	public async Task<IActionResult> CrieProdutoAsync(
+		[FromServices] IProdutoUseCase produtoUseCase,
+		[FromBody] RequestProdutoJson request)
+	{
+		var response = await produtoUseCase.CrieProduto(request);
 
-    public ProdutoController(ProdutoFacade produtoFacade)
-    {
-        _produtoFacade = produtoFacade;
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> CriarProduto([FromBody] DTOProdutos produto)
-    {
-        var resultado = await _produtoFacade.CriarProduto(produto);
-        if (resultado)
-        {
-            return Ok("Produto criado com sucesso!");
-        }
-        return BadRequest("Falha ao criar o produto.");
-    }
-
-    [HttpPut]
-    public async Task<IActionResult> AtualizarProduto([FromBody] DTOProdutos produtoDto)
-    {
-        var resultado = await _produtoFacade.AtualizarProduto(produtoDto);
-        if (resultado)
-        {
-            return Ok("Produto atualizado com sucesso!");
-        }
-        return BadRequest("Falha ao atualizar o produto.");
-    }
+		return Created(string.Empty, response);
+	}
 }
-
-
-
-
-//public async Task<IActionResult> CriarProduto([FromBody] Produto produto)
-//{
-//    var validationResult = await _produtoService.AddProduct(produto);
-
-//    if (!validationResult.IsValid)
-//    {
-//        var erros = validationResult.Errors.Select(e => new
-//        {
-//            Campo = e.PropertyName,
-//            Erro = e.ErrorMessage
-//        });
-
-//        return BadRequest(erros);
-//    }
-
-//    return Ok(new
-//    {
-//        Mensagem = "Produto criado com sucesso!",
-//        Produto = produto
-//    });
-//}

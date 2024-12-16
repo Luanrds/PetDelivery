@@ -1,9 +1,9 @@
-﻿using Dominio.Entidades;
-using FluentValidation;
+﻿using FluentValidation;
+using PetDelivery.Communication.Request;
 
 namespace Aplicacao.Validadores;
 
-public class ProdutoValidator : AbstractValidator<Produto>
+public class ProdutoValidator : AbstractValidator<RequestProdutoJson>
 {
     public ProdutoValidator()
     {

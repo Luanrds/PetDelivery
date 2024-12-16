@@ -8,9 +8,9 @@ namespace Infrastucture.Repositorio.Generico;
 
 public class RepositoryGenerics<T> : IGenerics<T>, IDisposable where T : class
 {
-    private readonly ContextBase _context;
+    private readonly PetDeliveyContext _context;
 
-    public RepositoryGenerics(ContextBase context)
+    public RepositoryGenerics(PetDeliveyContext context)
     {
         _context = context;
     }

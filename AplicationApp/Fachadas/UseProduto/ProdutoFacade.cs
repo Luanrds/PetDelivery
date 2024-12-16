@@ -1,62 +1,59 @@
 ﻿using Aplicacao.Validadores;
-using Dominio.DTOs;
+using AutoMapper;
 using Dominio.Entidades;
-using FluentValidation.Results;
-using Infrastucture.Repositorio.Repositorios;
+using Dominio.Repositorios;
+using Dominio.Repositorios.Produto;
+using PetDelivery.Communication.Request;
+using PetDelivery.Communication.Response;
+using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.Fachadas.UseProduto;
 
-public class ProdutoFacade
+public class ProdutoFacade : IProdutoUseCase
 {
-    private readonly RepositoryProduct _repositoryProduct;
+    private readonly IProdutoWriteOnly _writeOnly;
+    private readonly IProdutoReadOnly _readOnly;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    public ProdutoFacade(RepositoryProduct repositoryProduct)
+    public ProdutoFacade(IProdutoWriteOnly writeOnly, IProdutoReadOnly readOnly, IUnitOfWork unitOfWork, IMapper mapper)
     {
-        _repositoryProduct = repositoryProduct;
+        _writeOnly = writeOnly;
+        _readOnly = readOnly;
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
 
-    public async Task<bool> CriarProduto(DTOProdutos produtoDto)
+    public async Task<ResponseProdutoJson> CrieProduto(RequestProdutoJson request)
     {
-        var produto = new Produto
+        Validate(request);
+
+        var produto = _mapper.Map<Produto>(request);
+
+        await _writeOnly.Add(produto);
+
+        await _unitOfWork.Commit();
+
+        return new ResponseProdutoJson
         {
-            Nome = produtoDto.Nome,
-            Valor = produtoDto.Valor,
-            Disponivel = produtoDto.Disponivel,
-            Descricao = produtoDto.Descricao
+            Descricao = request.Descricao,
+            Disponivel = request.Disponivel,
+            Nome = request.Nome,
+            Valor = request.Valor
         };
-
-        var validationResult = Validate(produto);
-
-        if (validationResult.IsValid)
-        {
-            return await _repositoryProduct.Add(produto);
-        }
-
-        return false;
     }
 
-    public async Task<bool> AtualizarProduto(DTOProdutos produtoDto)
+    private static void Validate(RequestProdutoJson request)
     {
-        if (produtoDto.Id == null || produtoDto.Valor <= 0)
+        var validator = new ProdutoValidator();
+
+        var result = validator.Validate(request);
+
+        if (result.IsValid == false)
         {
-            return false;
+            var mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
+
+            throw new ErrorOnValidationException(mensagensDeErro);
         }
-
-        var produto = new Produto
-        {
-            Id = produtoDto.Id.Value,
-            Nome = produtoDto.Nome,
-            Valor = produtoDto.Valor,
-            Disponivel = produtoDto.Disponivel,
-            Descricao = produtoDto.Descricao
-        };
-
-        return await _repositoryProduct.Update(produto);
-    }
-
-    private static ValidationResult Validate(Produto produto)
-    {
-        ProdutoValidator validator = new();
-        return validator.Validate(produto);
     }
 }
