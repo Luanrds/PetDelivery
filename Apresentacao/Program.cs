@@ -40,5 +40,7 @@ void MigrateDataBase()
 {
     var connectionString = builder.Configuration.ConnectionString();
 
-    BancoDeDadosMigration.Migrate(connectionString);
+    var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+
+    BancoDeDadosMigration.Migrate(connectionString, serviceScope.ServiceProvider);
 }
