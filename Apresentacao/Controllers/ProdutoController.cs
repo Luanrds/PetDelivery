@@ -5,7 +5,7 @@ using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
 public class ProdutoController : ControllerBase
 {
