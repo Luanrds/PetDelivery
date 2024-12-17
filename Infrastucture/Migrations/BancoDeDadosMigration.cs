@@ -7,28 +7,27 @@ public static class BancoDeDadosMigration
 {
     public static void Migrate(string connectionString)
     {
-        GarantiaBancoDadosCriado(connectionString);
+        GaranteCriacaoDoBancoDeDados(connectionString);
     }
 
-    private static void GarantiaBancoDadosCriado(string connectionString)
+    private static void GaranteCriacaoDoBancoDeDados(string connectionString)
     {
-        var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+        NpgsqlConnectionStringBuilder connectionStringBuilder = new(connectionString);
 
-        var schemaName = connectionStringBuilder.Database;
+        string? NomeDoBancoDeDados = connectionStringBuilder.Database;
 
-        connectionStringBuilder.Remove("DataBase");
+        connectionStringBuilder.Database = "postgres";
 
-        DynamicParameters parameters = new DynamicParameters();
-        parameters.Add("nome", schemaName);
+        using var dbConnection = new NpgsqlConnection(connectionStringBuilder.ConnectionString);
 
-        using NpgsqlConnection dbConnection = new(connectionStringBuilder.ConnectionString);
-
-        var records = dbConnection.Query("SELECT schema_name FROM information_schema.schemata WHERE schema_name = @nome;", parameters);
+        IEnumerable<dynamic> records = dbConnection.Query(
+            "SELECT datname FROM pg_database WHERE datname = @nome;", 
+            new { nome = NomeDoBancoDeDados });
 
         if (!records.Any())
         {
-            dbConnection.Execute("CREATE SCHEMA @nome;", parameters);
+            var query = $"CREATE DATABASE \"{NomeDoBancoDeDados}\";";
+            dbConnection.Execute(query);
         }
     }
-
 }
