@@ -2,11 +2,12 @@ using Aplicacao;
 using Infrastucture;
 using Infrastucture.Extensoes;
 using Infrastucture.Migrations;
+using PetDelivery.API.Conversoes;
 using PetDelivery.API.Filtros;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new ConvertaString()));
 
 builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
 
