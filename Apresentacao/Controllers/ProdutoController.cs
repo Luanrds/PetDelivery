@@ -5,9 +5,7 @@ using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
 
-[Route("[controller]")]
-[ApiController]
-public class ProdutoController : ControllerBase
+public class ProdutoController : PetDeliveryBaseController
 {
 	[HttpPost]
 	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
