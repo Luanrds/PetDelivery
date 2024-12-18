@@ -15,14 +15,14 @@ public static class InjecaoDeDependenciaExtensao
 {
     public static void AdicioneInfraestrutura(this IServiceCollection services, IConfiguration configuration)
     {
-        AddDbContext_Npga(services, configuration);
+        AdicioneDbContext_Npga(services, configuration);
 
         AdicioneFluentMigrator_Npga(services, configuration);
 
         AdicioneRepositorios(services);
     }
 
-    private static void AddDbContext_Npga(IServiceCollection services, IConfiguration configuration)
+    private static void AdicioneDbContext_Npga(IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.ConnectionString();
 

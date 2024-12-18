@@ -1,4 +1,4 @@
-﻿using Aplicacao.Fachadas.UseProduto;
+﻿using Aplicacao.UseCase.UseProduto;
 using Aplicacao.Servicos;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +22,6 @@ public static class InjecaoDeDependenciaExtensao
 
     private static void AdicioneUseCase(IServiceCollection services)
     {
-        services.AddScoped<IProdutoUseCase, ProdutoFacade>();
+        services.AddScoped<IProdutoUseCase, ProdutoUseCase>();
     }
 }

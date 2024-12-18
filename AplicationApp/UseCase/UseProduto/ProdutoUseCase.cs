@@ -7,16 +7,16 @@ using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
 
-namespace Aplicacao.Fachadas.UseProduto;
+namespace Aplicacao.UseCase.UseProduto;
 
-public class ProdutoFacade : IProdutoUseCase
+public class ProdutoUseCase : IProdutoUseCase
 {
     private readonly IProdutoWriteOnly _writeOnly;
     private readonly IProdutoReadOnly _readOnly;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public ProdutoFacade(IProdutoWriteOnly writeOnly, IProdutoReadOnly readOnly, IUnitOfWork unitOfWork, IMapper mapper)
+    public ProdutoUseCase(IProdutoWriteOnly writeOnly, IProdutoReadOnly readOnly, IUnitOfWork unitOfWork, IMapper mapper)
     {
         _writeOnly = writeOnly;
         _readOnly = readOnly;

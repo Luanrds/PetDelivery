@@ -1,7 +1,7 @@
 ﻿using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
-namespace Aplicacao.Fachadas.UseProduto;
+namespace Aplicacao.UseCase.UseProduto;
 public interface IProdutoUseCase
 {
 	public Task<ResponseProdutoJson> CrieProduto(RequestProdutoJson request);

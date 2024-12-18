@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
-using System;
 using System.Net;
 
 namespace PetDelivery.API.Filtros;

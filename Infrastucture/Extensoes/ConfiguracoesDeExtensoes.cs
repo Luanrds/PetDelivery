@@ -2,7 +2,7 @@
 
 namespace Infrastucture.Extensoes;
 
-public static class ConfiguracoesDeestensao
+public static class ConfiguracoesDeExtensoes
 {
     public static string ConnectionString(this IConfiguration configuration)
     {

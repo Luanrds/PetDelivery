@@ -1,4 +1,4 @@
-﻿using Aplicacao.Fachadas.UseProduto;
+﻿using Aplicacao.UseCase.UseProduto;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
