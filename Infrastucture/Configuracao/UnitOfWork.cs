@@ -3,9 +3,9 @@
 namespace Infrastucture.Configuracao;
 public class UnitOfWork : IUnitOfWork
 {
-	private readonly PetDeliveyContext _dbContext;
+	private readonly PetDeliveryDbContext _dbContext;
 
-	public UnitOfWork(PetDeliveyContext dbContext) => _dbContext = dbContext;
+	public UnitOfWork(PetDeliveryDbContext dbContext) => _dbContext = dbContext;
 
     public async Task Commit()
     {

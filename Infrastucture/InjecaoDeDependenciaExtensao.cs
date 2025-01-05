@@ -26,7 +26,7 @@ public static class InjecaoDeDependenciaExtensao
     {
         var connectionString = configuration.ConnectionString();
 
-        services.AddDbContext<PetDeliveyContext>(dbContext =>
+        services.AddDbContext<PetDeliveryDbContext>(dbContext =>
         {
             dbContext.UseNpgsql(connectionString);
         });

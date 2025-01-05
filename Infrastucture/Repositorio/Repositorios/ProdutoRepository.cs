@@ -6,9 +6,9 @@ namespace Infrastucture.Repositorio.Repositorios;
 
 public class ProdutoRepository : IProdutoWriteOnly, IProdutoReadOnly
 {
-    private readonly PetDeliveyContext _dbContext;
+    private readonly PetDeliveryDbContext _dbContext;
 
-    public ProdutoRepository(PetDeliveyContext dbContext) => _dbContext = dbContext;
+    public ProdutoRepository(PetDeliveryDbContext dbContext) => _dbContext = dbContext;
 
-    public async Task Add(Produto produto) => await _dbContext.AddAsync(produto);
+    public async Task Add(Produto produto) => await _dbContext.Produto.AddAsync(produto);
 }
