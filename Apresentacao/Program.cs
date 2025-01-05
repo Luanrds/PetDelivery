@@ -11,7 +11,7 @@ builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializ
 
 builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
 
-builder.Services.AdicioneAplicacao();
+builder.Services.AdicioneAplicacao(builder.Configuration);
 builder.Services.AdicioneInfraestrutura(builder.Configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
