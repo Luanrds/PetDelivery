@@ -34,13 +34,7 @@ public class ProdutoUseCase : IProdutoUseCase
 
         await _unitOfWork.Commit();
 
-        return new ResponseProdutoJson
-        {
-            Descricao = request.Descricao,
-            Disponivel = request.Disponivel,
-            Nome = request.Nome,
-            Valor = request.Valor
-        };
+        return _mapper.Map<ResponseProdutoJson>(produto);
     }
 
     private static void Validate(RequestProdutoJson request)
