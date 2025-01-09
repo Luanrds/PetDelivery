@@ -10,9 +10,9 @@ public class ExceptionFilter : IExceptionFilter
 {
     public void OnException(ExceptionContext context)
     {
-        if (context.Exception is PetDeliveryExceptions)
+        if (context.Exception is PetDeliveryExceptions petDeliveryExceptions)
         {
-            HandleProjectException(context);
+            HandleProjectException(petDeliveryExceptions, context);
         }
         else
         {
@@ -20,15 +20,10 @@ public class ExceptionFilter : IExceptionFilter
         }
     }
 
-    private static void HandleProjectException(ExceptionContext context)
+    private static void HandleProjectException(PetDeliveryExceptions petDeliveryExceptions, ExceptionContext context)
     {
-        if(context.Exception is ErrorOnValidationException)
-        {
-            var exception = context.Exception as ErrorOnValidationException;
-
-            context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            context.Result = new BadRequestObjectResult(new ResponseErrorJson(exception!.MensagensDeErro));
-        }
+        context.HttpContext.Response.StatusCode = (int)petDeliveryExceptions.GetStatusCode();
+        context.Result = new ObjectResult(new ResponseErrorJson(petDeliveryExceptions.GetMensagensDeErro()));
     }
 
     private static void ThrowUnknowException(ExceptionContext context)

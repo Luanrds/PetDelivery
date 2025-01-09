@@ -1,11 +1,10 @@
-﻿namespace PetDelivery.Exceptions.ExceptionsBase;
+﻿using System.Net;
 
-public class NotFoundException : PetDeliveryExceptions
+namespace PetDelivery.Exceptions.ExceptionsBase;
+
+public class NotFoundException(string menssagem) : PetDeliveryExceptions(menssagem)
 {
-	public IList<string> MensagensDeErro { get; set; }
+	public override IList<string> GetMensagensDeErro() => [Message];
 
-	public NotFoundException(IList<string> mensagensDeErro)
-    {
-		MensagensDeErro = mensagensDeErro;
-    }
+	public override HttpStatusCode GetStatusCode() => HttpStatusCode.NotFound;
 }
