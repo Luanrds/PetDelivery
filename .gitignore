@@ -26,11 +26,15 @@ bld/
 [Bb]in/
 [Oo]bj/
 
+# Specific folder to ignore DLLs and build files from Infrastructure
+Infrastructure/bin/
+Infrastructure/obj/
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
 
-#NUNIT
+# NUNIT
 *.VisualState.xml
 TestResult.xml
 
