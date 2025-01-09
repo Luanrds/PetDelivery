@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Dominio.Repositorios.Produto;
 using PetDelivery.Communication.Response;
+using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.UseCase.UseProduto.GetById;
 public class GetProdutoById : IGetProdutoById
@@ -18,11 +19,11 @@ public class GetProdutoById : IGetProdutoById
 	{
 		var produto = await _repository.GetById(ProdutoId);
 
-		if(produto is not null)
+		if (produto is null)
 		{
-			throw new Exception("Não");
+			throw new NotFoundException("Produto não encontrado.");
 		}
-
+	
 		var response = _mapper.Map<ResponseProdutoJson>(produto);
 
 		return response;
