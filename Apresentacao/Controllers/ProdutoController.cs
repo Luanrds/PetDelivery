@@ -23,10 +23,10 @@ public class ProdutoController : PetDeliveryBaseController
 	[HttpGet]
 	[Route("{id}")]
 	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> GetbyId(
 		[FromServices] IGetProdutoById produtoUseCase,
-		[FromRoute] [ModelBinder(typeof(PetDeliveryBinder))] long id)
+		[FromRoute] long id)
 	{
 		var response = await produtoUseCase.Execute(id);
 
