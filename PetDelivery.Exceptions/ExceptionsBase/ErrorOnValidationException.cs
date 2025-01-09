@@ -1,11 +1,17 @@
-﻿namespace PetDelivery.Exceptions.ExceptionsBase;
+﻿using System.Net;
+
+namespace PetDelivery.Exceptions.ExceptionsBase;
 
 public class ErrorOnValidationException : PetDeliveryExceptions
 {
-    public IList<string> MensagensDeErro { get; set; }
+	private readonly IList<string> _mensagensDeErro;
 
-    public ErrorOnValidationException(IList<string> mensagensDeErro)
+    public ErrorOnValidationException(IList<string> mensagensDeErro) : base(string.Empty)
     {
-        MensagensDeErro = mensagensDeErro;
+		_mensagensDeErro = mensagensDeErro;
     }
+
+	public override IList<string> GetMensagensDeErro() => _mensagensDeErro;
+
+	public override HttpStatusCode GetStatusCode() => HttpStatusCode.BadRequest;
 }

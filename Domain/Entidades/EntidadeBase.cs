@@ -1,8 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Dominio.Entidades;
+﻿namespace Dominio.Entidades;
 public class EntidadeBase
 {
-    [Display(Name = "Código")]
-    public int Id { get; set; }
+    public long Id { get; set; }
 }

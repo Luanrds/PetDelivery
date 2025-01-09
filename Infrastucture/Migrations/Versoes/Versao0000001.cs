@@ -8,7 +8,6 @@ public class Versao0000001 : VersaoBase
     public override void Up()
     {
         Create.Table("Produto")
-            .WithColumn("Id").AsInt64().PrimaryKey().Identity()
             .WithColumn("Nome").AsString(255).NotNullable()
             .WithColumn("Valor").AsDecimal().NotNullable()
             .WithColumn("Disponivel").AsBoolean().NotNullable()

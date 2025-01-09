@@ -1,4 +1,5 @@
 ﻿using Aplicacao.UseCase.UseProduto;
+using Aplicacao.UseCase.UseProduto.GetById;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
@@ -17,5 +18,18 @@ public class ProdutoController : PetDeliveryBaseController
 		var response = await produtoUseCase.CrieProduto(request);
 
 		return Created(string.Empty, response);
+	}
+
+	[HttpGet]
+	[Route("{id}")]
+	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> GetbyId(
+		[FromServices] IGetProdutoById produtoUseCase,
+		[FromRoute] long id)
+	{
+		var response = await produtoUseCase.Execute(id);
+
+		return Ok(response);
 	}
 }

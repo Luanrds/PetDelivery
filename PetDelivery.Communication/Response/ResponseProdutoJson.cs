@@ -2,7 +2,7 @@
 
 public class ResponseProdutoJson
 {
-    public string Id { get; set; } = string.Empty;
+    public long Id { get; set; }
 
     public string Nome { get; set; } = string.Empty;
 

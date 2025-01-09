@@ -1,6 +1,7 @@
 ﻿using Aplicacao.UseCase.UseProduto;
 using Aplicacao.Servicos;
 using Microsoft.Extensions.DependencyInjection;
+using Aplicacao.UseCase.UseProduto.GetById;
 
 namespace Aplicacao;
 
@@ -23,5 +24,6 @@ public static class InjecaoDeDependenciaExtensao
     private static void AdicioneUseCase(IServiceCollection services)
     {
         services.AddScoped<IProdutoUseCase, ProdutoUseCase>();
+        services.AddScoped<IGetProdutoById, GetProdutoById>();
     }
 }
