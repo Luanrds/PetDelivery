@@ -1,4 +1,5 @@
 ﻿using Aplicacao.UseCase.UseProduto;
+using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
@@ -32,4 +33,17 @@ public class ProdutoController : PetDeliveryBaseController
 
 		return Ok(response);
 	}
+
+	[HttpDelete]
+	[Route("{id}")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> ExcluirProduto(
+		[FromServices] IExcluirProdutoUseCase produtoUseCase,
+		[FromRoute] long id)
+	{
+		await produtoUseCase.Execute(id);
+
+		return NoContent();
+	} 
 }

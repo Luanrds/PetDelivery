@@ -13,6 +13,13 @@ public class ProdutoRepository : IProdutoWriteOnly, IProdutoReadOnly
 
     public async Task Add(Produto produto) => await _dbContext.Produto.AddAsync(produto);
 
+	public async Task Excluir(long produtoId)
+	{
+		var produto = await _dbContext.Produto.FindAsync(produtoId);
+
+		_dbContext.Produto.Remove(produto!);
+	}
+
 	public Task<Produto?> GetById(long ProdutoId)
 	{
 		return _dbContext.Produto

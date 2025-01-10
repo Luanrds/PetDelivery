@@ -2,6 +2,7 @@
 using Aplicacao.Servicos;
 using Microsoft.Extensions.DependencyInjection;
 using Aplicacao.UseCase.UseProduto.GetById;
+using Aplicacao.UseCase.UseProduto.Excluir;
 
 namespace Aplicacao;
 
@@ -25,5 +26,6 @@ public static class InjecaoDeDependenciaExtensao
     {
         services.AddScoped<IProdutoUseCase, ProdutoUseCase>();
         services.AddScoped<IGetProdutoById, GetProdutoById>();
+        services.AddScoped<IExcluirProdutoUseCase, ExcluirProdutoUseCase>();
     }
 }
