@@ -1,4 +1,5 @@
 ﻿using Aplicacao.UseCase.UseProduto;
+using Aplicacao.UseCase.UseProduto.Atualizar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Microsoft.AspNetCore.Mvc;
@@ -45,5 +46,19 @@ public class ProdutoController : PetDeliveryBaseController
 		await produtoUseCase.Execute(id);
 
 		return NoContent();
-	} 
+	}
+
+	[HttpPut]
+	[Route("{id}")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> AtualizeProduto(
+		[FromServices] IAtualizeProdutoUseCase produtoUseCase,
+		[FromBody] RequestProdutoJson requisicao,
+		[FromRoute] long id)
+	{
+		await produtoUseCase.Execute(id, requisicao);
+
+		return NoContent();
+	}
 }

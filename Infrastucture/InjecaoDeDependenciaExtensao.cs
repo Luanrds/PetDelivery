@@ -38,6 +38,7 @@ public static class InjecaoDeDependenciaExtensao
 
         services.AddScoped<IProdutoWriteOnly, ProdutoRepository>();
         services.AddScoped<IProdutoReadOnly, ProdutoRepository>();
+        services.AddScoped<IProdutoUpdateOnly, ProdutoRepository>();
     }
 
     private static void AdicioneFluentMigrator_Npga(IServiceCollection services, IConfiguration configuration)

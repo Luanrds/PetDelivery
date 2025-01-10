@@ -5,13 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastucture.Repositorio.Repositorios;
 
-public class ProdutoRepository : IProdutoWriteOnly, IProdutoReadOnly
+public class ProdutoRepository : IProdutoWriteOnly, IProdutoReadOnly, IProdutoUpdateOnly
 {
     private readonly PetDeliveryDbContext _dbContext;
 
     public ProdutoRepository(PetDeliveryDbContext dbContext) => _dbContext = dbContext;
 
     public async Task Add(Produto produto) => await _dbContext.Produto.AddAsync(produto);
+
+	public void Atualize(Produto produto) => _dbContext.Produto.Update(produto);
 
 	public async Task Excluir(long produtoId)
 	{
