@@ -2,6 +2,7 @@
 using Aplicacao.UseCase.UseProduto.Atualizar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
+using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
@@ -33,6 +34,18 @@ public class ProdutoController : PetDeliveryBaseController
 		var response = await produtoUseCase.Execute(id);
 
 		return Ok(response);
+	}
+
+	[HttpGet]
+	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+
+	public async Task<IActionResult> ObtenhaProdutos(
+		[FromServices] IObtenhaTodosProdutos useCase)
+	{
+		var resposta = await useCase.Execute();
+
+		return Ok(resposta);
 	}
 
 	[HttpDelete]
