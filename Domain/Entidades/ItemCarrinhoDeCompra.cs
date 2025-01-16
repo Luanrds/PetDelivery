@@ -1,7 +1,7 @@
 ﻿namespace Dominio.Entidades;
 public class ItemCarrinhoDeCompra : EntidadeBase
 {
-	public long CarrinhoId { get; set; }  
+	public long CarrinhoId { get; set; }
 	public long ProdutoId { get; set; }
 	public int Quantidade { get; set; }
 	public decimal PrecoUnitario { get; set; }

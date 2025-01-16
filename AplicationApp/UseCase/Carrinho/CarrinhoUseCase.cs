@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Dominio.Entidades;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Produto;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
+using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.UseCase.Carrinho;
 public class CarrinhoUseCase : ICarrinhoUseCase
@@ -28,8 +30,52 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 		_mapper = mapper;
 	}
 
-	public Task<ResponseCarrinhoDeComprasJson> Execute(RequestItemCarrinhoJson request)
+	public async Task<ResponseCarrinhoDeComprasJson> Execute(RequestItemCarrinhoJson request)
+    {
+        Validate(request);
+
+        var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo() ?? new CarrinhoDeCompras
+        {
+            ItensCarrinho = new List<ItemCarrinhoDeCompra>()
+        };
+
+        var produto = await _produtoReadOnly.GetById(request.ProdutoId);
+
+        if (produto == null)
+        {
+            throw new NotFoundException($"Produto com ID {request.ProdutoId} não encontrado.");
+        }
+
+        var itemExistente = carrinho.ItensCarrinho
+            .FirstOrDefault(item => item.ProdutoId == request.ProdutoId);
+
+        if (itemExistente != null)
+        {
+            itemExistente.Quantidade += request.Quantidade;
+        }
+        else
+        {
+            carrinho.ItensCarrinho.Add(new ItemCarrinhoDeCompra
+            {
+                ProdutoId = request.ProdutoId,
+                Quantidade = request.Quantidade,
+                PrecoUnitario = produto.Valor,
+                Produto = produto
+            });
+        }
+
+        await _carrinhoWriteOnly.Add(carrinho);
+        await _unitOfWork.Commit();
+
+        return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
+    }
+
+
+	private static void Validate(RequestItemCarrinhoJson request)
 	{
-		throw new NotImplementedException();
+		if (request.Quantidade <= 0)
+		{
+			throw new ErrorOnValidationException(["A quantidade deve ser maior que zero."]);
+		}
 	}
 }
