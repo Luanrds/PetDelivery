@@ -49,25 +49,32 @@ public class CarrinhoUseCase : ICarrinhoUseCase
         var itemExistente = carrinho.ItensCarrinho
             .FirstOrDefault(item => item.ProdutoId == request.ProdutoId);
 
-        if (itemExistente != null)
-        {
-            itemExistente.Quantidade += request.Quantidade;
-        }
-        else
-        {
-            carrinho.ItensCarrinho.Add(new ItemCarrinhoDeCompra
-            {
-                ProdutoId = request.ProdutoId,
-                Quantidade = request.Quantidade,
-                PrecoUnitario = produto.Valor,
-                Produto = produto
-            });
-        }
+		if (itemExistente != null)
+		{
+			itemExistente.Quantidade += request.Quantidade;
+		}
+		else
+		{
+			var novoItem = new ItemCarrinhoDeCompra
+			{
+				ProdutoId = request.ProdutoId,
+				Quantidade = request.Quantidade,
+				PrecoUnitario = produto.Valor,
+			};
 
-        await _carrinhoWriteOnly.Add(carrinho);
+			carrinho.ItensCarrinho.Add(novoItem);
+		}
+
+		if (carrinho.Id == 0)
+		{
+			await _carrinhoWriteOnly.Add(carrinho);
+		}
+
         await _unitOfWork.Commit();
 
-        return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
+		var carrinhoCompleto = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(); 
+
+		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinhoCompleto);
     }
 
 

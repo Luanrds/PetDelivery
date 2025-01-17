@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dominio.Entidades;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
@@ -30,18 +31,11 @@ public class AutoMapping : Profile
         CreateMap<Dominio.Entidades.Produto, ResponseProdutoJson>()
             .ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id));
 
-		CreateMap<Dominio.Entidades.ItemCarrinhoDeCompra, ResponseCarrinhoDeComprasJson>()
-		   .ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id))
-		   .ForMember(dest => dest.Produto, config => config.MapFrom(source => source.Produto))
-		   .ForMember(dest => dest.Quantidade, config => config.MapFrom(source => source.Quantidade))
-		   .ForMember(dest => dest.SubTotal, config => config.MapFrom(source => source.CalcularSubTotal()));
+		CreateMap<ItemCarrinhoDeCompra, ResponseItemCarrinhoJson>()
+            .ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()));
 
-		CreateMap<Dominio.Entidades.CarrinhoDeCompras, List<ResponseCarrinhoDeComprasJson>>()
-			.ConvertUsing((source, destination, context) =>
-			{
-				return source.ItensCarrinho
-					.Select(item => context.Mapper.Map<ResponseCarrinhoDeComprasJson>(item))
-					.ToList();
-			});
+		CreateMap<CarrinhoDeCompras, ResponseCarrinhoDeComprasJson>()
+			.ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho))
+			.ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.ItensCarrinho.Sum(i => i.CalcularSubTotal())));
 	}
 }
