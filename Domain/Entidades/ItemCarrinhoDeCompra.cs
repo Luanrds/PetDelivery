@@ -6,7 +6,6 @@ public class ItemCarrinhoDeCompra : EntidadeBase
 	public int Quantidade { get; set; }
 	public decimal PrecoUnitario { get; set; }
 	public CarrinhoDeCompras Carrinho { get; set; } = new();
-	public Produto Produto { get; set; } = new();
 
 	public decimal CalcularSubTotal()
 	{

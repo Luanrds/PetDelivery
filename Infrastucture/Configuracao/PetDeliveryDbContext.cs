@@ -12,12 +12,6 @@ public class PetDeliveryDbContext(DbContextOptions options) : DbContext(options)
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PetDeliveryDbContext).Assembly);
-
-		modelBuilder.Entity<ItemCarrinhoDeCompra>()
-			.HasOne(i => i.Produto)
-			.WithMany()
-			.HasForeignKey(i => i.ProdutoId)
-			.OnDelete(DeleteBehavior.Restrict);
 	}
 }
 

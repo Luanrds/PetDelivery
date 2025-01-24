@@ -18,7 +18,6 @@ public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
 	{
 		return _dbContext.CarrinhoDeCompras
 			.Include(c => c.ItensCarrinho)
-			.ThenInclude(i => i.Produto)
 			.OrderByDescending(c => c.Id)
 			.FirstOrDefaultAsync();
 	}

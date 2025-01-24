@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Aplicacao.Validadores;
+using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
@@ -31,23 +32,23 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 	}
 
 	public async Task<ResponseCarrinhoDeComprasJson> Execute(RequestItemCarrinhoJson request)
-    {
-        Validate(request);
+	{
+		Validate(request);
 
-        var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo() ?? new CarrinhoDeCompras
-        {
-            ItensCarrinho = new List<ItemCarrinhoDeCompra>()
-        };
+		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo() ?? new CarrinhoDeCompras
+		{
+			ItensCarrinho = []
+		};
 
-        var produto = await _produtoReadOnly.GetById(request.ProdutoId);
+		var produto = await _produtoReadOnly.GetById(request.ProdutoId);
 
-        if (produto == null)
-        {
-            throw new NotFoundException($"Produto com ID {request.ProdutoId} não encontrado.");
-        }
+		if (produto == null || !produto.Disponivel)
+		{
+			throw new NotFoundException($"Produto com ID {request.ProdutoId} não encontrado ou não disponível.");
+		}
 
-        var itemExistente = carrinho.ItensCarrinho
-            .FirstOrDefault(item => item.ProdutoId == request.ProdutoId);
+		var itemExistente = carrinho.ItensCarrinho
+			.FirstOrDefault(item => item.ProdutoId == request.ProdutoId);
 
 		if (itemExistente != null)
 		{
@@ -70,19 +71,22 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 			await _carrinhoWriteOnly.Add(carrinho);
 		}
 
-        await _unitOfWork.Commit();
+		await _unitOfWork.Commit();
 
-		var carrinhoCompleto = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(); 
-
-		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinhoCompleto);
-    }
-
+		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
+	}
 
 	private static void Validate(RequestItemCarrinhoJson request)
 	{
-		if (request.Quantidade <= 0)
+		var validator = new CarrinhoValidator();
+
+		var result = validator.Validate(request);
+
+		if (result.IsValid == false)
 		{
-			throw new ErrorOnValidationException(["A quantidade deve ser maior que zero."]);
+			var mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
+
+			throw new ErrorOnValidationException(mensagensDeErro);
 		}
 	}
 }
