@@ -7,10 +7,10 @@ namespace Aplicacao.Servicos;
 
 public class AutoMapping : Profile
 {
-    public AutoMapping()
-    {
-        RequestToDomain();
-        DomainToResponse();
+	public AutoMapping()
+	{
+		RequestToDomain();
+		DomainToResponse();
 
 	}
 
@@ -27,15 +27,15 @@ public class AutoMapping : Profile
 	}
 
 	private void DomainToResponse()
-    {
-        CreateMap<Dominio.Entidades.Produto, ResponseProdutoJson>()
-            .ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id));
+	{
+		CreateMap<Dominio.Entidades.Produto, ResponseProdutoJson>()
+			.ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id));
 
 		CreateMap<ItemCarrinhoDeCompra, ResponseItemCarrinhoJson>()
 			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()));
 
 		CreateMap<CarrinhoDeCompras, ResponseCarrinhoDeComprasJson>()
-                .ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho)) // Mapear os itens do carrinho
-                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.ItensCarrinho.Sum(i => i.CalcularSubTotal()))); // Calcular o Total
+				.ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho)) // Mapear os itens do carrinho
+				.ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.ItensCarrinho.Sum(i => i.CalcularSubTotal()))); // Calcular o Total
 	}
 }
