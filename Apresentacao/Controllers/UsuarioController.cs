@@ -1,10 +1,10 @@
-﻿using Aplicacao.UseCase.UserUseCase;
+﻿using Aplicacao.UseCase.UseUsuario.Criar;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
-public class UserController : PetDeliveryBaseController
+public class UsuarioController : PetDeliveryBaseController
 {
 	[HttpPost]
 	[ProducesResponseType(typeof(ResponseUsuarioRegistradoJson), StatusCodes.Status201Created)]

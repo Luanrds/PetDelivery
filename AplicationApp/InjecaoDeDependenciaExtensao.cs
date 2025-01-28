@@ -1,12 +1,12 @@
-﻿using Aplicacao.UseCase.UseProduto;
-using Aplicacao.Servicos;
+﻿using Aplicacao.Servicos;
 using Microsoft.Extensions.DependencyInjection;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.Atualizar;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
-using Aplicacao.UseCase.UserUseCase;
 using Aplicacao.UseCase.Carrinho;
+using Aplicacao.UseCase.UseUsuario.Criar;
+using Aplicacao.UseCase.UseProduto.Criar;
 
 namespace Aplicacao;
 

@@ -1,5 +1,5 @@
-﻿using Aplicacao.UseCase.UseProduto;
-using Aplicacao.UseCase.UseProduto.Atualizar;
+﻿using Aplicacao.UseCase.UseProduto.Atualizar;
+using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;

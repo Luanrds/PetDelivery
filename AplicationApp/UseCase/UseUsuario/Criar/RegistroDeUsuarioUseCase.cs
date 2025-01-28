@@ -6,7 +6,7 @@ using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
 
-namespace Aplicacao.UseCase.UserUseCase;
+namespace Aplicacao.UseCase.UseUsuario.Criar;
 public class RegistroDeUsuarioUseCase : IRegistroDeUsuarioUseCase
 {
 	private readonly IMapper _mapper;
@@ -17,16 +17,16 @@ public class RegistroDeUsuarioUseCase : IRegistroDeUsuarioUseCase
 	public RegistroDeUsuarioUseCase(
 		IUsuarioWriteOnlyRepository writeOnlyRepository,
 		IUsuarioReadOnlyRepository readOnlyRepository,
-		IUnitOfWork unitOfWork, 
+		IUnitOfWork unitOfWork,
 		IMapper mapper)
-    {
+	{
 		_writeOnlyRepository = writeOnlyRepository;
 		_readOnlyRepository = readOnlyRepository;
 		_unitOfWork = unitOfWork;
-        _mapper = mapper;
-    }
+		_mapper = mapper;
+	}
 
-    public async Task<ResponseUsuarioRegistradoJson> Execute(RequestRegistroDeUsuarioJson request)
+	public async Task<ResponseUsuarioRegistradoJson> Execute(RequestRegistroDeUsuarioJson request)
 	{
 		Validate(request);
 
