@@ -5,6 +5,7 @@ using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.Atualizar;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
+using Aplicacao.UseCase.UserUseCase;
 using Aplicacao.UseCase.Carrinho;
 
 namespace Aplicacao;
@@ -33,5 +34,6 @@ public static class InjecaoDeDependenciaExtensao
         services.AddScoped<IExcluirProdutoUseCase, ExcluirProdutoUseCase>();
         services.AddScoped<IAtualizeProdutoUseCase, AtualizeProdutoUseCase>();
         services.AddScoped<ICarrinhoUseCase, CarrinhoUseCase>();
+        services.AddScoped<IRegistroDeUsuarioUseCase, RegistroDeUsuarioUseCase>();
     }
 }

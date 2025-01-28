@@ -14,6 +14,13 @@ public class AutoMapping : Profile
 
 	}
 
+    private void RequestToDomain()
+    {
+        CreateMap<RequestProdutoJson, Dominio.Entidades.Produto>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+		CreateMap<RequestRegistroDeUsuarioJson, Dominio.Entidades.Usuario>()
+			.ForMember(dest => dest.Senha, opt => opt.Ignore());
 	private void RequestToDomain()
 	{
 		CreateMap<RequestProdutoJson, Dominio.Entidades.Produto>()
@@ -26,6 +33,11 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.ProdutoId, opt => opt.MapFrom(src => src.ProdutoId)); // Associar ProdutoId
 	}
 
+    private void DomainToResponse()
+    {
+		CreateMap<Dominio.Entidades.Produto, ResponseProdutoJson>()
+            .ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id));
+	}
 	private void DomainToResponse()
 	{
 		CreateMap<Dominio.Entidades.Produto, ResponseProdutoJson>()
