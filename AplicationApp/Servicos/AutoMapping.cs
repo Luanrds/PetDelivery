@@ -38,5 +38,7 @@ public class AutoMapping : Profile
 		CreateMap<CarrinhoDeCompras, ResponseCarrinhoDeComprasJson>()
 			.ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho)) // Mapear os itens do carrinho
 			.ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.ItensCarrinho.Sum(i => i.CalcularSubTotal()))); // Calcular o Total
+
+		CreateMap<Usuario, ResponsePerfilUsuario>();
 	}
 }

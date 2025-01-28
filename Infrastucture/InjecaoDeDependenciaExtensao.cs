@@ -46,7 +46,6 @@ public static class InjecaoDeDependenciaExtensao
         services.AddScoped<IUsuarioWriteOnlyRepository, UsuarioRepository>();
         services.AddScoped<ICarrinhoReadOnly, CarrinhoRepository>();
         services.AddScoped<ICarrinhoWriteOnly, CarrinhoRepository>();
-
     }
 
     private static void AdicioneFluentMigrator_Npga(IServiceCollection services, IConfiguration configuration)

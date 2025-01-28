@@ -21,7 +21,6 @@
   <ItemGroup>
     <Folder Include="UseCase\UseUsuario\Buscar\" />
     <Folder Include="UseCase\UseUsuario\Deletar\" />
-    <Folder Include="UseCase\UseUsuario\BuscarPorEmail\" />
   </ItemGroup>
 
 </Project>

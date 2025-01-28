@@ -7,6 +7,7 @@ using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Aplicacao.UseCase.Carrinho;
 using Aplicacao.UseCase.UseUsuario.Criar;
 using Aplicacao.UseCase.UseProduto.Criar;
+using Aplicacao.UseCase.UseUsuario.BuscarPorEmail;
 
 namespace Aplicacao;
 
@@ -35,5 +36,6 @@ public static class InjecaoDeDependenciaExtensao
         services.AddScoped<IAtualizeProdutoUseCase, AtualizeProdutoUseCase>();
         services.AddScoped<ICarrinhoUseCase, CarrinhoUseCase>();
         services.AddScoped<IRegistroDeUsuarioUseCase, RegistroDeUsuarioUseCase>();
+        services.AddScoped<IBucarPerfilUsuarioUseCase, BuscarPerfilUsuarioUseCase>();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Aplicacao.UseCase.UseUsuario.Criar;
+﻿using Aplicacao.UseCase.UseUsuario.BuscarPorEmail;
+using Aplicacao.UseCase.UseUsuario.Criar;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
@@ -15,5 +16,18 @@ public class UsuarioController : PetDeliveryBaseController
 		var result = await useCase.Execute(request);
 
 		return Created(string.Empty, result);
+	}
+
+	[HttpGet]
+	[Route("{id}")]
+	[ProducesResponseType(typeof(ResponsePerfilUsuario), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> GetUserProfile(
+		[FromServices] IBucarPerfilUsuarioUseCase useCase,
+		[FromRoute] long id)
+	{
+		var result = await useCase.Execute(id);
+
+		return Ok(result);
 	}
 }
