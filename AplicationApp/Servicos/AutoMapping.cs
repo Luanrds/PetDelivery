@@ -17,11 +17,14 @@ public class AutoMapping : Profile
     {
         CreateMap<RequestProdutoJson, Dominio.Entidades.Produto>()
             .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+		CreateMap<RequestRegistroDeUsuarioJson, Dominio.Entidades.Usuario>()
+			.ForMember(dest => dest.Senha, opt => opt.Ignore());
 	}
 
     private void DomainToResponse()
     {
-        CreateMap<Dominio.Entidades.Produto, ResponseProdutoJson>()
+		CreateMap<Dominio.Entidades.Produto, ResponseProdutoJson>()
             .ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id));
-    }
+	}
 }
