@@ -18,17 +18,4 @@ public class CarrinhoController : PetDeliveryBaseController
 
 		return Created(string.Empty, resposta);
 	}
-
-	//[HttpGet]
-	//[Route("")]
-	//[ProducesResponseType(typeof(ResponseCarrinhoDeComprasJson), StatusCodes.Status200OK)]
-	//[ProducesResponseType(StatusCodes.Status404NotFound)]
-	//public async Task<IActionResult> ObterCarrinhoAtivo(
-	//	[FromServices] IObterCarrinhoUseCase useCase)
-	//{
-	//	var carrinho = await useCase.ObterCarrinhoAtivo();
-
-	//	return Ok(carrinho);
-	//}
-
 }

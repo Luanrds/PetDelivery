@@ -17,9 +17,6 @@ public class AutoMapping : Profile
 		CreateMap<RequestProdutoJson, Dominio.Entidades.Produto>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
-		CreateMap<RequestRegistroDeUsuarioJson, Dominio.Entidades.Usuario>()
-			.ForMember(dest => dest.Senha, opt => opt.Ignore());
-
 		CreateMap<RequestItemCarrinhoJson, Dominio.Entidades.ItemCarrinhoDeCompra>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore()) // Ignorar o Id do ItemCarrinho
 			.ForMember(dest => dest.PrecoUnitario, opt => opt.Ignore()) // Ignorar preço unitário, que é calculado
@@ -38,7 +35,5 @@ public class AutoMapping : Profile
 		CreateMap<CarrinhoDeCompras, ResponseCarrinhoDeComprasJson>()
 			.ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho)) // Mapear os itens do carrinho
 			.ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.ItensCarrinho.Sum(i => i.CalcularSubTotal()))); // Calcular o Total
-
-		CreateMap<Usuario, ResponsePerfilUsuario>();
 	}
 }

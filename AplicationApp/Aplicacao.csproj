@@ -18,9 +18,4 @@
     <ProjectReference Include="..\PetDelivery.Exceptions\PetDelivery.Exceptions.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UseCase\UseUsuario\Buscar\" />
-    <Folder Include="UseCase\UseUsuario\Deletar\" />
-  </ItemGroup>
-
 </Project>
