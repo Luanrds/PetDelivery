@@ -1,8 +1,6 @@
-﻿using Dominio.Entidades;
-using Dominio.Repositorios;
+﻿using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Produto;
-using Dominio.Repositorios.Usuario;
 using FluentMigrator.Runner;
 using Infrastucture.Configuracao;
 using Infrastucture.Extensoes;
@@ -42,8 +40,6 @@ public static class InjecaoDeDependenciaExtensao
         services.AddScoped<IProdutoWriteOnly, ProdutoRepository>();
         services.AddScoped<IProdutoReadOnly, ProdutoRepository>();
         services.AddScoped<IProdutoUpdateOnly, ProdutoRepository>();
-        services.AddScoped<IUsuarioReadOnlyRepository, UsuarioRepository>();
-        services.AddScoped<IUsuarioWriteOnlyRepository, UsuarioRepository>();
         services.AddScoped<ICarrinhoReadOnly, CarrinhoRepository>();
         services.AddScoped<ICarrinhoWriteOnly, CarrinhoRepository>();
     }

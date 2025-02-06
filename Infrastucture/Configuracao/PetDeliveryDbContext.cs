@@ -8,7 +8,6 @@ public class PetDeliveryDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<Produto> Produto { get; set; }
     public DbSet<CarrinhoDeCompras> CarrinhoDeCompras { get; set; }
 	public DbSet<ItemCarrinhoDeCompra> ItemCarrinhoDeCompra { get; set; }
-    public DbSet<Usuario> Usuario { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
