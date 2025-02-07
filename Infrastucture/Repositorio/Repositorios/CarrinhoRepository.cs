@@ -21,4 +21,25 @@ public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
 			.OrderByDescending(c => c.Id)
 			.FirstOrDefaultAsync();
 	}
+
+    public async Task<ItemCarrinhoDeCompra?> ObterItemCarrinhoPorId(long itemId)
+    {
+		return await _dbContext.ItemCarrinhoDeCompra
+			.Include(i => i.Carrinho)
+			.FirstOrDefaultAsync(item => item.Id == itemId);
+    }
+
+    public async Task RemoverItemCarrinho(long itemId)
+    {
+		var item = await _dbContext.ItemCarrinhoDeCompra.FindAsync(itemId);
+
+		_dbContext.ItemCarrinhoDeCompra.Remove(item!);
+    }
+
+    public async Task Excluir(long produtoId)
+    {
+        var produto = await _dbContext.Produto.FindAsync(produtoId);
+
+        _dbContext.Produto.Remove(produto!);
+    }
 }

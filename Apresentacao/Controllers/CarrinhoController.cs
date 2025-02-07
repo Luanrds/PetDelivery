@@ -1,4 +1,5 @@
 ﻿using Aplicacao.UseCase.Carrinho;
+using Aplicacao.UseCase.Carrinho.Atualizar;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
@@ -18,4 +19,18 @@ public class CarrinhoController : PetDeliveryBaseController
 
 		return Created(string.Empty, resposta);
 	}
+
+    [HttpPut]
+    [Route("item/{itemId}")]
+    [ProducesResponseType(typeof(ResponseCarrinhoDeComprasJson), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AtualizarQuantidadeItemCarrinho(
+        [FromServices] IAtualizeQtdItemCarrinhoUseCase useCase,
+        [FromRoute] long itemId,
+        [FromBody] RequestAtualizarItemCarrinhoJson request)
+    {
+        var resposta = await useCase.AtualizeQuantidade(itemId, request);
+
+        return Ok(resposta);
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using Aplicacao.Servicos;
 using Aplicacao.UseCase.Carrinho;
+using Aplicacao.UseCase.Carrinho.Atualizar;
 using Aplicacao.UseCase.UseProduto.Atualizar;
 using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
@@ -29,9 +30,10 @@ public static class InjecaoDeDependenciaExtensao
     {
         services.AddScoped<IProdutoUseCase, ProdutoUseCase>();
         services.AddScoped<IGetProdutoById, GetProdutoById>();
-        services.AddScoped<IObtenhaTodosProdutos, ObtenhaTodosProdutos>(); ;
+        services.AddScoped<IObtenhaTodosProdutos, ObtenhaTodosProdutos>();
         services.AddScoped<IExcluirProdutoUseCase, ExcluirProdutoUseCase>();
         services.AddScoped<IAtualizeProdutoUseCase, AtualizeProdutoUseCase>();
         services.AddScoped<ICarrinhoUseCase, CarrinhoUseCase>();
+        services.AddScoped<IAtualizeQtdItemCarrinhoUseCase, AtualizeQtdItemCarrinhoUseCase>();
     }
 }
