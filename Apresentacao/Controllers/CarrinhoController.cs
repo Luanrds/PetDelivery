@@ -1,5 +1,8 @@
-﻿using Aplicacao.UseCase.Carrinho;
-using Aplicacao.UseCase.Carrinho.Atualizar;
+﻿using Aplicacao.UseCase.Carrinho.Atualizar;
+using Aplicacao.UseCase.Carrinho.Buscar;
+using Aplicacao.UseCase.Carrinho.Criar;
+using Aplicacao.UseCase.Carrinho.LimparCarrinho;
+using Aplicacao.UseCase.Carrinho.RemoverItem;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
@@ -20,7 +23,18 @@ public class CarrinhoController : PetDeliveryBaseController
 		return Created(string.Empty, resposta);
 	}
 
-    [HttpPut]
+	[HttpGet]
+	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> ObterCarrinho(
+	[FromServices] IObterCarrinhoUseCase useCase)
+	{
+		var resposta = await useCase.Execute();
+
+		return Ok(resposta);
+	}
+
+	[HttpPut]
     [Route("item/{itemId}")]
     [ProducesResponseType(typeof(ResponseCarrinhoDeComprasJson), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status400BadRequest)]
@@ -34,15 +48,23 @@ public class CarrinhoController : PetDeliveryBaseController
         return Ok(resposta);
     }
 
-    [HttpGet]
-    [Route("")]
-    [ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ObterCarrinho(
-        [FromServices] IObterCarrinhoUseCase useCase)
-    {
-        var resposta = await useCase.Executar();
+    [HttpDelete]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<IActionResult> LimparCarrinho(
+        [FromServices] ILimpeCarrinhoUseCase useCase)
+	{
+		await useCase.ExecuteLimpar();
+		return NoContent();
+	}
 
-        return Ok(resposta);
-    }
+	[HttpDelete]
+	[Route("item/{itemId}")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<IActionResult> RemoverItemCarrinho(
+	[FromServices] IRemoveItemCarrinhoUseCase useCase,
+	[FromRoute] long itemId)
+	{
+		await useCase.ExecuteRemover(itemId);
+		return NoContent();
+	}
 }

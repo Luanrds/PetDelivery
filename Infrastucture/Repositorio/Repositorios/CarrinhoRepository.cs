@@ -29,14 +29,23 @@ public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
 			.FirstOrDefaultAsync(item => item.Id == itemId);
     }
 
-    public async Task RemoverItemCarrinho(long itemId)
-    {
+	public async Task LimparCarrinho(CarrinhoDeCompras carrinho)
+	{
+		_dbContext.ItemCarrinhoDeCompra.RemoveRange(carrinho.ItensCarrinho);
+		await _dbContext.SaveChangesAsync();
+	}
+
+	public async Task RemoverItemCarrinho(long itemId)
+	{
 		var item = await _dbContext.ItemCarrinhoDeCompra.FindAsync(itemId);
 
-		_dbContext.ItemCarrinhoDeCompra.Remove(item!);
-    }
+		if (item is not null)
+		{
+			_dbContext.ItemCarrinhoDeCompra.Remove(item);
+		}
+	}
 
-    public async Task Excluir(long produtoId)
+	public async Task Excluir(long produtoId)
     {
         var produto = await _dbContext.Produto.FindAsync(produtoId);
 

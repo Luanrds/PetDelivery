@@ -4,5 +4,6 @@ namespace Dominio.Repositorios.Carrinho;
 public interface ICarrinhoWriteOnly
 {
 	Task Add(CarrinhoDeCompras carrinho);
-    Task RemoverItemCarrinho(long item);
+	Task LimparCarrinho(CarrinhoDeCompras carrinho);
+	Task RemoverItemCarrinho(long item);
 }
