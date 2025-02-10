@@ -14,10 +14,10 @@ public class AutoMapping : Profile
 
 	private void RequestToDomain()
 	{
-		CreateMap<RequestProdutoJson, Dominio.Entidades.Produto>()
+		CreateMap<RequestProdutoJson,Produto>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
-		CreateMap<RequestItemCarrinhoJson, Dominio.Entidades.ItemCarrinhoDeCompra>()
+		CreateMap<RequestItemCarrinhoJson, ItemCarrinhoDeCompra>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore()) // Ignorar o Id do ItemCarrinho
 			.ForMember(dest => dest.PrecoUnitario, opt => opt.Ignore()) // Ignorar preço unitário, que é calculado
 			.ForMember(dest => dest.Carrinho, opt => opt.Ignore()) // Ignorar Carrinho, pois é atribuído posteriormente
@@ -26,7 +26,7 @@ public class AutoMapping : Profile
 
 	private void DomainToResponse()
 	{
-		CreateMap<Dominio.Entidades.Produto, ResponseProdutoJson>()
+		CreateMap<Produto, ResponseProdutoJson>()
 			.ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id));
 
 		CreateMap<ItemCarrinhoDeCompra, ResponseItemCarrinhoJson>()
