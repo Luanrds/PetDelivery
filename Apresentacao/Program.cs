@@ -1,7 +1,7 @@
 using Aplicacao;
-using Infrastucture;
-using Infrastucture.Extensoes;
-using Infrastucture.Migrations;
+using Infraestrutura;
+using Infraestrutura.Extensoes;
+using Infraestrutura.Migrations;
 using PetDelivery.API.Conversoes;
 using PetDelivery.API.Filtros;
 
