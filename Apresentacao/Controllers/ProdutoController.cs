@@ -18,9 +18,9 @@ public class ProdutoController : PetDeliveryBaseController
 		[FromServices] IProdutoUseCase produtoUseCase,
 		[FromBody] RequestProdutoJson request)
 	{
-		var response = await produtoUseCase.CrieProduto(request);
+		var resposta = await produtoUseCase.CrieProduto(request);
 
-		return Created(string.Empty, response);
+		return Created(string.Empty, resposta);
 	}
 
 	[HttpGet]
