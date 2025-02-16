@@ -37,6 +37,7 @@ public class ProdutoController : PetDeliveryBaseController
 	}
 
 	[HttpGet]
+	[Route("produtos")]
 	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 
