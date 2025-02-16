@@ -18,7 +18,20 @@ builder.Services.AdicioneInfraestrutura(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddRouting(options => options.LowercaseUrls = true);    
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+var corsPolicy = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(name: corsPolicy,
+		policy =>
+		{
+			policy.WithOrigins("http://127.0.0.1:5500") // Adicione a origem do seu frontend
+				  .AllowAnyMethod()
+				  .AllowAnyHeader();
+		});
+});
 
 var app = builder.Build();
 
@@ -28,6 +41,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(corsPolicy);
 
 app.UseHttpsRedirection();
 
