@@ -9,6 +9,7 @@ using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
+using Aplicacao.UseCase.UseUsuario.Criar;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aplicacao;
@@ -31,6 +32,7 @@ public static class InjecaoDeDependenciaExtensao
 
 	private static void AdicioneUseCase(IServiceCollection services)
 	{
+		services.AddScoped<IUsuarioUseCase, UsuarioUseCase>();
 		services.AddScoped<IProdutoUseCase, ProdutoUseCase>();
 		services.AddScoped<IGetProdutoById, GetProdutoById>();
 		services.AddScoped<IObtenhaTodosProdutos, ObtenhaTodosProdutos>();

@@ -1,6 +1,7 @@
 ﻿using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Produto;
+using Dominio.Repositorios.Usuario;
 using FluentMigrator.Runner;
 using Infraestrutura.Configuracao;
 using Infraestrutura.Extensoes;
@@ -37,6 +38,7 @@ public static class InjecaoDeDependenciaExtensao
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        services.AddScoped<IUsuarioWriteOnlyRepository, UsuarioRepository>();
         services.AddScoped<IProdutoWriteOnly, ProdutoRepository>();
         services.AddScoped<IProdutoReadOnly, ProdutoRepository>();
         services.AddScoped<IProdutoUpdateOnly, ProdutoRepository>();
