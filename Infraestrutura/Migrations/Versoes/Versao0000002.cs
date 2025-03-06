@@ -2,17 +2,15 @@
 
 namespace Infraestrutura.Migrations.Versoes;
 
-[Migration(VersoesDeBancoDeDados.TABLE_CARRINHO, "Criar tabelas para CarrinhoDeCompras e ItemCarrinhoDeCompra")]
+[Migration(VersoesDeBancoDeDados.TABLE_USUARIO, "Criar tabelas para usuarios")]
 public class Versao0000002 : VersaoBase
 {
 	public override void Up()
 	{
-		CreateTable("CarrinhoDeCompras");
-
-		CreateTable("ItemCarrinhoDeCompra")
-			.WithColumn("CarrinhoId").AsInt64().NotNullable().ForeignKey("CarrinhoDeCompras", "Id")
-			.WithColumn("ProdutoId").AsInt64().NotNullable().ForeignKey("Produto", "Id")
-			.WithColumn("Quantidade").AsInt32().NotNullable()
-			.WithColumn("PrecoUnitario").AsDecimal().NotNullable();
+		CreateTable("Usuario")
+			.WithColumn("Nome").AsString(255).NotNullable()
+			.WithColumn("Email").AsString(255).NotNullable().Unique()
+			.WithColumn("Senha").AsString(2000).NotNullable()
+			.WithColumn("DataNascimento").AsDateTime().Nullable();
 	}
 }

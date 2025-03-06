@@ -4,9 +4,11 @@ namespace Dominio.Entidades;
 
 public class Pagamento : EntidadeBase
 {
-	public long PedidoId {  get; set; }
+	public long PedidoId { get; set; }
 	public MetodoPagamento Metodo { get; set; } = new();
-	public string Status { get; set; } = string.Empty;
+	public StatusPagamento Status { get; set; } = new();
 	public decimal Valor { get; set; }
 	public DateTime DataPagamento { get; set; } = DateTime.UtcNow;
+
+	public Pedido Pedido { get; set; } = new();
 }

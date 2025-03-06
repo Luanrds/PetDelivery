@@ -2,6 +2,7 @@
 using Aplicacao.UseCase.Carrinho.Atualizar;
 using Aplicacao.UseCase.Carrinho.Buscar;
 using Aplicacao.UseCase.Carrinho.Criar;
+using Aplicacao.UseCase.Carrinho.Limpar;
 using Aplicacao.UseCase.Carrinho.LimparCarrinho;
 using Aplicacao.UseCase.Carrinho.RemoverItem;
 using Aplicacao.UseCase.UseProduto.Atualizar;

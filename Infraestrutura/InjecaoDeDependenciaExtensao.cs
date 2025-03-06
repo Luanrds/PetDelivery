@@ -39,6 +39,7 @@ public static class InjecaoDeDependenciaExtensao
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddScoped<IUsuarioWriteOnlyRepository, UsuarioRepository>();
+        services.AddScoped<IUsuarioReadOnly, UsuarioRepository>();
         services.AddScoped<IProdutoWriteOnly, ProdutoRepository>();
         services.AddScoped<IProdutoReadOnly, ProdutoRepository>();
         services.AddScoped<IProdutoUpdateOnly, ProdutoRepository>();

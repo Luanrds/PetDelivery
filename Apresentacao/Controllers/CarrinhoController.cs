@@ -24,36 +24,38 @@ public class CarrinhoController : PetDeliveryBaseController
 	}
 
 	[HttpGet]
-	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseCarrinhoDeComprasJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> ObterCarrinho(
-	[FromServices] IObterCarrinhoUseCase useCase)
+		[FromServices] IObterCarrinhoUseCase useCase,
+		[FromQuery] long usuarioId)
 	{
-		var resposta = await useCase.Execute();
+		var resposta = await useCase.Execute(usuarioId);
 
 		return Ok(resposta);
 	}
 
 	[HttpPut]
-    [Route("item/{itemId}")]
-    [ProducesResponseType(typeof(ResponseCarrinhoDeComprasJson), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AtualizarQuantidadeItemCarrinho(
-        [FromServices] IAtualizeQtdItemCarrinhoUseCase useCase,
-        [FromRoute] long itemId,
-        [FromBody] RequestAtualizarItemCarrinhoJson request)
-    {
-        var resposta = await useCase.AtualizeQuantidade(itemId, request);
+	[Route("item/{itemId}")]
+	[ProducesResponseType(typeof(ResponseCarrinhoDeComprasJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> AtualizarQuantidadeItemCarrinho(
+		[FromServices] IAtualizeQtdItemCarrinhoUseCase useCase,
+		[FromRoute] long itemId,
+		[FromBody] RequestAtualizarItemCarrinhoJson request)
+	{
+		var resposta = await useCase.AtualizeQuantidade(itemId, request);
 
-        return Ok(resposta);
-    }
+		return Ok(resposta);
+	}
 
-    [HttpDelete]
+	[HttpDelete]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<IActionResult> LimparCarrinho(
-        [FromServices] ILimpeCarrinhoUseCase useCase)
+		[FromServices] ILimpeCarrinhoUseCase useCase,
+		[FromQuery] long usuarioId)
 	{
-		await useCase.ExecuteLimpar();
+		await useCase.ExecuteLimpar(usuarioId);
 		return NoContent();
 	}
 
@@ -62,9 +64,10 @@ public class CarrinhoController : PetDeliveryBaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<IActionResult> RemoverItemCarrinho(
 	[FromServices] IRemoveItemCarrinhoUseCase useCase,
-	[FromRoute] long itemId)
+	[FromRoute] long itemId,
+	[FromQuery] long usuarioId)
 	{
-		await useCase.ExecuteRemover(itemId);
+		await useCase.ExecuteRemover(itemId, usuarioId);
 		return NoContent();
 	}
 }

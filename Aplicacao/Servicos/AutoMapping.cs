@@ -17,14 +17,16 @@ public class AutoMapping : Profile
 		CreateMap<RequestUsuarioRegistroJson, Usuario>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
-		CreateMap<RequestProdutoJson,Produto>()
+		CreateMap<RequestProdutoJson, Produto>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
 		CreateMap<RequestItemCarrinhoJson, ItemCarrinhoDeCompra>()
-			.ForMember(dest => dest.Id, opt => opt.Ignore()) // Ignorar o Id do ItemCarrinho
-			.ForMember(dest => dest.PrecoUnitario, opt => opt.Ignore()) // Ignorar preço unitário, que é calculado
-			.ForMember(dest => dest.Carrinho, opt => opt.Ignore()) // Ignorar Carrinho, pois é atribuído posteriormente
-			.ForMember(dest => dest.ProdutoId, opt => opt.MapFrom(src => src.ProdutoId)); // Associar ProdutoId
+			.ForMember(dest => dest.Id, opt => opt.Ignore())
+			.ForMember(dest => dest.Carrinho, opt => opt.Ignore())
+			.ForMember(dest => dest.ProdutoId, opt => opt.MapFrom(src => src.ProdutoId));
+
+		CreateMap<RequestAtualizarItemCarrinhoJson, ItemCarrinhoDeCompra>()
+			.ForMember(dest => dest.Quantidade, opt => opt.MapFrom(src => src.Quantidade));
 	}
 
 	private void DomainToResponse()

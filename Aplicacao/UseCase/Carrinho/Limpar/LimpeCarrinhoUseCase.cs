@@ -1,7 +1,9 @@
-﻿using Dominio.Repositorios.Carrinho;
+﻿using Aplicacao.UseCase.Carrinho.LimparCarrinho;
 using Dominio.Repositorios;
+using Dominio.Repositorios.Carrinho;
 
-namespace Aplicacao.UseCase.Carrinho.LimparCarrinho;
+namespace Aplicacao.UseCase.Carrinho.Limpar;
+
 public class LimpeCarrinhoUseCase : ILimpeCarrinhoUseCase
 {
 	private readonly ICarrinhoWriteOnly _carrinhoWriteOnly;
@@ -15,12 +17,14 @@ public class LimpeCarrinhoUseCase : ILimpeCarrinhoUseCase
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task ExecuteLimpar()
+	public async Task ExecuteLimpar(long usuarioId)
 	{
-		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo();
+		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioId);
 
-		if(carrinho is not null)
+		if (carrinho != null)
+		{
 			await _carrinhoWriteOnly.LimparCarrinho(carrinho);
 			await _unitOfWork.Commit();
+		}
 	}
 }

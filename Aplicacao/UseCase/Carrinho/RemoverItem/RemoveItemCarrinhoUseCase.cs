@@ -3,6 +3,7 @@ using Dominio.Repositorios;
 using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.UseCase.Carrinho.RemoverItem;
+
 public class RemoveItemCarrinhoUseCase : IRemoveItemCarrinhoUseCase
 {
 	private readonly ICarrinhoWriteOnly _carrinhoWriteOnly;
@@ -19,16 +20,16 @@ public class RemoveItemCarrinhoUseCase : IRemoveItemCarrinhoUseCase
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task ExecuteRemover(long itemId)
+	public async Task ExecuteRemover(long itemId, long usuarioId)
 	{
-		var item = await _carrinhoReadOnly.ObterItemCarrinhoPorId(itemId);
+		var item = await _carrinhoReadOnly.ObterItemCarrinhoPorId(itemId, usuarioId);
 
 		if (item == null)
 		{
 			throw new NotFoundException("Item não encontrado.");
 		}
 
-		await _carrinhoWriteOnly.RemoverItemCarrinho(item.Id);
+		await _carrinhoWriteOnly.RemoverItemCarrinho(item.Id, usuarioId);
 		await _unitOfWork.Commit();
 	}
 }
