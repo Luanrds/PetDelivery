@@ -18,8 +18,7 @@ public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
 	{
 		return await _dbContext.CarrinhoDeCompras
 			.Include(c => c.ItensCarrinho)
-			.Include(c => c.Usuario)
-			.Where(c => c.Usuario.Id == usuarioId)
+			.Where(c => c.UsuarioId == usuarioId)
 			.OrderByDescending(c => c.Id)
 			.FirstOrDefaultAsync();
 	}
@@ -28,8 +27,7 @@ public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
 	{
 		return await _dbContext.ItemCarrinhoDeCompra
 			.Include(i => i.Carrinho)
-			.Include(i => i.Carrinho.Usuario)
-			.Where(i => i.Id == itemId && i.Carrinho.Usuario.Id == usuarioId)
+			.Where(i => i.Id == itemId && i.Carrinho.UsuarioId == usuarioId)
 			.FirstOrDefaultAsync();
 	}
 
@@ -43,8 +41,7 @@ public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
 	{
 		var item = await _dbContext.ItemCarrinhoDeCompra
 			.Include(i => i.Carrinho)
-			.Include(i => i.Carrinho.Usuario)
-			.Where(i => i.Id == itemId && i.Carrinho.Usuario.Id == usuarioId)
+			.Where(i => i.Id == itemId && i.Carrinho.UsuarioId == usuarioId)
 			.FirstOrDefaultAsync();
 
 		if (item != null)

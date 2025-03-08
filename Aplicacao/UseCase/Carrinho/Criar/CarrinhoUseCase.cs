@@ -46,7 +46,7 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId)
 			?? new CarrinhoDeCompras
 			{
-				Usuario = usuario,
+				UsuarioId = request.UsuarioId,
 				ItensCarrinho = []
 			};
 
