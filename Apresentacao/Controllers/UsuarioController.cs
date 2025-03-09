@@ -1,8 +1,10 @@
-﻿using Aplicacao.UseCase.UseUsuario.Atualizar;
+﻿using Aplicacao.UseCase.UseUsuario.AlterarSenha;
+using Aplicacao.UseCase.UseUsuario.Atualizar;
 using Aplicacao.UseCase.UseUsuario.Buscar;
 using Aplicacao.UseCase.UseUsuario.Criar;
 using Aplicacao.UseCase.UseUsuario.Excluir;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.Communication;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
@@ -54,6 +56,19 @@ public class UsuarioController : PetDeliveryBaseController
 			[FromRoute] long id)
 	{
 		await excluirUsuarioUseCase.Execute(id);
+
+		return NoContent();
+	}
+
+	[HttpPut("{id}/senha")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> AlterarSenha(
+		[FromServices] IAlterarSenhaUsuarioUseCase alterarSenhaUsuarioUseCase,
+		[FromRoute] long id,
+		[FromBody] RequestAlterarSenhaUsuarioJson request)
+	{
+		await alterarSenhaUsuarioUseCase.Execute(id, request);
 
 		return NoContent();
 	}
