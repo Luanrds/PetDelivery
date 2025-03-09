@@ -1,8 +1,6 @@
-﻿namespace Dominio.Entidades;
-
-public class Endereco : EntidadeBase
+﻿namespace PetDelivery.Communication.Request;
+public class RequestAtualizarEnderecoJson
 {
-	public long UsuarioId { get; set; }
 	public string Rua { get; set; } = string.Empty;
 	public string Bairro { get; set; } = string.Empty;
 	public string Numero { get; set; } = string.Empty;

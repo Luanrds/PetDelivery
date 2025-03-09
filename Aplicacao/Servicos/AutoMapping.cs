@@ -20,6 +20,9 @@ public class AutoMapping : Profile
 		CreateMap<RequestAtualizarUsuarioJson, Usuario>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
+		CreateMap<RequestEnderecoJson, Endereco>()
+					.ForMember(dest => dest.Id, opt => opt.Ignore())
+					.ForMember(dest => dest.UsuarioId, opt => opt.MapFrom(src => src.UsuarioId));
 		CreateMap<RequestProdutoJson, Produto>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
@@ -34,6 +37,8 @@ public class AutoMapping : Profile
 	private void DomainToResponse()
 	{
 		CreateMap<Usuario, ResponseUsuarioJson>();
+
+		CreateMap<Endereco, ResponseEnderecoJson>();
 
 		CreateMap<Produto, ResponseProdutoJson>()
 			.ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id));
