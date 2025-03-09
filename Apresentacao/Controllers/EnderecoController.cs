@@ -1,4 +1,5 @@
-﻿using Aplicacao.UseCase.UseEndereco.Buscar;
+﻿using Aplicacao.UseCase.UseEndereco.Atualizar;
+using Aplicacao.UseCase.UseEndereco.Buscar;
 using Aplicacao.UseCase.UseEndereco.Criar;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
@@ -30,5 +31,18 @@ public class EnderecoController : PetDeliveryBaseController
 		IEnumerable<ResponseEnderecoJson> response = await useCase.Execute(usuarioId);
 
 		return Ok(response);
+	}
+
+	[HttpPut("{id}")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> Atualize(
+		[FromServices] IAtualizeEnderecoUseCase useCase,
+		[FromBody] RequestAtualizarEnderecoJson request,
+		[FromRoute] long id)
+	{
+		await useCase.Execute(id, request);
+
+		return NoContent();
 	}
 }

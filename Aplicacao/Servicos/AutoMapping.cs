@@ -23,6 +23,10 @@ public class AutoMapping : Profile
 		CreateMap<RequestEnderecoJson, Endereco>()
 					.ForMember(dest => dest.Id, opt => opt.Ignore())
 					.ForMember(dest => dest.UsuarioId, opt => opt.MapFrom(src => src.UsuarioId));
+
+		CreateMap<RequestAtualizarEnderecoJson, Endereco>()
+		   .ForMember(dest => dest.Id, opt => opt.Ignore());
+
 		CreateMap<RequestProdutoJson, Produto>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 

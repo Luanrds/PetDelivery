@@ -11,6 +11,10 @@ public class EnderecoRepository(PetDeliveryDbContext dbContext) : IEnderecoWrite
 
 	public async Task Add(Endereco endereco) => await _dbContext.Endereco.AddAsync(endereco);
 
+	public async Task<Endereco?> GetById(long id) => await _dbContext.Endereco.FindAsync(id);
+
 	public async Task<IEnumerable<Endereco>> GetByUsuarioId(long usuarioId) =>
 		await _dbContext.Endereco.Where(e => e.UsuarioId == usuarioId).ToListAsync();
+
+	public void Atualize(Endereco endereco) => _dbContext.Endereco.Update(endereco);
 }

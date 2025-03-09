@@ -12,11 +12,9 @@ public class Versao0000003 : VersaoBase
 			.WithColumn("UsuarioId").AsInt64().NotNullable().ForeignKey("Usuario", "Id")
 			.WithColumn("Rua").AsString(255).NotNullable()
 			.WithColumn("Numero").AsString(50).NotNullable()
-			.WithColumn("Complemento").AsString(255).Nullable()
 			.WithColumn("Bairro").AsString(255).NotNullable()
 			.WithColumn("Cidade").AsString(255).NotNullable()
 			.WithColumn("Estado").AsString(50).NotNullable()
-			.WithColumn("CEP").AsString(20).NotNullable()
-			.WithColumn("Pais").AsString(50).Nullable();
+			.WithColumn("CEP").AsString(20).NotNullable();
 	}
 }
