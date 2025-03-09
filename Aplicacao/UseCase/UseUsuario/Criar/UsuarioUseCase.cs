@@ -11,11 +11,11 @@ namespace Aplicacao.UseCase.UseUsuario.Criar;
 
 public class UsuarioUseCase : IUsuarioUseCase
 {
-	private readonly IUsuarioWriteOnlyRepository _writeOnly;
+	private readonly IUsuarioWriteOnly _writeOnly;
 	private readonly IMapper _mapper;
 	private readonly IUnitOfWork _unitOfWork;
 
-	public UsuarioUseCase(IUsuarioWriteOnlyRepository writeOnly, IMapper mapper, IUnitOfWork unitOfWork)
+	public UsuarioUseCase(IUsuarioWriteOnly writeOnly, IMapper mapper, IUnitOfWork unitOfWork)
     {
         _writeOnly = writeOnly;
 		_mapper = mapper;

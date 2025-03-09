@@ -13,6 +13,7 @@ using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Aplicacao.UseCase.UseUsuario.Atualizar;
 using Aplicacao.UseCase.UseUsuario.Buscar;
 using Aplicacao.UseCase.UseUsuario.Criar;
+using Aplicacao.UseCase.UseUsuario.Excluir;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aplicacao;
@@ -38,6 +39,7 @@ public static class InjecaoDeDependenciaExtensao
 		services.AddScoped<IUsuarioUseCase, UsuarioUseCase>();
 		services.AddScoped<IObterUsuarioUseCase, ObterUsuarioUseCase>();
 		services.AddScoped<IAtualizarUsuarioUseCase, AtualizarUsuarioUseCase>();
+		services.AddScoped<IExcluirUsuarioUseCase, ExcluirUsuarioUseCase>();
 		services.AddScoped<IProdutoUseCase, ProdutoUseCase>();
 		services.AddScoped<IGetProdutoById, GetProdutoById>();
 		services.AddScoped<IObtenhaTodosProdutos, ObtenhaTodosProdutos>();
