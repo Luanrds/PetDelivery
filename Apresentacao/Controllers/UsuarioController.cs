@@ -12,7 +12,7 @@ namespace PetDelivery.API.Controllers;
 public class UsuarioController : PetDeliveryBaseController
 {
 	[HttpPost]
-	[ProducesResponseType(typeof(ResponseUsuarioRegistradoJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status204NoContent)]
 	public async Task<IActionResult> Registre(
 	[FromServices] IUsuarioUseCase usuarioUseCase,
