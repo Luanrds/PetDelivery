@@ -22,7 +22,6 @@ public class AutoMapping : Profile
 
 		CreateMap<RequestItemCarrinhoJson, ItemCarrinhoDeCompra>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore())
-			.ForMember(dest => dest.Carrinho, opt => opt.Ignore())
 			.ForMember(dest => dest.ProdutoId, opt => opt.MapFrom(src => src.ProdutoId));
 
 		CreateMap<RequestAtualizarItemCarrinhoJson, ItemCarrinhoDeCompra>()

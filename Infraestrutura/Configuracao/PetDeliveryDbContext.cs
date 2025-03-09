@@ -22,5 +22,10 @@ public class PetDeliveryDbContext(DbContextOptions<PetDeliveryDbContext> options
             .HasOne(p => p.Pagamento)
             .WithOne(pg => pg.Pedido)
             .HasForeignKey<Pagamento>(pg => pg.PedidoId);
+
+        modelBuilder.Entity<ItemCarrinhoDeCompra>()
+            .HasOne<CarrinhoDeCompras>()
+            .WithMany(c => c.ItensCarrinho)
+            .HasForeignKey(i => i.CarrinhoId);
     }
 }

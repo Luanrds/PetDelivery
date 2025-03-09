@@ -26,8 +26,7 @@ public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
 	public async Task<ItemCarrinhoDeCompra?> ObterItemCarrinhoPorId(long itemId, long usuarioId)
 	{
 		return await _dbContext.ItemCarrinhoDeCompra
-			.Include(i => i.Carrinho)
-			.Where(i => i.Id == itemId && i.Carrinho.UsuarioId == usuarioId)
+			.Where(i => i.Id == itemId && _dbContext.CarrinhoDeCompras.Any(c => c.Id == i.CarrinhoId && c.UsuarioId == usuarioId))
 			.FirstOrDefaultAsync();
 	}
 
@@ -40,8 +39,7 @@ public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
 	public async Task RemoverItemCarrinho(long itemId, long usuarioId)
 	{
 		var item = await _dbContext.ItemCarrinhoDeCompra
-			.Include(i => i.Carrinho)
-			.Where(i => i.Id == itemId && i.Carrinho.UsuarioId == usuarioId)
+			.Where(i => i.Id == itemId && _dbContext.CarrinhoDeCompras.Any(c => c.Id == i.CarrinhoId && c.UsuarioId == usuarioId))
 			.FirstOrDefaultAsync();
 
 		if (item != null)
