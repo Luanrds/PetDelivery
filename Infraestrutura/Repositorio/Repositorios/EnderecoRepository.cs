@@ -17,4 +17,6 @@ public class EnderecoRepository(PetDeliveryDbContext dbContext) : IEnderecoWrite
 		await _dbContext.Endereco.Where(e => e.UsuarioId == usuarioId).ToListAsync();
 
 	public void Atualize(Endereco endereco) => _dbContext.Endereco.Update(endereco);
+
+	public void Excluir(Endereco endereco) => _dbContext.Endereco.Remove(endereco);
 }

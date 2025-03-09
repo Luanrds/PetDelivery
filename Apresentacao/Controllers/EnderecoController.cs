@@ -1,6 +1,8 @@
 ﻿using Aplicacao.UseCase.UseEndereco.Atualizar;
 using Aplicacao.UseCase.UseEndereco.Buscar;
 using Aplicacao.UseCase.UseEndereco.Criar;
+using Aplicacao.UseCase.UseEndereco.Excluir;
+using Aplicacao.UseCase.UseProduto.Excluir;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
@@ -42,6 +44,18 @@ public class EnderecoController : PetDeliveryBaseController
 		[FromRoute] long id)
 	{
 		await useCase.Execute(id, request);
+
+		return NoContent();
+	}
+
+	[HttpDelete("{id}")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> ExcluirEndereco(
+		[FromServices] IExcluirEnderecoUseCase useCase,
+		[FromRoute] long id)
+	{
+		await useCase.Execute(id);
 
 		return NoContent();
 	}
