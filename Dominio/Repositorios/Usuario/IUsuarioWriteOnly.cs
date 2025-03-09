@@ -1,5 +1,6 @@
 ﻿namespace Dominio.Repositorios.Usuario;
-public interface IUsuarioWriteOnlyRepository
+public interface IUsuarioWriteOnly
 {
 	public Task Add(Entidades.Usuario usuario);
+	void Atualize(Entidades.Usuario produto);
 }

@@ -17,6 +17,9 @@ public class AutoMapping : Profile
 		CreateMap<RequestUsuarioRegistroJson, Usuario>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
+		CreateMap<RequestAtualizarUsuarioJson, Usuario>()
+			.ForMember(dest => dest.Id, opt => opt.Ignore());
+
 		CreateMap<RequestProdutoJson, Produto>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
