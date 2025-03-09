@@ -2,7 +2,6 @@
 using Aplicacao.UseCase.UseEndereco.Buscar;
 using Aplicacao.UseCase.UseEndereco.Criar;
 using Aplicacao.UseCase.UseEndereco.Excluir;
-using Aplicacao.UseCase.UseProduto.Excluir;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
