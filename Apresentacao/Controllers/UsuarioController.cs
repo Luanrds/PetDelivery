@@ -1,4 +1,5 @@
-﻿using Aplicacao.UseCase.UseUsuario.Criar;
+﻿using Aplicacao.UseCase.UseUsuario.Buscar;
+using Aplicacao.UseCase.UseUsuario.Criar;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
@@ -16,5 +17,17 @@ public class UsuarioController : PetDeliveryBaseController
 		var resposta = await usuarioUseCase.Execute(request);
 
 		return Created(string.Empty, resposta);
+	}
+
+	[HttpGet("{id}")]
+	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> Obter(
+	[FromServices] IObterUsuarioUseCase obterUsuarioUseCase,
+	[FromRoute] long id)
+	{
+		var resposta = await obterUsuarioUseCase.Execute(id);
+
+		return Ok(resposta);
 	}
 }
