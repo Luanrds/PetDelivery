@@ -15,10 +15,10 @@ public class UsuarioController : PetDeliveryBaseController
 	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status204NoContent)]
 	public async Task<IActionResult> Registre(
-	[FromServices] IUsuarioUseCase usuarioUseCase,
+	[FromServices] IUsuarioUseCase UseCase,
 	[FromBody] RequestUsuarioRegistroJson request)
 	{
-		var resposta = await usuarioUseCase.Execute(request);
+		ResponseUsuarioJson resposta = await UseCase.Execute(request);
 
 		return Created(string.Empty, resposta);
 	}
@@ -27,10 +27,10 @@ public class UsuarioController : PetDeliveryBaseController
 	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> Obter(
-	[FromServices] IObterUsuarioUseCase obterUsuarioUseCase,
+	[FromServices] IObterUsuarioUseCase UseCase,
 	[FromRoute] long id)
 	{
-		var resposta = await obterUsuarioUseCase.Execute(id);
+		ResponseUsuarioJson resposta = await UseCase.Execute(id);
 
 		return Ok(resposta);
 	}
@@ -39,11 +39,11 @@ public class UsuarioController : PetDeliveryBaseController
 	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> Atualizar(
-	[FromServices] IAtualizarUsuarioUseCase atualizarUsuarioUseCase,
+	[FromServices] IAtualizarUsuarioUseCase UseCase,
 	[FromRoute] long id,
 	[FromBody] RequestAtualizarUsuarioJson request)
 	{
-		await atualizarUsuarioUseCase.Execute(id, request);
+		await UseCase.Execute(id, request);
 
 		return NoContent();
 	}
@@ -52,10 +52,10 @@ public class UsuarioController : PetDeliveryBaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> Deletar(
-			[FromServices] IExcluirUsuarioUseCase excluirUsuarioUseCase,
+			[FromServices] IExcluirUsuarioUseCase UseCase,
 			[FromRoute] long id)
 	{
-		await excluirUsuarioUseCase.Execute(id);
+		await UseCase.Execute(id);
 
 		return NoContent();
 	}
@@ -64,11 +64,11 @@ public class UsuarioController : PetDeliveryBaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> AlterarSenha(
-		[FromServices] IAlterarSenhaUsuarioUseCase alterarSenhaUsuarioUseCase,
+		[FromServices] IAlterarSenhaUsuarioUseCase UseCase,
 		[FromRoute] long id,
 		[FromBody] RequestAlterarSenhaUsuarioJson request)
 	{
-		await alterarSenhaUsuarioUseCase.Execute(id, request);
+		await UseCase.Execute(id, request);
 
 		return NoContent();
 	}

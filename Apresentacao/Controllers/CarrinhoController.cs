@@ -18,7 +18,7 @@ public class CarrinhoController : PetDeliveryBaseController
 		[FromServices] ICarrinhoUseCase useCase,
 		[FromBody] RequestItemCarrinhoJson request)
 	{
-		var resposta = await useCase.Execute(request);
+		ResponseCarrinhoDeComprasJson resposta = await useCase.Execute(request);
 
 		return Created(string.Empty, resposta);
 	}
@@ -30,7 +30,7 @@ public class CarrinhoController : PetDeliveryBaseController
 		[FromServices] IObterCarrinhoUseCase useCase,
 		[FromQuery] long usuarioId)
 	{
-		var resposta = await useCase.Execute(usuarioId);
+		ResponseCarrinhoDeComprasJson resposta = await useCase.Execute(usuarioId);
 
 		return Ok(resposta);
 	}
@@ -44,7 +44,7 @@ public class CarrinhoController : PetDeliveryBaseController
 		[FromRoute] long itemId,
 		[FromBody] RequestAtualizarItemCarrinhoJson request)
 	{
-		var resposta = await useCase.AtualizeQuantidade(itemId, request);
+		ResponseCarrinhoDeComprasJson resposta = await useCase.Execute(itemId, request);
 
 		return Ok(resposta);
 	}
@@ -56,6 +56,7 @@ public class CarrinhoController : PetDeliveryBaseController
 		[FromQuery] long usuarioId)
 	{
 		await useCase.ExecuteLimpar(usuarioId);
+
 		return NoContent();
 	}
 
@@ -68,6 +69,7 @@ public class CarrinhoController : PetDeliveryBaseController
 	[FromQuery] long usuarioId)
 	{
 		await useCase.ExecuteRemover(itemId, usuarioId);
+
 		return NoContent();
 	}
 }
