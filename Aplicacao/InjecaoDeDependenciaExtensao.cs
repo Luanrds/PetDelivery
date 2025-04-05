@@ -2,14 +2,23 @@
 using Aplicacao.UseCase.Carrinho.Atualizar;
 using Aplicacao.UseCase.Carrinho.Buscar;
 using Aplicacao.UseCase.Carrinho.Criar;
+using Aplicacao.UseCase.Carrinho.Limpar;
 using Aplicacao.UseCase.Carrinho.LimparCarrinho;
 using Aplicacao.UseCase.Carrinho.RemoverItem;
+using Aplicacao.UseCase.UseEndereco.Atualizar;
+using Aplicacao.UseCase.UseEndereco.Buscar;
+using Aplicacao.UseCase.UseEndereco.Criar;
+using Aplicacao.UseCase.UseEndereco.Excluir;
 using Aplicacao.UseCase.UseProduto.Atualizar;
 using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
+using Aplicacao.UseCase.UseUsuario.AlterarSenha;
+using Aplicacao.UseCase.UseUsuario.Atualizar;
+using Aplicacao.UseCase.UseUsuario.Buscar;
 using Aplicacao.UseCase.UseUsuario.Criar;
+using Aplicacao.UseCase.UseUsuario.Excluir;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aplicacao;
@@ -33,6 +42,14 @@ public static class InjecaoDeDependenciaExtensao
 	private static void AdicioneUseCase(IServiceCollection services)
 	{
 		services.AddScoped<IUsuarioUseCase, UsuarioUseCase>();
+		services.AddScoped<IObterUsuarioUseCase, ObterUsuarioUseCase>();
+		services.AddScoped<IAtualizarUsuarioUseCase, AtualizarUsuarioUseCase>();
+		services.AddScoped<IExcluirUsuarioUseCase, ExcluirUsuarioUseCase>();
+		services.AddScoped<IAlterarSenhaUsuarioUseCase, AlterarSenhaUsuarioUseCase>();
+		services.AddScoped<IEnderecoUseCase, EnderecoUseCase>();
+		services.AddScoped<IBuscarEnderecosUseCase, BuscarEnderecosUseCase>();
+		services.AddScoped<IAtualizeEnderecoUseCase, AtualizeEnderecoUseCase>();
+		services.AddScoped<IExcluirEnderecoUseCase, ExcluirEnderecoUseCase>();
 		services.AddScoped<IProdutoUseCase, ProdutoUseCase>();
 		services.AddScoped<IGetProdutoById, GetProdutoById>();
 		services.AddScoped<IObtenhaTodosProdutos, ObtenhaTodosProdutos>();

@@ -4,6 +4,7 @@ using Dominio.Repositorios.Carrinho;
 using PetDelivery.Communication.Response;
 
 namespace Aplicacao.UseCase.Carrinho.Buscar;
+
 public class ObterCarrinhoUseCase : IObterCarrinhoUseCase
 {
 	private readonly ICarrinhoReadOnly _carrinhoReadOnly;
@@ -15,12 +16,14 @@ public class ObterCarrinhoUseCase : IObterCarrinhoUseCase
 		_mapper = mapper;
 	}
 
-	public async Task<ResponseCarrinhoDeComprasJson> Execute()
+	public async Task<ResponseCarrinhoDeComprasJson> Execute(long usuarioId)
 	{
-		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo();
+		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioId);
 
-		if (carrinho == null) 
-			_ = new CarrinhoDeCompras();
+		if (carrinho == null)
+		{
+			return null;
+		}
 
 		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
 	}

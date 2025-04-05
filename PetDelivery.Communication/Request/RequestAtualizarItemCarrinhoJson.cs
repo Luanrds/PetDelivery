@@ -2,5 +2,6 @@
 
 public class RequestAtualizarItemCarrinhoJson
 {
-    public int Quantidade { get; set; }
+	public long UsuarioId { get; set; }
+	public int Quantidade { get; set; }
 }

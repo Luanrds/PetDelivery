@@ -14,13 +14,13 @@ public class ProdutoController : PetDeliveryBaseController
 	[HttpPost]
 	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status204NoContent)]
-	public async Task<IActionResult> CrieProdutoAsync(
-		[FromServices] IProdutoUseCase produtoUseCase,
+	public async Task<IActionResult> CrieProduto(
+		[FromServices] IProdutoUseCase useCase,
 		[FromBody] RequestProdutoJson request)
 	{
-		var resposta = await produtoUseCase.CrieProduto(request);
+		ResponseProdutoJson response = await useCase.Execute(request);
 
-		return Created(string.Empty, resposta);
+		return Created(string.Empty, response);
 	}
 
 	[HttpGet]
@@ -28,10 +28,10 @@ public class ProdutoController : PetDeliveryBaseController
 	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> GetbyId(
-		[FromServices] IGetProdutoById produtoUseCase,
+		[FromServices] IGetProdutoById useCase,
 		[FromRoute] long id)
 	{
-		var response = await produtoUseCase.Execute(id);
+		ResponseProdutoJson response = await useCase.Execute(id);
 
 		return Ok(response);
 	}
@@ -44,9 +44,9 @@ public class ProdutoController : PetDeliveryBaseController
 	public async Task<IActionResult> ObtenhaProdutos(
 		[FromServices] IObtenhaTodosProdutos useCase)
 	{
-		var resposta = await useCase.Execute();
+		IEnumerable<ResponseProdutoJson> response = await useCase.Execute();
 
-		return Ok(resposta);
+		return Ok(response);
 	}
 
 	[HttpDelete]
@@ -54,10 +54,10 @@ public class ProdutoController : PetDeliveryBaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> ExcluirProduto(
-		[FromServices] IExcluirProdutoUseCase produtoUseCase,
+		[FromServices] IExcluirProdutoUseCase useCase,
 		[FromRoute] long id)
 	{
-		await produtoUseCase.Execute(id);
+		await useCase.Execute(id);
 
 		return NoContent();
 	}
@@ -67,11 +67,11 @@ public class ProdutoController : PetDeliveryBaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> AtualizeProduto(
-		[FromServices] IAtualizeProdutoUseCase produtoUseCase,
+		[FromServices] IAtualizeProdutoUseCase useCase,
 		[FromBody] RequestProdutoJson requisicao,
 		[FromRoute] long id)
 	{
-		await produtoUseCase.Execute(id, requisicao);
+		await useCase.Execute(id, requisicao);
 
 		return NoContent();
 	}

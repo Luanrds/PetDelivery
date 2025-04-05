@@ -4,89 +4,99 @@ using Dominio.Entidades;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Produto;
+using Dominio.Repositorios.Usuario;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.UseCase.Carrinho.Criar;
+
 public class CarrinhoUseCase : ICarrinhoUseCase
 {
-    private readonly ICarrinhoWriteOnly _carrinhoWriteOnly;
-    private readonly ICarrinhoReadOnly _carrinhoReadOnly;
-    private readonly IProdutoReadOnly _produtoReadOnly;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
+	private readonly ICarrinhoWriteOnly _carrinhoWriteOnly;
+	private readonly ICarrinhoReadOnly _carrinhoReadOnly;
+	private readonly IProdutoReadOnly _produtoReadOnly;
+	private readonly IUsuarioReadOnly _usuarioReadOnly;
+	private readonly IUnitOfWork _unitOfWork;
+	private readonly IMapper _mapper;
 
-    public CarrinhoUseCase(
-        ICarrinhoWriteOnly carrinhoWriteOnly,
-        ICarrinhoReadOnly carrinhoReadOnly,
-        IProdutoReadOnly produtoReadOnly,
-        IUnitOfWork unitOfWork,
-        IMapper mapper)
-    {
-        _carrinhoWriteOnly = carrinhoWriteOnly;
-        _carrinhoReadOnly = carrinhoReadOnly;
-        _produtoReadOnly = produtoReadOnly;
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-    }
+	public CarrinhoUseCase(
+		ICarrinhoWriteOnly carrinhoWriteOnly,
+		ICarrinhoReadOnly carrinhoReadOnly,
+		IProdutoReadOnly produtoReadOnly,
+		IUsuarioReadOnly usuarioReadOnly,
+		IUnitOfWork unitOfWork,
+		IMapper mapper)
+	{
+		_carrinhoWriteOnly = carrinhoWriteOnly;
+		_carrinhoReadOnly = carrinhoReadOnly;
+		_produtoReadOnly = produtoReadOnly;
+		_usuarioReadOnly = usuarioReadOnly;
+		_unitOfWork = unitOfWork;
+		_mapper = mapper;
+	}
 
-    public async Task<ResponseCarrinhoDeComprasJson> Execute(RequestItemCarrinhoJson request)
-    {
-        Validate(request);
+	public async Task<ResponseCarrinhoDeComprasJson> Execute(RequestItemCarrinhoJson request)
+	{
+		Validate(request);
 
-        var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo() ?? new CarrinhoDeCompras
-        {
-            ItensCarrinho = []
-        };
+		var usuario = await _usuarioReadOnly.GetById(request.UsuarioId)
+			?? throw new NotFoundException($"Usuário com ID {request.UsuarioId} não encontrado.");
 
-        var produto = await _produtoReadOnly.GetById(request.ProdutoId);
+		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId)
+			?? new CarrinhoDeCompras
+			{
+				UsuarioId = request.UsuarioId,
+				ItensCarrinho = []
+			};
 
-        if (produto == null || !produto.Disponivel)
-        {
-            throw new NotFoundException($"Produto com ID {request.ProdutoId} não encontrado ou não disponível.");
-        }
+		var produto = await _produtoReadOnly.GetById(request.ProdutoId);
 
-        var itemExistente = carrinho.ItensCarrinho
-            .FirstOrDefault(item => item.ProdutoId == request.ProdutoId);
+		if (produto == null || !produto.Disponivel)
+		{
+			throw new NotFoundException($"Produto com ID {request.ProdutoId} não encontrado ou não disponível.");
+		}
 
-        if (itemExistente != null)
-        {
-            itemExistente.Quantidade += request.Quantidade;
-        }
-        else
-        {
-            var novoItem = new ItemCarrinhoDeCompra
-            {
-                ProdutoId = request.ProdutoId,
-                Quantidade = request.Quantidade,
-                PrecoUnitario = produto.Valor,
-            };
+		var itemExistente = carrinho.ItensCarrinho
+			.FirstOrDefault(item => item.ProdutoId == request.ProdutoId);
 
-            carrinho.ItensCarrinho.Add(novoItem);
-        }
+		if (itemExistente != null)
+		{
+			itemExistente.Quantidade += request.Quantidade;
+		}
+		else
+		{
+			var novoItem = new ItemCarrinhoDeCompra
+			{
+				ProdutoId = request.ProdutoId,
+				Quantidade = request.Quantidade,
+				PrecoUnitario = produto.Valor,
+			};
 
-        if (carrinho.Id == 0)
-        {
-            await _carrinhoWriteOnly.Add(carrinho);
-        }
+			carrinho.ItensCarrinho.Add(novoItem);
+		}
 
-        await _unitOfWork.Commit();
+		if (carrinho.Id == 0)
+		{
+			await _carrinhoWriteOnly.Add(carrinho);
+		}
 
-        return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
-    }
+		await _unitOfWork.Commit();
 
-    private static void Validate(RequestItemCarrinhoJson request)
-    {
-        var validator = new CarrinhoValidator();
+		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
+	}
 
-        var result = validator.Validate(request);
+	private static void Validate(RequestItemCarrinhoJson request)
+	{
+		var validator = new CarrinhoValidator();
 
-        if (result.IsValid == false)
-        {
-            var mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
+		var result = validator.Validate(request);
 
-            throw new ErrorOnValidationException(mensagensDeErro);
-        }
-    }
+		if (result.IsValid == false)
+		{
+			var mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
+
+			throw new ErrorOnValidationException(mensagensDeErro);
+		}
+	}
 }

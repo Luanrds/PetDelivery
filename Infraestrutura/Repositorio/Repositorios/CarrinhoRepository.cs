@@ -14,20 +14,21 @@ public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
 	public async Task Add(CarrinhoDeCompras carrinho) =>
 		await _dbContext.CarrinhoDeCompras.AddAsync(carrinho);
 
-	public Task<CarrinhoDeCompras?> ObtenhaCarrinhoAtivo()
+	public async Task<CarrinhoDeCompras?> ObtenhaCarrinhoAtivo(long usuarioId)
 	{
-		return _dbContext.CarrinhoDeCompras
+		return await _dbContext.CarrinhoDeCompras
 			.Include(c => c.ItensCarrinho)
+			.Where(c => c.UsuarioId == usuarioId)
 			.OrderByDescending(c => c.Id)
 			.FirstOrDefaultAsync();
 	}
 
-    public async Task<ItemCarrinhoDeCompra?> ObterItemCarrinhoPorId(long itemId)
-    {
+	public async Task<ItemCarrinhoDeCompra?> ObterItemCarrinhoPorId(long itemId, long usuarioId)
+	{
 		return await _dbContext.ItemCarrinhoDeCompra
-			.Include(i => i.Carrinho)
-			.FirstOrDefaultAsync(item => item.Id == itemId);
-    }
+			.Where(i => i.Id == itemId && _dbContext.CarrinhoDeCompras.Any(c => c.Id == i.CarrinhoId && c.UsuarioId == usuarioId))
+			.FirstOrDefaultAsync();
+	}
 
 	public async Task LimparCarrinho(CarrinhoDeCompras carrinho)
 	{
@@ -35,20 +36,16 @@ public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
 		await _dbContext.SaveChangesAsync();
 	}
 
-	public async Task RemoverItemCarrinho(long itemId)
+	public async Task RemoverItemCarrinho(long itemId, long usuarioId)
 	{
-		var item = await _dbContext.ItemCarrinhoDeCompra.FindAsync(itemId);
+		var item = await _dbContext.ItemCarrinhoDeCompra
+			.Where(i => i.Id == itemId && _dbContext.CarrinhoDeCompras.Any(c => c.Id == i.CarrinhoId && c.UsuarioId == usuarioId))
+			.FirstOrDefaultAsync();
 
-		if (item is not null)
+		if (item != null)
 		{
 			_dbContext.ItemCarrinhoDeCompra.Remove(item);
+			await _dbContext.SaveChangesAsync();
 		}
 	}
-
-	public async Task Excluir(long produtoId)
-    {
-        var produto = await _dbContext.Produto.FindAsync(produtoId);
-
-        _dbContext.Produto.Remove(produto!);
-    }
 }
