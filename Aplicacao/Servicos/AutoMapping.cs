@@ -38,6 +38,8 @@ public class AutoMapping : Profile
 
 		CreateMap<RequestAtualizarItemCarrinhoJson, ItemCarrinhoDeCompra>()
 			.ForMember(dest => dest.Quantidade, opt => opt.MapFrom(src => src.Quantidade));
+
+		CreateMap<RequestLoginUsuarioJson, Usuario>();
 	}
 
 	private void DomainToResponse()

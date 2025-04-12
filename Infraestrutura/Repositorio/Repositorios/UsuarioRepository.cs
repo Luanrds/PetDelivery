@@ -28,10 +28,10 @@ public class UsuarioRepository(PetDeliveryDbContext dbContext) : IUsuarioWriteOn
 		throw new NotImplementedException();
 	}
 
-	public Task<Usuario> GetByEmail(string email)
+	public Task<Usuario?> GetByEmail(string email)
 	{
-		throw new NotImplementedException();
+		return _dbContext.Usuario
+			.AsNoTracking()
+			.FirstOrDefaultAsync(u => u.Email == email);
 	}
-
-	
 }

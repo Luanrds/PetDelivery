@@ -19,6 +19,7 @@ using Aplicacao.UseCase.UseUsuario.Atualizar;
 using Aplicacao.UseCase.UseUsuario.Buscar;
 using Aplicacao.UseCase.UseUsuario.Criar;
 using Aplicacao.UseCase.UseUsuario.Excluir;
+using Aplicacao.UseCase.UseUsuario.Login;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aplicacao;
@@ -43,6 +44,7 @@ public static class InjecaoDeDependenciaExtensao
 	{
 		services.AddScoped<IUsuarioUseCase, UsuarioUseCase>();
 		services.AddScoped<IObterUsuarioUseCase, ObterUsuarioUseCase>();
+		services.AddScoped<ILoginUsuarioUseCase, LoginUsuarioUseCase>();
 		services.AddScoped<IAtualizarUsuarioUseCase, AtualizarUsuarioUseCase>();
 		services.AddScoped<IExcluirUsuarioUseCase, ExcluirUsuarioUseCase>();
 		services.AddScoped<IAlterarSenhaUsuarioUseCase, AlterarSenhaUsuarioUseCase>();
