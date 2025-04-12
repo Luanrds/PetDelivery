@@ -11,6 +11,7 @@ public class Versao0000002 : VersaoBase
 			.WithColumn("Nome").AsString(255).NotNullable()
 			.WithColumn("Email").AsString(255).NotNullable().Unique()
 			.WithColumn("Senha").AsString(2000).NotNullable()
-			.WithColumn("DataNascimento").AsDateTime().Nullable();
+			.WithColumn("DataNascimento").AsDateTime().Nullable()
+			.WithColumn("EhVendedor").AsBoolean().NotNullable().WithDefaultValue(false);
 	}
 }
