@@ -5,6 +5,6 @@ public class Usuario : EntidadeBase
 	public string Email { get; set; } = string.Empty;
 	public string Senha { get; set; } = string.Empty; 
 	public DateTime? DataNascimento { get; set; }
-	public List<Endereco> Enderecos { get; set; } = new List<Endereco>();
-	public List<Pedido> Pedidos { get; set; } = new List<Pedido>();
+	public List<Endereco> Enderecos { get; set; } = [];
+	public List<Pedido> Pedidos { get; set; } = [];
 }

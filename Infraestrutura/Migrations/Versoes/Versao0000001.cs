@@ -11,6 +11,7 @@ public class Versao0000001 : VersaoBase
             .WithColumn("Nome").AsString(255).NotNullable()
             .WithColumn("Valor").AsDecimal().NotNullable()
             .WithColumn("Disponivel").AsBoolean().NotNullable()
-            .WithColumn("Descricao").AsString(1000).Nullable();
-    }
+            .WithColumn("Descricao").AsString(1000).Nullable()
+            .WithColumn("CategoriaProduto").AsInt32().NotNullable();
+	}
 }

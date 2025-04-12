@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Dominio.Entidades;
+using Dominio.Enums;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
@@ -25,10 +26,11 @@ public class AutoMapping : Profile
 					.ForMember(dest => dest.UsuarioId, opt => opt.MapFrom(src => src.UsuarioId));
 
 		CreateMap<RequestAtualizarEnderecoJson, Endereco>()
-		   .ForMember(dest => dest.Id, opt => opt.Ignore());
+			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
 		CreateMap<RequestProdutoJson, Produto>()
-			.ForMember(dest => dest.Id, opt => opt.Ignore());
+			.ForMember(dest => dest.Id, opt => opt.Ignore())
+			.ForMember(dest => dest.CategoriaProduto, opt => opt.MapFrom(src => (CategoriaProduto)src.CategoriaProduto));
 
 		CreateMap<RequestItemCarrinhoJson, ItemCarrinhoDeCompra>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -45,7 +47,8 @@ public class AutoMapping : Profile
 		CreateMap<Endereco, ResponseEnderecoJson>();
 
 		CreateMap<Produto, ResponseProdutoJson>()
-			.ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id));
+			.ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id))
+			.ForMember(dest => dest.CategoriaProduto, opt => opt.MapFrom(src => src.CategoriaProduto.ToString()));
 
 		CreateMap<ItemCarrinhoDeCompra, ResponseItemCarrinhoJson>()
 			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()));
