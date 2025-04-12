@@ -11,7 +11,8 @@ public class UnitOfWork : IUnitOfWork
     {
         try
         {
-            await _dbContext.SaveChangesAsync();
+			var entries = _dbContext.ChangeTracker.Entries();
+			await _dbContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
