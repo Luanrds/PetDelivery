@@ -3,6 +3,7 @@ using Aplicacao.UseCase.UseUsuario.Atualizar;
 using Aplicacao.UseCase.UseUsuario.Buscar;
 using Aplicacao.UseCase.UseUsuario.Criar;
 using Aplicacao.UseCase.UseUsuario.Excluir;
+using Aplicacao.UseCase.UseUsuario.Login;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication;
 using PetDelivery.Communication.Request;
@@ -11,7 +12,7 @@ using PetDelivery.Communication.Response;
 namespace PetDelivery.API.Controllers;
 public class UsuarioController : PetDeliveryBaseController
 {
-	[HttpPost]
+	[HttpPost("Cadastro")]
 	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status204NoContent)]
 	public async Task<IActionResult> Registre(
@@ -21,6 +22,29 @@ public class UsuarioController : PetDeliveryBaseController
 		ResponseUsuarioJson resposta = await UseCase.Execute(request);
 
 		return Created(string.Empty, resposta);
+	}
+
+	[HttpPost("login")]
+	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> Login(
+	[FromServices] ILoginUsuarioUseCase useCase,
+	[FromBody] RequestLoginUsuarioJson request)
+	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		var usuarioLogado = await useCase.Execute(request);
+
+		if (usuarioLogado == null)
+		{
+			return Unauthorized("Credenciais inválidas.");
+		}
+
+		return Ok(usuarioLogado);
 	}
 
 	[HttpGet("{id}")]
