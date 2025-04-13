@@ -1,4 +1,5 @@
 ﻿using Dominio.Entidades;
+using Dominio.Enums;
 using Dominio.Repositorios.Produto;
 using Infraestrutura.Configuracao;
 using Microsoft.EntityFrameworkCore;
@@ -31,4 +32,12 @@ public class ProdutoRepository : IProdutoWriteOnly, IProdutoReadOnly, IProdutoUp
 			.AsNoTracking()
 			.FirstOrDefaultAsync(produto => produto.Id == ProdutoId);
 	}
+
+	public async Task<IEnumerable<Produto>> ObterPorCategoria(string categoria) =>
+		Enum.TryParse<CategoriaProduto>(categoria, true, out var categoriaEnum)
+			? await _dbContext.Produto
+				.AsNoTracking()
+				.Where(produto => produto.CategoriaProduto == categoriaEnum)
+				.ToListAsync()
+			: (IEnumerable<Produto>)([]);
 }

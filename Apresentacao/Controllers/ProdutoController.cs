@@ -2,6 +2,7 @@
 using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
+using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.Communication.Request;
@@ -45,6 +46,24 @@ public class ProdutoController : PetDeliveryBaseController
 		[FromServices] IObtenhaTodosProdutos useCase)
 	{
 		IEnumerable<ResponseProdutoJson> response = await useCase.Execute();
+
+		return Ok(response);
+	}
+
+	[HttpGet]
+	[Route("categoria/{categoria}")]
+	[ProducesResponseType(typeof(IEnumerable<ResponseProdutoJson>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<IActionResult> ObtenhaProdutosPorCategoria(
+		[FromServices] IObtenhaProdutosPorCategoria useCase,
+		[FromRoute] string categoria)
+	{
+		IEnumerable<ResponseProdutoJson> response = await useCase.Execute(categoria);
+
+		if (response == null || !response.Any())
+		{
+			return NoContent();
+		}
 
 		return Ok(response);
 	}
