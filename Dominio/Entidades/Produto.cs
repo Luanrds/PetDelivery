@@ -5,8 +5,8 @@ namespace Dominio.Entidades;
 public class Produto : EntidadeBase
 {
     public string Nome { get; set; } = string.Empty;
-    public decimal Valor { get; set; }
-    public bool Disponivel { get; set; }
     public string Descricao { get; set; } = string.Empty;   
-    public CategoriaProduto CategoriaProduto { get; set; } 
+    public decimal Valor { get; set; }
+	public CategoriaProduto Categoria { get; set; } 
+    public int QuantidadeEstoque { get; set; }
 }

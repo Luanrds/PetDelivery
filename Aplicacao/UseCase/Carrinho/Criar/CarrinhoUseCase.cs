@@ -40,39 +40,42 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 	{
 		Validate(request);
 
-		var usuario = await _usuarioReadOnly.GetById(request.UsuarioId)
+		Usuario usuario = await _usuarioReadOnly.GetById(request.UsuarioId)
 			?? throw new NotFoundException($"Usuário com ID {request.UsuarioId} não encontrado.");
 
-		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId)
+		CarrinhoDeCompras carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId)
 			?? new CarrinhoDeCompras
-			{
-				UsuarioId = request.UsuarioId,
-				ItensCarrinho = []
-			};
+				{
+					UsuarioId = request.UsuarioId,
+					ItensCarrinho = []
+				};
 
-		var produto = await _produtoReadOnly.GetById(request.ProdutoId);
+		Produto produto = await _produtoReadOnly.GetById(request.ProdutoId)
+			?? throw new NotFoundException($"Produto com ID {request.ProdutoId} não encontrado.");
 
-		if (produto == null || !produto.Disponivel)
+		ItemCarrinhoDeCompra? itemExistente = carrinho.ItensCarrinho
+			.FirstOrDefault(item => item.ProdutoId == request.ProdutoId);
+
+		int quantidadeFinalNecessaria = (itemExistente?.Quantidade ?? 0) + request.Quantidade;
+
+		if (quantidadeFinalNecessaria > produto.QuantidadeEstoque)
 		{
-			throw new NotFoundException($"Produto com ID {request.ProdutoId} não encontrado ou não disponível.");
+			throw new ErrorOnValidationException([$"Estoque insuficiente para '{produto.Nome}'. Disponível: {produto.QuantidadeEstoque}, Solicitado no total: {quantidadeFinalNecessaria}."]);
 		}
 
-		var itemExistente = carrinho.ItensCarrinho
-			.FirstOrDefault(item => item.ProdutoId == request.ProdutoId);
 
 		if (itemExistente != null)
 		{
-			itemExistente.Quantidade += request.Quantidade;
+			itemExistente.Quantidade = quantidadeFinalNecessaria;
 		}
 		else
 		{
-			var novoItem = new ItemCarrinhoDeCompra
+			ItemCarrinhoDeCompra novoItem = new()
 			{
 				ProdutoId = request.ProdutoId,
 				Quantidade = request.Quantidade,
 				PrecoUnitario = produto.Valor,
 			};
-
 			carrinho.ItensCarrinho.Add(novoItem);
 		}
 
@@ -83,7 +86,9 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 
 		await _unitOfWork.Commit();
 
-		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
+		CarrinhoDeCompras? carrinhoAtualizado = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId);
+
+		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinhoAtualizado);
 	}
 
 	private static void Validate(RequestItemCarrinhoJson request)

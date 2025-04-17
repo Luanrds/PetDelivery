@@ -37,7 +37,7 @@ public class ProdutoRepository : IProdutoWriteOnly, IProdutoReadOnly, IProdutoUp
 		Enum.TryParse<CategoriaProduto>(categoria, true, out var categoriaEnum)
 			? await _dbContext.Produto
 				.AsNoTracking()
-				.Where(produto => produto.CategoriaProduto == categoriaEnum)
+				.Where(produto => produto.Categoria == categoriaEnum)
 				.ToListAsync()
 			: (IEnumerable<Produto>)([]);
 }
