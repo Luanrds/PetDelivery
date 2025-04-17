@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Dominio.Entidades;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Produto;
@@ -34,29 +35,34 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 	{
 		//Validate(request);
 
-		var item = await _carrinhoReadOnly.ObterItemCarrinhoPorId(itemId, request.UsuarioId)
-			?? throw new NotFoundException("Item não encontrado.");
+		ItemCarrinhoDeCompra item = await _carrinhoReadOnly.ObterItemCarrinhoPorId(itemId, request.UsuarioId)
+			?? throw new NotFoundException($"Item de carrinho com ID {itemId} não encontrado para o usuário.");
 
-		if (request.Quantidade == 0)
+		if (request.Quantidade <= 0)
 		{
 			await _carrinhoWriteOnly.RemoverItemCarrinho(item.Id, request.UsuarioId);
 		}
 		else
 		{
-			item.Quantidade = request.Quantidade;
+			Produto? produto = await _produtoReadOnly.GetById(item.ProdutoId);
 
-			var produto = await _produtoReadOnly.GetById(item.ProdutoId);
-			if (produto == null || !produto.Disponivel)
+			if (produto is null)
 			{
-				throw new NotFoundException("Produto não encontrado ou indisponível.");
+				await _carrinhoWriteOnly.RemoverItemCarrinho(item.Id, request.UsuarioId);
+				throw new NotFoundException($"Produto associado ao item (ID: {item.ProdutoId}) não encontrado.");
 			}
 
-			item.CalcularSubTotal();
+			if (request.Quantidade > produto.QuantidadeEstoque)
+			{
+				throw new ErrorOnValidationException([$"Estoque insuficiente para '{produto.Nome}'. Disponível: {produto.QuantidadeEstoque}, Solicitado: {request.Quantidade}."]);
+			}
+
+			item.Quantidade = request.Quantidade;
 		}
 
 		await _unitOfWork.Commit();
 
-		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId);
+		CarrinhoDeCompras? carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId);
 
 		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
 	}

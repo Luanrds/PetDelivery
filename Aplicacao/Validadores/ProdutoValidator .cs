@@ -21,5 +21,13 @@ public class ProdutoValidator : AbstractValidator<RequestProdutoJson>
             .NotEmpty()
             .WithMessage("Campo obrigatório")
             .WithName("Descrição");
-    }
+
+		RuleFor(p => p.Categoria)
+            .IsInEnum()
+            .WithMessage("Categoria inválida.");
+
+		RuleFor(p => p.QuantidadeEstoque)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Quantidade em estoque não pode ser negativa.");
+	}
 }
