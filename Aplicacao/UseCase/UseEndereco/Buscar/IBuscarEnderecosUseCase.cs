@@ -4,5 +4,5 @@ using PetDelivery.Communication.Response;
 namespace Aplicacao.UseCase.UseEndereco.Buscar;
 public interface IBuscarEnderecosUseCase
 {
-	Task<IEnumerable<ResponseEnderecoJson>> Execute(long usuarioId);
+	Task<IEnumerable<ResponseEnderecoJson>> ExecuteAsync(long usuarioId);
 }

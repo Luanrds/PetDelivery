@@ -17,7 +17,7 @@ public class EnderecoController : PetDeliveryBaseController
 		[FromServices] IEnderecoUseCase useCase,
 		[FromBody] RequestEnderecoJson request)
 	{
-		var response = await useCase.Execute(request);
+		var response = await useCase.ExecuteAsync(request);
 
 		return Created(string.Empty, response);
 	}
@@ -29,7 +29,7 @@ public class EnderecoController : PetDeliveryBaseController
 	[FromServices] IBuscarEnderecosUseCase useCase,
 	[FromRoute] long usuarioId)
 	{
-		IEnumerable<ResponseEnderecoJson> response = await useCase.Execute(usuarioId);
+		IEnumerable<ResponseEnderecoJson> response = await useCase.ExecuteAsync(usuarioId);
 
 		return Ok(response);
 	}
@@ -42,7 +42,7 @@ public class EnderecoController : PetDeliveryBaseController
 		[FromBody] RequestAtualizarEnderecoJson request,
 		[FromRoute] long id)
 	{
-		await useCase.Execute(id, request);
+		await useCase.ExecuteAsync(id, request);
 
 		return NoContent();
 	}
@@ -54,7 +54,7 @@ public class EnderecoController : PetDeliveryBaseController
 		[FromServices] IExcluirEnderecoUseCase useCase,
 		[FromRoute] long id)
 	{
-		await useCase.Execute(id);
+		await useCase.ExecuteAsync(id);
 
 		return NoContent();
 	}

@@ -10,7 +10,7 @@ public class ObtenhaProdutosPorCategoriaUseCase(IProdutoReadOnly produtoReadOnly
 	private readonly IProdutoReadOnly _produtoReadOnly = produtoReadOnlyRepositorio;
 	private readonly IMapper _mapper = mapper;
 
-	public async Task<IEnumerable<ResponseProdutoJson>> Execute(string categoria)
+	public async Task<IEnumerable<ResponseProdutoJson>> ExecuteAsync(string categoria)
 	{
 		IEnumerable<Produto> produtos = 
 			await _produtoReadOnly.ObterPorCategoria(categoria);

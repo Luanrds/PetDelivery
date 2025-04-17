@@ -14,7 +14,7 @@ public class BuscarEnderecosUseCase : IBuscarEnderecosUseCase
 		_mapper = mapper;
 	}
 
-	public async Task<IEnumerable<ResponseEnderecoJson>> Execute(long usuarioId)
+	public async Task<IEnumerable<ResponseEnderecoJson>> ExecuteAsync(long usuarioId)
 	{
 		var enderecos = await _enderecoReadOnly.GetByUsuarioId(usuarioId);
 

@@ -20,7 +20,7 @@ public class RemoveItemCarrinhoUseCase : IRemoveItemCarrinhoUseCase
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task ExecuteRemover(long itemId, long usuarioId)
+	public async Task ExecuteAsync(long itemId, long usuarioId)
 	{
 		var item = await _carrinhoReadOnly.ObterItemCarrinhoPorId(itemId, usuarioId);
 

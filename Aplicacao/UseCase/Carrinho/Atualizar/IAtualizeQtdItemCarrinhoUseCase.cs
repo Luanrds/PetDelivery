@@ -5,5 +5,5 @@ namespace Aplicacao.UseCase.Carrinho.Atualizar;
 
 public interface IAtualizeQtdItemCarrinhoUseCase
 {
-    Task<ResponseCarrinhoDeComprasJson> Execute(long itemId, RequestAtualizarItemCarrinhoJson request);
+    Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(long itemId, RequestAtualizarItemCarrinhoJson request);
 }

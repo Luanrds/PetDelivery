@@ -22,7 +22,7 @@ public class EnderecoUseCase : IEnderecoUseCase
 		_mapper = mapper;
 	}
 
-	public async Task<ResponseEnderecoJson> Execute(RequestEnderecoJson request)
+	public async Task<ResponseEnderecoJson> ExecuteAsync(RequestEnderecoJson request)
 	{
 		//validar
 

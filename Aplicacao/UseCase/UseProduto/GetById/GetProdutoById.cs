@@ -15,7 +15,7 @@ public class GetProdutoById : IGetProdutoById
 		_repository = repository;
 	}
 
-	public async Task<ResponseProdutoJson> Execute(long ProdutoId)
+	public async Task<ResponseProdutoJson> ExecuteAsync(long ProdutoId)
 	{
 		var produto = await _repository.GetById(ProdutoId);
 

@@ -22,7 +22,7 @@ public class AtualizeProdutoUseCase : IAtualizeProdutoUseCase
 		_mapper = mapper;
 	}
 
-    public async Task Execute(long produtoId, RequestProdutoJson requisicao)
+    public async Task ExecuteAsync(long produtoId, RequestProdutoJson requisicao)
 	{
 		Validate(requisicao);
 

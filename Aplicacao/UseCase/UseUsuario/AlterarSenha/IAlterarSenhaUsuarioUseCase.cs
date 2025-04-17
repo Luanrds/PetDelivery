@@ -3,6 +3,6 @@
 namespace Aplicacao.UseCase.UseUsuario.AlterarSenha;
 public interface IAlterarSenhaUsuarioUseCase
 {
-	Task Execute(long id, RequestAlterarSenhaUsuarioJson request);
+	Task ExecuteAsync(long id, RequestAlterarSenhaUsuarioJson request);
 	
 }

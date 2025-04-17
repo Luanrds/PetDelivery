@@ -20,7 +20,7 @@ public class ExcluirEnderecoUseCase : IExcluirEnderecoUseCase
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task Execute(long id)
+	public async Task ExecuteAsync(long id)
 	{
 		//validar
 

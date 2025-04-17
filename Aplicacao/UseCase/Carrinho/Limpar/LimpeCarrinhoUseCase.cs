@@ -17,7 +17,7 @@ public class LimpeCarrinhoUseCase : ILimpeCarrinhoUseCase
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task ExecuteLimpar(long usuarioId)
+	public async Task ExecuteAsync(long usuarioId)
 	{
 		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioId);
 

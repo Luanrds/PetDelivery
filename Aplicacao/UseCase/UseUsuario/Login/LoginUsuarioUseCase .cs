@@ -16,7 +16,7 @@ public class LoginUsuarioUseCase : ILoginUsuarioUseCase
 		_mapper = mapper;
 	}
 
-	public async Task<ResponseUsuarioJson?> Execute(RequestLoginUsuarioJson request)
+	public async Task<ResponseUsuarioJson?> ExecuteAsync(RequestLoginUsuarioJson request)
 	{
 		Usuario? usuario = await _usuarioReadOnly.GetByEmail(request.Email);
 
