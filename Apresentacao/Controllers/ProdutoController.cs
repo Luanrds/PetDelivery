@@ -19,7 +19,7 @@ public class ProdutoController : PetDeliveryBaseController
 		[FromServices] IProdutoUseCase useCase,
 		[FromBody] RequestProdutoJson request)
 	{
-		ResponseProdutoJson response = await useCase.Execute(request);
+		ResponseProdutoJson response = await useCase.ExecuteAsync(request);
 
 		return Created(string.Empty, response);
 	}
@@ -32,7 +32,7 @@ public class ProdutoController : PetDeliveryBaseController
 		[FromServices] IGetProdutoById useCase,
 		[FromRoute] long id)
 	{
-		ResponseProdutoJson response = await useCase.Execute(id);
+		ResponseProdutoJson response = await useCase.ExecuteAsync(id);
 
 		return Ok(response);
 	}
@@ -45,7 +45,7 @@ public class ProdutoController : PetDeliveryBaseController
 	public async Task<IActionResult> ObtenhaProdutos(
 		[FromServices] IObtenhaTodosProdutos useCase)
 	{
-		IEnumerable<ResponseProdutoJson> response = await useCase.Execute();
+		IEnumerable<ResponseProdutoJson> response = await useCase.ExecuteAsync();
 
 		return Ok(response);
 	}
@@ -58,7 +58,7 @@ public class ProdutoController : PetDeliveryBaseController
 		[FromServices] IObtenhaProdutosPorCategoria useCase,
 		[FromRoute] string categoria)
 	{
-		IEnumerable<ResponseProdutoJson> response = await useCase.Execute(categoria);
+		IEnumerable<ResponseProdutoJson> response = await useCase.ExecuteAsync(categoria);
 
 		if (response == null || !response.Any())
 		{
@@ -76,7 +76,7 @@ public class ProdutoController : PetDeliveryBaseController
 		[FromServices] IExcluirProdutoUseCase useCase,
 		[FromRoute] long id)
 	{
-		await useCase.Execute(id);
+		await useCase.ExecuteAsync(id);
 
 		return NoContent();
 	}
@@ -90,7 +90,7 @@ public class ProdutoController : PetDeliveryBaseController
 		[FromBody] RequestProdutoJson requisicao,
 		[FromRoute] long id)
 	{
-		await useCase.Execute(id, requisicao);
+		await useCase.ExecuteAsync(id, requisicao);
 
 		return NoContent();
 	}

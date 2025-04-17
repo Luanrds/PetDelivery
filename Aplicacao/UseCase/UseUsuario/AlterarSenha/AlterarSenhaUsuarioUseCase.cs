@@ -25,7 +25,7 @@ public class AlterarSenhaUsuarioUseCase : IAlterarSenhaUsuarioUseCase
 		_mapper = mapper;
 	}
 
-	public async Task Execute(long id, RequestAlterarSenhaUsuarioJson request)
+	public async Task ExecuteAsync(long id, RequestAlterarSenhaUsuarioJson request)
 	{
 		//Validador 
 

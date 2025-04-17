@@ -18,7 +18,7 @@ public class CarrinhoController : PetDeliveryBaseController
 		[FromServices] ICarrinhoUseCase useCase,
 		[FromBody] RequestItemCarrinhoJson request)
 	{
-		ResponseCarrinhoDeComprasJson resposta = await useCase.Execute(request);
+		ResponseCarrinhoDeComprasJson resposta = await useCase.ExecuteAsync(request);
 
 		return Created(string.Empty, resposta);
 	}
@@ -30,7 +30,7 @@ public class CarrinhoController : PetDeliveryBaseController
 		[FromServices] IObterCarrinhoUseCase useCase,
 		[FromQuery] long usuarioId)
 	{
-		ResponseCarrinhoDeComprasJson resposta = await useCase.Execute(usuarioId);
+		ResponseCarrinhoDeComprasJson resposta = await useCase.ExecuteAsync(usuarioId);
 
 		return Ok(resposta);
 	}
@@ -44,7 +44,7 @@ public class CarrinhoController : PetDeliveryBaseController
 		[FromRoute] long itemId,
 		[FromBody] RequestAtualizarItemCarrinhoJson request)
 	{
-		ResponseCarrinhoDeComprasJson resposta = await useCase.Execute(itemId, request);
+		ResponseCarrinhoDeComprasJson resposta = await useCase.ExecuteAsync(itemId, request);
 
 		return Ok(resposta);
 	}
@@ -55,7 +55,7 @@ public class CarrinhoController : PetDeliveryBaseController
 		[FromServices] ILimpeCarrinhoUseCase useCase,
 		[FromQuery] long usuarioId)
 	{
-		await useCase.ExecuteLimpar(usuarioId);
+		await useCase.ExecuteAsync(usuarioId);
 
 		return NoContent();
 	}
@@ -68,7 +68,7 @@ public class CarrinhoController : PetDeliveryBaseController
 	[FromRoute] long itemId,
 	[FromQuery] long usuarioId)
 	{
-		await useCase.ExecuteRemover(itemId, usuarioId);
+		await useCase.ExecuteAsync(itemId, usuarioId);
 
 		return NoContent();
 	}

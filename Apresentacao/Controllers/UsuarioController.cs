@@ -19,7 +19,7 @@ public class UsuarioController : PetDeliveryBaseController
 	[FromServices] IUsuarioUseCase UseCase,
 	[FromBody] RequestUsuarioRegistroJson request)
 	{
-		ResponseUsuarioJson resposta = await UseCase.Execute(request);
+		ResponseUsuarioJson resposta = await UseCase.ExecuteAsync(request);
 
 		return Created(string.Empty, resposta);
 	}
@@ -37,7 +37,7 @@ public class UsuarioController : PetDeliveryBaseController
 			return BadRequest(ModelState);
 		}
 
-		var usuarioLogado = await useCase.Execute(request);
+		var usuarioLogado = await useCase.ExecuteAsync(request);
 
 		if (usuarioLogado == null)
 		{
@@ -54,7 +54,7 @@ public class UsuarioController : PetDeliveryBaseController
 	[FromServices] IObterUsuarioUseCase UseCase,
 	[FromRoute] long id)
 	{
-		ResponseUsuarioJson resposta = await UseCase.Execute(id);
+		ResponseUsuarioJson resposta = await UseCase.ExecuteAsync(id);
 
 		return Ok(resposta);
 	}
@@ -67,7 +67,7 @@ public class UsuarioController : PetDeliveryBaseController
 	[FromRoute] long id,
 	[FromBody] RequestAtualizarUsuarioJson request)
 	{
-		await UseCase.Execute(id, request);
+		await UseCase.ExecuteAsync(id, request);
 
 		return NoContent();
 	}
@@ -79,7 +79,7 @@ public class UsuarioController : PetDeliveryBaseController
 			[FromServices] IExcluirUsuarioUseCase UseCase,
 			[FromRoute] long id)
 	{
-		await UseCase.Execute(id);
+		await UseCase.ExecuteAsync(id);
 
 		return NoContent();
 	}
@@ -92,7 +92,7 @@ public class UsuarioController : PetDeliveryBaseController
 		[FromRoute] long id,
 		[FromBody] RequestAlterarSenhaUsuarioJson request)
 	{
-		await UseCase.Execute(id, request);
+		await UseCase.ExecuteAsync(id, request);
 
 		return NoContent();
 	}

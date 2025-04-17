@@ -10,7 +10,7 @@ public class ObterUsuarioUseCase(IUsuarioReadOnly usuarioReadOnly, IMapper mappe
 	private readonly IUsuarioReadOnly _usuarioReadOnly = usuarioReadOnly;
 	private readonly IMapper _mapper = mapper;
 
-	public async Task<ResponseUsuarioJson> Execute(long id)
+	public async Task<ResponseUsuarioJson> ExecuteAsync(long id)
 	{
 		Usuario? usuario = await _usuarioReadOnly.GetById(id);
 

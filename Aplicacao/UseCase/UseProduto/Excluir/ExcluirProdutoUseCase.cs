@@ -24,7 +24,7 @@ public class ExcluirProdutoUseCase : IExcluirProdutoUseCase
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task Execute(long produtoId)
+	public async Task ExecuteAsync(long produtoId)
 	{
 		var produto = await _repositoryRead.GetById(produtoId);
 

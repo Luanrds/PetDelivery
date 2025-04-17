@@ -3,5 +3,5 @@
 namespace Aplicacao.UseCase.Carrinho.RemoverItem;
 public interface IRemoveItemCarrinhoUseCase
 {
-	Task ExecuteRemover(long itemId, long usuarioId);
+	Task ExecuteAsync(long itemId, long usuarioId);
 }

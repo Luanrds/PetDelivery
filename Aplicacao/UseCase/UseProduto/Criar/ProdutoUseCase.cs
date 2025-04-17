@@ -24,7 +24,7 @@ public class ProdutoUseCase : IProdutoUseCase
 		_mapper = mapper;
 	}
 
-	public async Task<ResponseProdutoJson> Execute(RequestProdutoJson request)
+	public async Task<ResponseProdutoJson> ExecuteAsync(RequestProdutoJson request)
 	{
 		Validate(request);
 

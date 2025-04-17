@@ -4,5 +4,5 @@ using PetDelivery.Communication.Response;
 namespace Aplicacao.UseCase.UseUsuario.Atualizar;
 public interface IAtualizarUsuarioUseCase
 {
-	Task Execute(long id, RequestAtualizarUsuarioJson request);
+	Task ExecuteAsync(long id, RequestAtualizarUsuarioJson request);
 }

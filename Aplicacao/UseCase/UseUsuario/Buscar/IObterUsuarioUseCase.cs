@@ -3,5 +3,5 @@
 namespace Aplicacao.UseCase.UseUsuario.Buscar;
 public interface IObterUsuarioUseCase
 {
-	Task<ResponseUsuarioJson> Execute(long id);
+	Task<ResponseUsuarioJson> ExecuteAsync(long id);
 }

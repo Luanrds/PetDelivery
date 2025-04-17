@@ -36,7 +36,7 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 		_mapper = mapper;
 	}
 
-	public async Task<ResponseCarrinhoDeComprasJson> Execute(RequestItemCarrinhoJson request)
+	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(RequestItemCarrinhoJson request)
 	{
 		Validate(request);
 

@@ -25,7 +25,7 @@ public class AtualizeEnderecoUseCase : IAtualizeEnderecoUseCase
 		_mapper = mapper;
 	}
 
-	public async Task Execute(long id, RequestAtualizarEnderecoJson request)
+	public async Task ExecuteAsync(long id, RequestAtualizarEnderecoJson request)
 	{
 		//Validar
 

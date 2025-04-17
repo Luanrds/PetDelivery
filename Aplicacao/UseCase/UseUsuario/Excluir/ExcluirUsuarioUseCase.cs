@@ -19,7 +19,7 @@ public class ExcluirUsuarioUseCase : IExcluirUsuarioUseCase
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task Execute(long usuarioId)
+	public async Task ExecuteAsync(long usuarioId)
 	{
 		_ = await _usuarioReadOnly.GetById(usuarioId)
 			?? throw new NotFoundException($"Usuário com ID {usuarioId} não encontrado.");

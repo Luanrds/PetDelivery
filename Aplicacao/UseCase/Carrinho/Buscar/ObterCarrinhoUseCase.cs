@@ -16,7 +16,7 @@ public class ObterCarrinhoUseCase : IObterCarrinhoUseCase
 		_mapper = mapper;
 	}
 
-	public async Task<ResponseCarrinhoDeComprasJson> Execute(long usuarioId)
+	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(long usuarioId)
 	{
 		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioId);
 

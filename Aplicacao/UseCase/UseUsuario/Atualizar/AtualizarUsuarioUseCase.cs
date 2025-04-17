@@ -25,7 +25,7 @@ public class AtualizarUsuarioUseCase : IAtualizarUsuarioUseCase
 		_mapper = mapper;
 	}
 
-	public async Task Execute(long id, RequestAtualizarUsuarioJson request)
+	public async Task ExecuteAsync(long id, RequestAtualizarUsuarioJson request)
 	{
 		//Validate(request);
 

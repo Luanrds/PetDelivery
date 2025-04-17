@@ -4,5 +4,5 @@ using PetDelivery.Communication.Response;
 namespace Aplicacao.UseCase.Carrinho.Criar;
 public interface ICarrinhoUseCase
 {
-    Task<ResponseCarrinhoDeComprasJson> Execute(RequestItemCarrinhoJson request);
+    Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(RequestItemCarrinhoJson request);
 }

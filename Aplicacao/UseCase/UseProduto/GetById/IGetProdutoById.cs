@@ -3,5 +3,5 @@
 namespace Aplicacao.UseCase.UseProduto.GetById;
 public interface IGetProdutoById
 {
-	Task<ResponseProdutoJson> Execute(long ProdutoId);
+	Task<ResponseProdutoJson> ExecuteAsync(long ProdutoId);
 }

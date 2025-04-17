@@ -22,7 +22,7 @@ public class UsuarioUseCase : IUsuarioUseCase
 		_unitOfWork = unitOfWork;
 	}
 
-    public async Task<ResponseUsuarioJson> Execute(RequestUsuarioRegistroJson request)
+    public async Task<ResponseUsuarioJson> ExecuteAsync(RequestUsuarioRegistroJson request)
 	{
 		Validate(request);
 

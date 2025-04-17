@@ -15,7 +15,7 @@ public class ObtenhaTodosProdutos : IObtenhaTodosProdutos
 		_repository = repository;
 	}
 
-	public async Task<IEnumerable<ResponseProdutoJson>> Execute()
+	public async Task<IEnumerable<ResponseProdutoJson>> ExecuteAsync()
 	{
 		var produtos = await _repository.GetAll();
 

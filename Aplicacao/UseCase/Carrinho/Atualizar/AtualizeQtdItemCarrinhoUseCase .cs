@@ -31,7 +31,7 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 		_mapper = mapper;
 	}
 
-	public async Task<ResponseCarrinhoDeComprasJson> Execute(long itemId, RequestAtualizarItemCarrinhoJson request)
+	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(long itemId, RequestAtualizarItemCarrinhoJson request)
 	{
 		//Validate(request);
 

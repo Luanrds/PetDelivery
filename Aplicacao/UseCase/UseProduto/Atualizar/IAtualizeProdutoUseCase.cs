@@ -3,5 +3,5 @@
 namespace Aplicacao.UseCase.UseProduto.Atualizar;
 public interface IAtualizeProdutoUseCase
 {
-	Task Execute(long produtoId, RequestProdutoJson requisicao);
+	Task ExecuteAsync(long produtoId, RequestProdutoJson requisicao);
 }
