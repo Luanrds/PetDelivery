@@ -1,8 +1,16 @@
-﻿namespace PetDelivery.Communication.Response;
+﻿using Dominio.Enums;
+
+namespace PetDelivery.Communication.Response;
 public class ResponsePedidoJson
 {
-	public long PedidoId { get; set; }
-	public string Status { get; set; } = string.Empty;
-	public decimal ValorTotal { get; set; }
+	public long Id { get; set; }
+	public long UsuarioId { get; set; }
+	public long EnderecoId { get; set; }
+	public StatusPedido Status { get; set; }
 	public DateTime DataPedido { get; set; }
+	public decimal ValorTotal { get; set; }
+
+	public List<ResponseItemPedidoJson> Itens { get; set; } = [];
+	public ResponseEnderecoJson? Endereco { get; set; }
+	public ResponsePagamentoJson? Pagamento { get; set; }
 }
