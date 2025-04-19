@@ -25,12 +25,10 @@ public class AtualizeEnderecoUseCase : IAtualizeEnderecoUseCase
 		_mapper = mapper;
 	}
 
-	public async Task ExecuteAsync(long id, RequestAtualizarEnderecoJson request)
+	public async Task ExecuteAsync(long usuarioId, long enderecoId, RequestAtualizarEnderecoJson request)
 	{
-		//Validar
-
-		Endereco enderecoExistente = await _enderecoReadOnly.GetById(id) 
-			?? throw new NotFoundException($"Endereço com ID {id} não encontrado.");
+		Endereco enderecoExistente = await _enderecoReadOnly.GetById(usuarioId, enderecoId)
+			?? throw new NotFoundException($"Endereço com ID {enderecoId} não encontrado para o usuário ID {usuarioId}.");
 
 		_mapper.Map(request, enderecoExistente);
 

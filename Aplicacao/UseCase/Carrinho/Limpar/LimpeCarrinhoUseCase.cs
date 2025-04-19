@@ -1,4 +1,5 @@
 ﻿using Aplicacao.UseCase.Carrinho.LimparCarrinho;
+using Dominio.Entidades;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 
@@ -19,11 +20,12 @@ public class LimpeCarrinhoUseCase : ILimpeCarrinhoUseCase
 
 	public async Task ExecuteAsync(long usuarioId)
 	{
-		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioId);
+		CarrinhoDeCompras? carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioId);
 
 		if (carrinho != null)
 		{
-			await _carrinhoWriteOnly.LimparCarrinho(carrinho);
+			await _carrinhoWriteOnly.LimparItensAsync(carrinho.Id);
+
 			await _unitOfWork.Commit();
 		}
 	}

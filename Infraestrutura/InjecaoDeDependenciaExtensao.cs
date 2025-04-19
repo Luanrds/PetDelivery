@@ -1,6 +1,8 @@
 ﻿using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Endereco;
+using Dominio.Repositorios.Pagamento;
+using Dominio.Repositorios.Pedido;
 using Dominio.Repositorios.Produto;
 using Dominio.Repositorios.Usuario;
 using FluentMigrator.Runner;
@@ -10,6 +12,7 @@ using Infraestrutura.Repositorio.Repositorios;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace Infraestrutura;
@@ -27,13 +30,20 @@ public static class InjecaoDeDependenciaExtensao
 
     private static void AdicioneDbContext_Npga(IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.ConnectionString();
+		var connectionString = configuration.ConnectionString();
 
-        services.AddDbContext<PetDeliveryDbContext>(dbContext =>
-        {
-            dbContext.UseNpgsql(connectionString);
-        });
-    }
+		services.AddDbContext<PetDeliveryDbContext>(options => // <= Mudança aqui, renomeei 'dbContext' para 'options' para clareza
+		{
+			options.UseNpgsql(connectionString);
+
+			// ----> ADICIONE ESTA LINHA <----
+			options.LogTo(Console.WriteLine, LogLevel.Information);
+			// -----------------------------
+
+			// OPCIONAL: Para ver os valores dos parâmetros (CUIDADO EM PRODUÇÃO)
+			// options.EnableSensitiveDataLogging();
+		});
+	}
 
     private static void AdicioneRepositorios(IServiceCollection services)
     {
@@ -48,7 +58,10 @@ public static class InjecaoDeDependenciaExtensao
         services.AddScoped<IProdutoUpdateOnly, ProdutoRepository>();
         services.AddScoped<ICarrinhoReadOnly, CarrinhoRepository>();
         services.AddScoped<ICarrinhoWriteOnly, CarrinhoRepository>();
-    }
+        services.AddScoped<IPedidoReadOnly, PedidoRepository>();
+		services.AddScoped<IPedidoWriteOnly, PedidoRepository>();
+        services.AddScoped<IPagamentoWriteOnly, PagamentoRepository>();
+	}
 
     private static void AdicioneFluentMigrator_Npga(IServiceCollection services, IConfiguration configuration)
     {

@@ -74,7 +74,6 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 			{
 				ProdutoId = request.ProdutoId,
 				Quantidade = request.Quantidade,
-				PrecoUnitario = produto.Valor,
 			};
 			carrinho.ItensCarrinho.Add(novoItem);
 		}
