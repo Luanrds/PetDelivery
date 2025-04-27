@@ -1,10 +1,12 @@
 using Aplicacao;
+using Dominio.Seguranca.Tokens;
 using Infraestrutura;
 using Infraestrutura.Extensoes;
 using Infraestrutura.Migrations;
 using Microsoft.OpenApi.Models;
 using PetDelivery.API.Conversoes;
 using PetDelivery.API.Filtros;
+using PetDelivery.API.Token;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +23,7 @@ builder.Services.AddControllers(options =>
 
 builder.Services.AdicioneAplicacao();
 builder.Services.AdicioneInfraestrutura(builder.Configuration);
+builder.Services.AddScoped<ITokenProvider, HttpContextTokenValue>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -55,6 +58,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+builder.Services.AddHttpContextAccessor();
+
 var corsPolicy = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {

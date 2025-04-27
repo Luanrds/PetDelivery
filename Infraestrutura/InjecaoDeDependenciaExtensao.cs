@@ -7,6 +7,7 @@ using Dominio.Repositorios.Produto;
 using Dominio.Repositorios.Usuario;
 using Dominio.Seguranca.Criptografia;
 using Dominio.Seguranca.Tokens;
+using Dominio.Servicos.UsuarioLogado;
 using FluentMigrator.Runner;
 using Infraestrutura.Configuracao;
 using Infraestrutura.Extensoes;
@@ -14,6 +15,7 @@ using Infraestrutura.Repositorio.Repositorios;
 using Infraestrutura.Seguranca.Criptografia;
 using Infraestrutura.Seguranca.Tokens.Access.Generator;
 using Infraestrutura.Seguranca.Tokens.Access.Validador;
+using Infraestrutura.Servicos.UsuarioLogado;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +30,7 @@ public static class InjecaoDeDependenciaExtensaoRG
 	{
 		AddPasswordEncrpter(services);
 		AddTokens(services, configuration);
+		AddUsuarioLogado(services);
 		AdicioneDbContext_Npga(services, configuration);
 		AdicioneFluentMigrator_Npga(services, configuration);
 		AdicioneRepositorios(services);
@@ -94,4 +97,7 @@ public static class InjecaoDeDependenciaExtensaoRG
 		services.AddScoped<IAccessTokenGenerator>(option => new JwtTokenGenerator(expirationTimeMinutes, signingKey!));
 		services.AddScoped<IAccessTokenValidator>(option => new JwtTokenValidator(signingKey!));
 	}
+
+	private static void AddUsuarioLogado(IServiceCollection services) =>
+		services.AddScoped<IUsuarioLogado, UsuarioLogado>();
 }
