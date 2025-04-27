@@ -29,7 +29,7 @@ public class UsuarioUseCase : IUsuarioUseCase
 
 	public async Task<ResponseUsuarioJson> ExecuteAsync(RequestUsuarioRegistroJson request)
 	{
-		ValidateAsync(request);
+		await ValidateAsync(request);
 
 		var usuario = _mapper.Map<Usuario>(request);
 		usuario.Senha = _senhaEncripter.Encrypt(request.Senha);
