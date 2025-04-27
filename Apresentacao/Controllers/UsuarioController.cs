@@ -4,11 +4,14 @@ using Aplicacao.UseCase.UseUsuario.Buscar;
 using Aplicacao.UseCase.UseUsuario.Criar;
 using Aplicacao.UseCase.UseUsuario.Excluir;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
+
+[UsuarioAutenticado]
 public class UsuarioController : PetDeliveryBaseController
 {
 	[HttpPost("Cadastro")]
