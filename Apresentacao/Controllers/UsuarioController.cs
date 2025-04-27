@@ -49,6 +49,18 @@ public class UsuarioController : PetDeliveryBaseController
 		return NoContent();
 	}
 
+	[HttpPut("alterar-senha")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> AlterarSenha(
+	[FromServices] IAlterarSenhaUsuarioUseCase UseCase,
+	[FromBody] RequestAlterarSenhaUsuarioJson request)
+	{
+		await UseCase.ExecuteAsync(request);
+
+		return NoContent();
+	}
+
 	[HttpDelete("{id}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status404NotFound)]
@@ -57,19 +69,6 @@ public class UsuarioController : PetDeliveryBaseController
 			[FromRoute] long id)
 	{
 		await UseCase.ExecuteAsync(id);
-
-		return NoContent();
-	}
-
-	[HttpPut("{id}/senha")]
-	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> AlterarSenha(
-		[FromServices] IAlterarSenhaUsuarioUseCase UseCase,
-		[FromRoute] long id,
-		[FromBody] RequestAlterarSenhaUsuarioJson request)
-	{
-		await UseCase.ExecuteAsync(id, request);
 
 		return NoContent();
 	}
