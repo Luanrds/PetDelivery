@@ -15,11 +15,11 @@ public class JwtTokenGenerator : JwtTokenHandler, IAccessTokenGenerator
 		_signingKey = signingKey;
 	}
 
-	public string Gererate(Guid UsuarioId)
+	public string Gererate(Guid IdentificadorDoUsuario)
 	{
 		var claims = new List<Claim>()
 		{
-			new(ClaimTypes.Sid, UsuarioId.ToString())
+			new(ClaimTypes.Sid, IdentificadorDoUsuario.ToString())
 		};
 
 		var tokenDescriptor = new SecurityTokenDescriptor

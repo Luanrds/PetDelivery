@@ -4,6 +4,7 @@ using Dominio.Entidades;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Usuario;
 using Dominio.Seguranca.Criptografia;
+using Dominio.Seguranca.Tokens;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
@@ -17,14 +18,21 @@ public class UsuarioUseCase : IUsuarioUseCase
 	private readonly IMapper _mapper;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly ISenhaEncripter _senhaEncripter;
+	private readonly IAccessTokenGenerator _accessTokenGenerator;
 
-	public UsuarioUseCase(IUsuarioWriteOnly writeOnly, IUsuarioReadOnly readOnly, IMapper mapper, IUnitOfWork unitOfWork, ISenhaEncripter senhaEncripter)
+	public UsuarioUseCase(IUsuarioWriteOnly writeOnly,
+		IUsuarioReadOnly readOnly,
+		IMapper mapper,
+		IUnitOfWork unitOfWork,
+		ISenhaEncripter senhaEncripter,
+		IAccessTokenGenerator accessTokenGenerator)
 	{
 		_writeOnly = writeOnly;
 		_readOnly = readOnly;
 		_mapper = mapper;
 		_unitOfWork = unitOfWork;
 		_senhaEncripter = senhaEncripter;
+		_accessTokenGenerator = accessTokenGenerator;
 	}
 
 	public async Task<ResponseUsuarioJson> ExecuteAsync(RequestUsuarioRegistroJson request)
@@ -33,12 +41,20 @@ public class UsuarioUseCase : IUsuarioUseCase
 
 		var usuario = _mapper.Map<Usuario>(request);
 		usuario.Senha = _senhaEncripter.Encrypt(request.Senha);
+		usuario.IdentificadorDoUsuario = Guid.NewGuid();
 
 		await _writeOnly.Add(usuario);
 
 		await _unitOfWork.Commit();
 
-		return _mapper.Map<ResponseUsuarioJson>(usuario);
+		return new ResponseUsuarioJson
+		{
+			Nome = usuario.Nome,
+			Tokens = new ResponseTokensJson
+			{
+				AccessToken = _accessTokenGenerator.Gererate(usuario.IdentificadorDoUsuario)
+			}
+		};
 	}
 
 	private async Task ValidateAsync(RequestUsuarioRegistroJson request)

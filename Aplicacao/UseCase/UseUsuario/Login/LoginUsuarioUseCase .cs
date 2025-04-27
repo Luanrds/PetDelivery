@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using Dominio.Entidades;
+using Dominio.Extensoes;
 using Dominio.Repositorios.Usuario;
 using Dominio.Seguranca.Criptografia;
+using Dominio.Seguranca.Tokens;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
@@ -11,23 +12,34 @@ public class LoginUseCase : ILoginUseCase
 {
 	private readonly IUsuarioReadOnly _usuarioReadOnly;
 	private readonly ISenhaEncripter _senhaEncripter;
+	private readonly IAccessTokenGenerator _accessTokenGenerator;
 	private readonly IMapper _mapper;
 
-	public LoginUseCase(IUsuarioReadOnly usuarioReadOnly, ISenhaEncripter senhaEncripter, IMapper mapper)
+	public LoginUseCase(IUsuarioReadOnly usuarioReadOnly,
+		ISenhaEncripter senhaEncripter, IAccessTokenGenerator
+		accessTokenGenerator,
+		IMapper mapper)
 	{
 		_usuarioReadOnly = usuarioReadOnly;
 		_senhaEncripter = senhaEncripter;
+		_accessTokenGenerator = accessTokenGenerator;
 		_mapper = mapper;
 	}
 
 	public async Task<ResponseUsuarioJson?> ExecuteAsync(RequestLoginUsuarioJson request)
 	{
-		string senhaEncripitada = _senhaEncripter.Encrypt(request.Senha);
+		var usuario = await _usuarioReadOnly.GetByEmail(request.Email);
 
-		Usuario? usuario = await _usuarioReadOnly.GetByEmailESenha(request.Email, senhaEncripitada)
-			?? throw new LoginInvalidoException();
+		if (usuario is null || _senhaEncripter.IsValid(request.Senha, usuario.Senha).IsFalse())
+			throw new LoginInvalidoException();
 
-		var response = _mapper.Map<ResponseUsuarioJson>(usuario);
-		return response;
+		return new ResponseUsuarioJson
+		{
+			Nome = usuario.Nome,
+			Tokens = new ResponseTokensJson
+			{
+				AccessToken = _accessTokenGenerator.Gererate(usuario.IdentificadorDoUsuario)
+			}
+		};
 	}
 }
