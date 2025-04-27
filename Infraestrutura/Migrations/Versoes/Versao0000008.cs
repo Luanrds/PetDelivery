@@ -2,7 +2,7 @@
 
 namespace Infraestrutura.Migrations.Versoes;
 
-[Migration(VersoesDeBancoDeDados.TABLE_PAGAMENTO_FK, "Adicionar chave estrangeira em Pagamento para Pedido")]
+[Migration(VersoesDeBancoDeDados.TABLE_PAGAMENTO_FK, "Adicionar chave estrangeira em PagamentoRepository para Pedido")]
 public class Versao0000008 : VersaoBase
 {
 	public override void Up()

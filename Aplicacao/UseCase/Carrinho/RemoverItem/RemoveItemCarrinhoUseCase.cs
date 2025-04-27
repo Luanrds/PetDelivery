@@ -1,6 +1,7 @@
 ﻿using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios;
 using PetDelivery.Exceptions.ExceptionsBase;
+using Dominio.Entidades;
 
 namespace Aplicacao.UseCase.Carrinho.RemoverItem;
 
@@ -20,16 +21,16 @@ public class RemoveItemCarrinhoUseCase : IRemoveItemCarrinhoUseCase
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task ExecuteAsync(long itemId, long usuarioId)
+	public async Task ExecuteAsync(long itemCarrinhoId, long usuarioId)
 	{
-		var item = await _carrinhoReadOnly.ObterItemCarrinhoPorId(itemId, usuarioId);
+		CarrinhoDeCompras carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioId)
+			?? throw new NotFoundException("Carrinho não encontrado para este usuário.");
 
-		if (item == null)
-		{
-			throw new NotFoundException("Item não encontrado.");
-		}
+		ItemCarrinhoDeCompra? item = carrinho.ItensCarrinho.FirstOrDefault(i => i.Id == itemCarrinhoId)
+			?? throw new NotFoundException($"Item com ID {itemCarrinhoId} não encontrado no carrinho.");
 
-		await _carrinhoWriteOnly.RemoverItemCarrinho(item.Id, usuarioId);
+		await _carrinhoWriteOnly.RemoverItemCarrinho(item.Id); 
+
 		await _unitOfWork.Commit();
 	}
 }

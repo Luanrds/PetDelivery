@@ -34,27 +34,30 @@ public class EnderecoController : PetDeliveryBaseController
 		return Ok(response);
 	}
 
-	[HttpPut("{id}")]
+	[HttpPut("usuario/{usuarioId:long}/endereco/{enderecoId:long}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> Atualize(
 		[FromServices] IAtualizeEnderecoUseCase useCase,
 		[FromBody] RequestAtualizarEnderecoJson request,
-		[FromRoute] long id)
+		[FromRoute] long usuarioId,
+		[FromRoute] long enderecoId)
 	{
-		await useCase.ExecuteAsync(id, request);
+		await useCase.ExecuteAsync(usuarioId, enderecoId, request);
 
 		return NoContent();
 	}
 
-	[HttpDelete("{id}")]
+	[HttpDelete("usuario/{usuarioId:long}/endereco/{enderecoId:long}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> ExcluirEndereco(
 		[FromServices] IExcluirEnderecoUseCase useCase,
-		[FromRoute] long id)
+		[FromRoute] long usuarioId,
+		[FromRoute] long enderecoId)
 	{
-		await useCase.ExecuteAsync(id);
+		await useCase.ExecuteAsync(usuarioId, enderecoId);
 
 		return NoContent();
 	}

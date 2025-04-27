@@ -3,6 +3,7 @@ using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Usuario;
+using Dominio.Seguranca.Criptografia;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
@@ -14,19 +15,22 @@ public class UsuarioUseCase : IUsuarioUseCase
 	private readonly IUsuarioWriteOnly _writeOnly;
 	private readonly IMapper _mapper;
 	private readonly IUnitOfWork _unitOfWork;
+	private readonly ISenhaEncripter _senhaEncripter;
 
-	public UsuarioUseCase(IUsuarioWriteOnly writeOnly, IMapper mapper, IUnitOfWork unitOfWork)
-    {
-        _writeOnly = writeOnly;
+	public UsuarioUseCase(IUsuarioWriteOnly writeOnly, IMapper mapper, IUnitOfWork unitOfWork, ISenhaEncripter senhaEncripter)
+	{
+		_writeOnly = writeOnly;
 		_mapper = mapper;
 		_unitOfWork = unitOfWork;
+		_senhaEncripter = senhaEncripter;
 	}
 
-    public async Task<ResponseUsuarioJson> ExecuteAsync(RequestUsuarioRegistroJson request)
+	public async Task<ResponseUsuarioJson> ExecuteAsync(RequestUsuarioRegistroJson request)
 	{
 		Validate(request);
 
 		var usuario = _mapper.Map<Usuario>(request);
+		usuario.Senha = _senhaEncripter.Encrypt(request.Senha);
 
 		await _writeOnly.Add(usuario);
 

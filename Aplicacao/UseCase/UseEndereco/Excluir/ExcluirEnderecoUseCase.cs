@@ -20,14 +20,13 @@ public class ExcluirEnderecoUseCase : IExcluirEnderecoUseCase
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task ExecuteAsync(long id)
+	public async Task ExecuteAsync(long usuarioId, long enderecoId)
 	{
-		//validar
 
-		Endereco endereco = await _enderecoReadOnly.GetById(id) 
-			?? throw new NotFoundException($"Endereço com ID {id} não encontrado.");
+		Endereco? endereco = await _enderecoReadOnly.GetById(usuarioId, enderecoId)
+			?? throw new NotFoundException($"Endereço com ID {enderecoId} não encontrado para o usuário ID {usuarioId}.");
 
-		_enderecoWriteOnly.Excluir(endereco);
+		_enderecoWriteOnly.Excluir(endereco); 
 
 		await _unitOfWork.Commit();
 	}

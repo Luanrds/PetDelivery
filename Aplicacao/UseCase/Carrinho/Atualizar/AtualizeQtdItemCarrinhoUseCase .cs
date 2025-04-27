@@ -31,26 +31,23 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 		_mapper = mapper;
 	}
 
-	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(long itemId, RequestAtualizarItemCarrinhoJson request)
+	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(long itemCarrinhoId, RequestAtualizarItemCarrinhoJson request)
 	{
 		//Validate(request);
 
-		ItemCarrinhoDeCompra item = await _carrinhoReadOnly.ObterItemCarrinhoPorId(itemId, request.UsuarioId)
-			?? throw new NotFoundException($"Item de carrinho com ID {itemId} não encontrado para o usuário.");
+		CarrinhoDeCompras? carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId)
+			?? throw new NotFoundException($"Carrinho não encontrado para o usuário.");
+
+		ItemCarrinhoDeCompra? item = carrinho.ItensCarrinho.FirstOrDefault(i => i.Id == itemCarrinhoId)
+			?? throw new NotFoundException($"Item de carrinho com ID {itemCarrinhoId} não encontrado no carrinho do usuário.");
 
 		if (request.Quantidade <= 0)
 		{
-			await _carrinhoWriteOnly.RemoverItemCarrinho(item.Id, request.UsuarioId);
+			await _carrinhoWriteOnly.RemoverItemCarrinho(item.Id);
 		}
 		else
 		{
-			Produto? produto = await _produtoReadOnly.GetById(item.ProdutoId);
-
-			if (produto is null)
-			{
-				await _carrinhoWriteOnly.RemoverItemCarrinho(item.Id, request.UsuarioId);
-				throw new NotFoundException($"Produto associado ao item (ID: {item.ProdutoId}) não encontrado.");
-			}
+			Produto? produto = item.Produto;
 
 			if (request.Quantidade > produto.QuantidadeEstoque)
 			{
@@ -58,13 +55,15 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 			}
 
 			item.Quantidade = request.Quantidade;
+			_carrinhoWriteOnly.AtualizarItem(item);
 		}
 
 		await _unitOfWork.Commit();
 
-		CarrinhoDeCompras? carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId);
+		CarrinhoDeCompras? carrinhoAtualizado =
+			await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId);
 
-		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
+		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinhoAtualizado);
 	}
 
 	//private static void Validate(RequestAtualizarItemCarrinhoJson request)

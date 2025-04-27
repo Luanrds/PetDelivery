@@ -2,6 +2,7 @@
 using Dominio.Entidades;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
+using System.Linq; // Necessário para Sum()
 
 namespace Aplicacao.Servicos;
 public class AutoMapping : Profile
@@ -39,6 +40,15 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.Quantidade, opt => opt.MapFrom(src => src.Quantidade));
 
 		CreateMap<RequestLoginUsuarioJson, Usuario>();
+
+		CreateMap<ItemCarrinhoDeCompra, ItemPedido>()
+			.ForMember(dest => dest.Id, opt => opt.Ignore())
+			.ForMember(dest => dest.PedidoId, opt => opt.Ignore())
+			.ForMember(dest => dest.Pedido, opt => opt.Ignore())
+			.ForMember(dest => dest.Produto, opt => opt.Ignore())
+			.ForMember(dest => dest.ProdutoId, opt => opt.MapFrom(src => src.ProdutoId))
+			.ForMember(dest => dest.Quantidade, opt => opt.MapFrom(src => src.Quantidade))
+			.ForMember(dest => dest.PrecoUnitario, opt => opt.MapFrom(src => src.Produto != null ? src.Produto.Valor : 0));
 	}
 
 	private void DomainToResponse()
@@ -49,7 +59,6 @@ public class AutoMapping : Profile
 		CreateMap<Endereco, ResponseEnderecoJson>();
 
 		CreateMap<Produto, ResponseProdutoJson>()
-			.ForMember(dest => dest.Id, config => config.MapFrom(source => source.Id))
 			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()))
 			.ForMember(dest => dest.QuantidadeEstoque, opt => opt.MapFrom(src => src.QuantidadeEstoque));
 
@@ -57,7 +66,16 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()));
 
 		CreateMap<CarrinhoDeCompras, ResponseCarrinhoDeComprasJson>()
-			.ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho)) // Mapear os itens do carrinho
-			.ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.ItensCarrinho.Sum(i => i.CalcularSubTotal()))); // Calcular o Total
+			.ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho))
+			.ForMember(dest => dest.Total, opt => opt.MapFrom(src =>
+				src.ItensCarrinho != null ? src.ItensCarrinho.Sum(i => i.CalcularSubTotal()) : 0));
+
+		CreateMap<Pedido, ResponsePedidoJson>();
+
+		CreateMap<ItemPedido, ResponseItemPedidoJson>()
+			.ForMember(dest => dest.NomeProduto, opt => opt.MapFrom(src => src.Produto != null ? src.Produto.Nome : string.Empty))
+			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.Quantidade * src.PrecoUnitario));
+
+		CreateMap<Pagamento, ResponsePagamentoJson>();
 	}
 }

@@ -8,11 +8,11 @@ public class Versao0000007 : VersaoBase
 	public override void Up()
 	{
 		CreateTable("Pedido")
-			.WithColumn("ClienteId").AsInt64().NotNullable().ForeignKey("Usuario", "Id")
-			.WithColumn("EnderecoEntregaId").AsInt64().NotNullable().ForeignKey("Endereco", "Id")
-			.WithColumn("PagamentoId").AsInt64().NotNullable().ForeignKey("Pagamento", "Id")
-			.WithColumn("Status").AsString(50).NotNullable()
-			.WithColumn("DataPedido").AsDateTime().NotNullable();
+			.WithColumn("UsuarioId").AsInt64().NotNullable().ForeignKey("FK_Pedido_Usuario", "Usuario", "Id")
+			.WithColumn("EnderecoId").AsInt64().NotNullable().ForeignKey("FK_Pedido_Endereco", "Endereco", "Id")
+			.WithColumn("Status").AsInt32().NotNullable()
+			.WithColumn("DataPedido").AsDateTime().NotNullable()
+			.WithColumn("ValorTotal").AsDecimal(10, 2).NotNullable();
 
 		CreateTable("ItemPedido")
 			.WithColumn("PedidoId").AsInt64().NotNullable().ForeignKey("Pedido", "Id")
