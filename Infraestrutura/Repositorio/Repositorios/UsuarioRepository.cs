@@ -23,15 +23,14 @@ public class UsuarioRepository(PetDeliveryDbContext dbContext) : IUsuarioWriteOn
 	public async Task<Usuario?> GetById(long id) => 
 		await _dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
 
+	public async Task<Usuario?> GetByEmail(string email) =>
+	await _dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Ativo && u.Email.Equals(email));
+
+	public async Task<bool> ExisteUsuarioComEmailAtivo(string email) =>
+		await _dbContext.Usuario.AnyAsync(u => u.Email.Equals(email) && u.Ativo);
+
 	public Task<List<Usuario>> GetAll()
 	{
 		throw new NotImplementedException();
-	}
-
-	public Task<Usuario?> GetByEmail(string email)
-	{
-		return _dbContext.Usuario
-			.AsNoTracking()
-			.FirstOrDefaultAsync(u => u.Email == email);
 	}
 }
