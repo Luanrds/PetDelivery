@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using Dominio.Repositorios.Usuario;
 using Dominio.Repositorios;
+using Dominio.Repositorios.Usuario;
 using PetDelivery.Communication;
 using PetDelivery.Exceptions.ExceptionsBase;
-using PetDelivery.Communication.Response;
 
 namespace Aplicacao.UseCase.UseUsuario.AlterarSenha;
 public class AlterarSenhaUsuarioUseCase : IAlterarSenhaUsuarioUseCase
