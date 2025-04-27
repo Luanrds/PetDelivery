@@ -29,8 +29,7 @@ public class UsuarioRepository(PetDeliveryDbContext dbContext) : IUsuarioWriteOn
 	public async Task<bool> ExisteUsuarioComEmailAtivo(string email) =>
 		await _dbContext.Usuario.AnyAsync(u => u.Email.Equals(email) && u.Ativo);
 
-	public Task<List<Usuario>> GetAll()
-	{
-		throw new NotImplementedException();
-	}
+	public Task<Usuario?> GetByEmailESenha(string email, string senha) =>
+		_dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Ativo && u.Email.Equals(email) && u.Senha.Equals(senha));
+
 }
