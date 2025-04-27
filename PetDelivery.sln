@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetDelivery.Exceptions", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetDelivery.Communication", "PetDelivery.Communication\PetDelivery.Communication.csproj", "{13261882-37F2-414A-AF1F-F00400AA3EB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dominio", "Dominio\Dominio.csproj", "{6F891E25-4CF0-4280-BFF5-52F48FEB84F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dominio", "Dominio\Dominio.csproj", "{6F891E25-4CF0-4280-BFF5-52F48FEB84F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

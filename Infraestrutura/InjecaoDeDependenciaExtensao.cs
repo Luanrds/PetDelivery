@@ -5,10 +5,12 @@ using Dominio.Repositorios.Pagamento;
 using Dominio.Repositorios.Pedido;
 using Dominio.Repositorios.Produto;
 using Dominio.Repositorios.Usuario;
+using Dominio.Seguranca.Criptografia;
 using FluentMigrator.Runner;
 using Infraestrutura.Configuracao;
 using Infraestrutura.Extensoes;
 using Infraestrutura.Repositorio.Repositorios;
+using Infraestrutura.Seguranca.Criptografia;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,14 +19,13 @@ using System.Reflection;
 
 namespace Infraestrutura;
 
-public static class InjecaoDeDependenciaExtensao
+public static class InjecaoDeDependenciaExtensaoRG
 {
     public static void AdicioneInfraestrutura(this IServiceCollection services, IConfiguration configuration)
     {
-        AdicioneDbContext_Npga(services, configuration);
-
+        AddPasswordEncrpter(services);
+		AdicioneDbContext_Npga(services, configuration);
         AdicioneFluentMigrator_Npga(services, configuration);
-
         AdicioneRepositorios(services);
     }
 
@@ -75,4 +76,9 @@ public static class InjecaoDeDependenciaExtensao
             .ScanIn(Assembly.Load("Infraestrutura")).For.All();
         });
     }
+
+	private static void AddPasswordEncrpter(IServiceCollection services)
+	{
+		services.AddScoped<ISenhaEncripter, BCryptNet>();
+	}
 }
