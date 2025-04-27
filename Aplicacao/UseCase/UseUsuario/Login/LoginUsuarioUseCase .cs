@@ -7,13 +7,13 @@ using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.UseCase.UseUsuario.Login;
-public class LoginUsuarioUseCase : ILoginUsuarioUseCase
+public class LoginUseCase : ILoginUseCase
 {
 	private readonly IUsuarioReadOnly _usuarioReadOnly;
 	private readonly ISenhaEncripter _senhaEncripter;
 	private readonly IMapper _mapper;
 
-	public LoginUsuarioUseCase(IUsuarioReadOnly usuarioReadOnly, ISenhaEncripter senhaEncripter, IMapper mapper)
+	public LoginUseCase(IUsuarioReadOnly usuarioReadOnly, ISenhaEncripter senhaEncripter, IMapper mapper)
 	{
 		_usuarioReadOnly = usuarioReadOnly;
 		_senhaEncripter = senhaEncripter;
