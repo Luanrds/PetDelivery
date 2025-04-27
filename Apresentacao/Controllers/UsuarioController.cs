@@ -36,15 +36,15 @@ public class UsuarioController : PetDeliveryBaseController
 		return Ok(resposta);
 	}
 
-	[HttpPut("{id}")]
-	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status404NotFound)]
+	[HttpPut]
+	[ProducesResponseType (StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status400BadRequest)]
+	[UsuarioAutenticado]
 	public async Task<IActionResult> Atualizar(
 	[FromServices] IAtualizarUsuarioUseCase UseCase,
-	[FromRoute] long id,
 	[FromBody] RequestAtualizarUsuarioJson request)
 	{
-		await UseCase.ExecuteAsync(id, request);
+		await UseCase.ExecuteAsync(request);
 
 		return NoContent();
 	}

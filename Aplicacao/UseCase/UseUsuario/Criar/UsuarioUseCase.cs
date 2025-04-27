@@ -63,7 +63,7 @@ public class UsuarioUseCase : IUsuarioUseCase
 
 		var result = validator.Validate(request);
 
-		var emailExiste = await _readOnly.ExisteUsuarioComEmailAtivo(request.Email);
+		var emailExiste = await _readOnly.ExisteUsuarioAtivoComEmail(request.Email);
 
 		if (emailExiste)
 		{

@@ -9,7 +9,7 @@ public class Versao0000002 : VersaoBase
 	{
 		CreateTable("Usuario")
 			.WithColumn("Ativo").AsBoolean().NotNullable()
-			.WithColumn("DataCadastro").AsDateTime().NotNullable()
+			.WithColumn("DataCadastro").AsCustom("timestamp with time zone").NotNullable()
 			.WithColumn("Nome").AsString(255).NotNullable()
 			.WithColumn("Email").AsString(255).NotNullable().Unique()
 			.WithColumn("Senha").AsString(2000).NotNullable()

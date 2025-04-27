@@ -16,7 +16,7 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 	private readonly ICarrinhoWriteOnly _carrinhoWriteOnly;
 	private readonly ICarrinhoReadOnly _carrinhoReadOnly;
 	private readonly IProdutoReadOnly _produtoReadOnly;
-	private readonly IUsuarioReadOnly _usuarioReadOnly;
+	private readonly IUsuarioUpdateOnly _usuarioUpdateOnly;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
 
@@ -24,14 +24,14 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 		ICarrinhoWriteOnly carrinhoWriteOnly,
 		ICarrinhoReadOnly carrinhoReadOnly,
 		IProdutoReadOnly produtoReadOnly,
-		IUsuarioReadOnly usuarioReadOnly,
+		IUsuarioUpdateOnly usuarioUpdateOnly,
 		IUnitOfWork unitOfWork,
 		IMapper mapper)
 	{
 		_carrinhoWriteOnly = carrinhoWriteOnly;
 		_carrinhoReadOnly = carrinhoReadOnly;
 		_produtoReadOnly = produtoReadOnly;
-		_usuarioReadOnly = usuarioReadOnly;
+		_usuarioUpdateOnly = usuarioUpdateOnly;
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
 	}
@@ -40,15 +40,15 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 	{
 		Validate(request);
 
-		Usuario usuario = await _usuarioReadOnly.GetById(request.UsuarioId)
+		Usuario usuario = await _usuarioUpdateOnly.GetById(request.UsuarioId)
 			?? throw new NotFoundException($"Usuário com ID {request.UsuarioId} não encontrado.");
 
 		CarrinhoDeCompras carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId)
 			?? new CarrinhoDeCompras
-				{
-					UsuarioId = request.UsuarioId,
-					ItensCarrinho = []
-				};
+			{
+				UsuarioId = request.UsuarioId,
+				ItensCarrinho = []
+			};
 
 		Produto produto = await _produtoReadOnly.GetById(request.ProdutoId)
 			?? throw new NotFoundException($"Produto com ID {request.ProdutoId} não encontrado.");

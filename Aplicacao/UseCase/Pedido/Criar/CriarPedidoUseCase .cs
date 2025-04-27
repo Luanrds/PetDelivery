@@ -1,12 +1,10 @@
-﻿// Arquivo: Aplicacao/UseCase/Pedido/Criar/CriarPedidoUseCase.cs
-
-using AutoMapper;
+﻿using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Enums;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Endereco;
-using Dominio.Repositorios.Pagamento; // Certifique-se que IPagamentoWriteOnly tem o método Adicionar
+using Dominio.Repositorios.Pagamento;
 using Dominio.Repositorios.Pedido;
 using Dominio.Repositorios.Usuario;
 using PetDelivery.Communication.Request;
@@ -19,7 +17,7 @@ public class CriarPedidoUseCase : ICriarPedidoUseCase
 {
 	private readonly ICarrinhoReadOnly _carrinhoReadOnly;
 	private readonly ICarrinhoWriteOnly _carrinhoWriteOnly;
-	private readonly IUsuarioReadOnly _usuarioReadOnly;
+	private readonly IUsuarioUpdateOnly  _usuarioUpdateOnly;
 	private readonly IEnderecoReadOnly _enderecoReadOnly;
 	private readonly IPedidoWriteOnly _pedidoWriteOnly;
 	private readonly IPagamentoWriteOnly _pagamentoWriteOnly;
@@ -29,7 +27,7 @@ public class CriarPedidoUseCase : ICriarPedidoUseCase
 	public CriarPedidoUseCase(
 		ICarrinhoReadOnly carrinhoReadOnly,
 		ICarrinhoWriteOnly carrinhoWriteOnly,
-		IUsuarioReadOnly usuarioReadOnly,
+		IUsuarioUpdateOnly usuarioUpdateOnly,
 		IEnderecoReadOnly enderecoReadOnly,
 		IPedidoWriteOnly pedidoWriteOnly,
 		IPagamentoWriteOnly pagamentoWriteOnly,
@@ -38,7 +36,7 @@ public class CriarPedidoUseCase : ICriarPedidoUseCase
 	{
 		_carrinhoReadOnly = carrinhoReadOnly;
 		_carrinhoWriteOnly = carrinhoWriteOnly;
-		_usuarioReadOnly = usuarioReadOnly;
+		_usuarioUpdateOnly = usuarioUpdateOnly;
 		_enderecoReadOnly = enderecoReadOnly;
 		_pedidoWriteOnly = pedidoWriteOnly;
 		_pagamentoWriteOnly = pagamentoWriteOnly;
@@ -49,7 +47,7 @@ public class CriarPedidoUseCase : ICriarPedidoUseCase
 	public async Task<ResponsePedidoCriadoJson> Execute(RequestCheckoutJson request)
 	{
 		// 1. Validações Iniciais (lançarão exceção se falharem)
-		Usuario usuario = await _usuarioReadOnly.GetById(request.UsuarioId)
+		Usuario usuario = await _usuarioUpdateOnly.GetById(request.UsuarioId)
 			?? throw new NotFoundException($"Usuário com ID {request.UsuarioId} não encontrado.");
 
 		Endereco endereco = await _enderecoReadOnly.GetById(request.UsuarioId, request.EnderecoId)

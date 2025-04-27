@@ -8,18 +8,18 @@ using PetDelivery.Communication.Response;
 namespace Aplicacao.UseCase.UseUsuario.AlterarSenha;
 public class AlterarSenhaUsuarioUseCase : IAlterarSenhaUsuarioUseCase
 {
-	private readonly IUsuarioReadOnly _usuarioReadOnly;
+	private readonly IUsuarioUpdateOnly _usuarioUpdateOnly;
 	private readonly IUsuarioWriteOnly _usuarioWriteOnly;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
 
 	public AlterarSenhaUsuarioUseCase(
-		IUsuarioReadOnly usuarioReadOnly,
+		IUsuarioUpdateOnly usuarioUpdateOnly,
 		IUsuarioWriteOnly usuarioWriteOnly,
 		IUnitOfWork unitOfWork,
 		IMapper mapper)
 	{
-		_usuarioReadOnly = usuarioReadOnly;
+		_usuarioUpdateOnly = usuarioUpdateOnly;
 		_usuarioWriteOnly = usuarioWriteOnly;
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
@@ -29,7 +29,7 @@ public class AlterarSenhaUsuarioUseCase : IAlterarSenhaUsuarioUseCase
 	{
 		//Validador 
 
-		var usuarioExistente = await _usuarioReadOnly.GetById(id);
+		var usuarioExistente = await _usuarioUpdateOnly.GetById(id);
 
 		if (usuarioExistente == null)
 		{

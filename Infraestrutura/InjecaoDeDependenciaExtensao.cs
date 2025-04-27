@@ -59,6 +59,7 @@ public static class InjecaoDeDependenciaExtensaoRG
 
 		services.AddScoped<IUsuarioWriteOnly, UsuarioRepository>();
 		services.AddScoped<IUsuarioReadOnly, UsuarioRepository>();
+		services.AddScoped<IUsuarioUpdateOnly, UsuarioRepository>();
 		services.AddScoped<IEnderecoWriteOnly, EnderecoRepository>();
 		services.AddScoped<IEnderecoReadOnly, EnderecoRepository>();
 		services.AddScoped<IProdutoWriteOnly, ProdutoRepository>();
