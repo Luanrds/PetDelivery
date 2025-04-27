@@ -13,6 +13,7 @@ using Infraestrutura.Extensoes;
 using Infraestrutura.Repositorio.Repositorios;
 using Infraestrutura.Seguranca.Criptografia;
 using Infraestrutura.Seguranca.Tokens.Access.Generator;
+using Infraestrutura.Seguranca.Tokens.Access.Validador;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -91,5 +92,6 @@ public static class InjecaoDeDependenciaExtensaoRG
 		var signingKey = configuration.GetValue<string>("Settings:Jwt:SigningKey");
 
 		services.AddScoped<IAccessTokenGenerator>(option => new JwtTokenGenerator(expirationTimeMinutes, signingKey!));
+		services.AddScoped<IAccessTokenValidator>(option => new JwtTokenValidator(signingKey!));
 	}
 }
