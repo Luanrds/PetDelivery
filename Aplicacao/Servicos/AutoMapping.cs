@@ -53,6 +53,8 @@ public class AutoMapping : Profile
 
 	private void DomainToResponse()
 	{
+		CreateMap<Usuario, ResponsePerfilUsuarioJson>();
+
 		CreateMap<Endereco, ResponseEnderecoJson>();
 
 		CreateMap<Produto, ResponseProdutoJson>()

@@ -48,7 +48,7 @@ public class UsuarioAutenticadoFilter(IAccessTokenValidator accessTokenValidator
 		var authentication = context.HttpContext.Request.Headers.Authorization.ToString();
 		if (string.IsNullOrWhiteSpace(authentication))
 		{
-			throw new Exception("Sem Token");
+			throw new UnauthorizedException("Sem Token");
 		}
 
 		return authentication["Bearer ".Length..].Trim();

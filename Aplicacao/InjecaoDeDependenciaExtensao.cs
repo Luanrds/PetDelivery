@@ -47,7 +47,7 @@ public static class InjecaoDeDependenciaExtensao
 	private static void AdicioneUseCase(IServiceCollection services)
 	{
 		services.AddScoped<IUsuarioUseCase, UsuarioUseCase>();
-		services.AddScoped<IObterUsuarioUseCase, ObterUsuarioUseCase>();
+		services.AddScoped<IObterPerfilUsuarioUseCase, ObterPerfilUsuarioUseCase>();
 		services.AddScoped<ILoginUseCase, LoginUseCase>();
 		services.AddScoped<IAtualizarUsuarioUseCase, AtualizarUsuarioUseCase>();
 		services.AddScoped<IExcluirUsuarioUseCase, ExcluirUsuarioUseCase>();

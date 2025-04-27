@@ -11,7 +11,6 @@ using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
 
-[UsuarioAutenticado]
 public class UsuarioController : PetDeliveryBaseController
 {
 	[HttpPost("Cadastro")]
@@ -26,14 +25,13 @@ public class UsuarioController : PetDeliveryBaseController
 		return Created(string.Empty, resposta);
 	}
 
-	[HttpGet("{id}")]
-	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status404NotFound)]
-	public async Task<IActionResult> Obter(
-	[FromServices] IObterUsuarioUseCase UseCase,
-	[FromRoute] long id)
+	[HttpGet]
+	[ProducesResponseType(typeof(ResponsePerfilUsuarioJson), StatusCodes.Status200OK)]
+	[UsuarioAutenticado]
+	public async Task<IActionResult> ObterPerfilUsuario(
+	[FromServices] IObterPerfilUsuarioUseCase UseCase)
 	{
-		ResponseUsuarioJson resposta = await UseCase.ExecuteAsync(id);
+		ResponsePerfilUsuarioJson resposta = await UseCase.ExecuteAsync();
 
 		return Ok(resposta);
 	}
