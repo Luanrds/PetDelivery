@@ -2,7 +2,6 @@
 using Dominio.Entidades;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
-using System.Linq; // Necessário para Sum()
 
 namespace Aplicacao.Servicos;
 public class AutoMapping : Profile
@@ -16,8 +15,8 @@ public class AutoMapping : Profile
 	private void RequestToDomain()
 	{
 		CreateMap<RequestUsuarioRegistroJson, Usuario>()
-			.ForMember(dest => dest.Id, opt => opt.Ignore());
-			//.ForMember(dest => dest.EhVendedor, opt => opt.MapFrom(src => src.EhVendedor));
+			.ForMember(dest => dest.Id, opt => opt.Ignore())
+			.ForMember(dest => dest.EhVendedor, opt => opt.MapFrom(src => src.EhVendedor));
 
 		CreateMap<RequestAtualizarUsuarioJson, Usuario>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());

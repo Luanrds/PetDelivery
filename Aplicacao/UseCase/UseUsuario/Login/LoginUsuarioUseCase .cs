@@ -36,6 +36,7 @@ public class LoginUseCase : ILoginUseCase
 		return new ResponseUsuarioJson
 		{
 			Nome = usuario.Nome,
+			EhVendedor = usuario.EhVendedor,
 			Tokens = new ResponseTokensJson
 			{
 				AccessToken = _accessTokenGenerator.Gererate(usuario.IdentificadorDoUsuario)
