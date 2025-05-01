@@ -5,6 +5,7 @@ using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
@@ -15,6 +16,7 @@ public class ProdutoController : PetDeliveryBaseController
 	[HttpPost]
 	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status204NoContent)]
+	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> CrieProduto(
 		[FromServices] IProdutoUseCase useCase,
 		[FromBody] RequestProdutoJson request)
@@ -72,6 +74,7 @@ public class ProdutoController : PetDeliveryBaseController
 	[Route("{id}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> ExcluirProduto(
 		[FromServices] IExcluirProdutoUseCase useCase,
 		[FromRoute] long id)
@@ -85,6 +88,7 @@ public class ProdutoController : PetDeliveryBaseController
 	[Route("{id}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> AtualizeProduto(
 		[FromServices] IAtualizeProdutoUseCase useCase,
 		[FromBody] RequestProdutoJson requisicao,

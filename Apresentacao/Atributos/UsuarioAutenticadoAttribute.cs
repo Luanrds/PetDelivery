@@ -15,6 +15,5 @@ public class UsuarioAutenticadoAttribute : TypeFilterAttribute
 	public UsuarioAutenticadoAttribute(bool requerVendedor) : base(typeof(UsuarioAutenticadoFilter))
 	{
 		RequerVendedor = requerVendedor;
-		Arguments = [requerVendedor];
 	}
 }

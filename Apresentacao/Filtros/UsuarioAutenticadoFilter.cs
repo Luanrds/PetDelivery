@@ -4,17 +4,24 @@ using Dominio.Seguranca.Tokens;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace PetDelivery.API.Filtros;
 
-public class UsuarioAutenticadoFilter(IAccessTokenValidator accessTokenValidator, IUsuarioReadOnly usuarioReadOnly, bool requerVendedor) : IAsyncAuthorizationFilter
+public class UsuarioAutenticadoFilter(IAccessTokenValidator accessTokenValidator, IUsuarioReadOnly usuarioReadOnly) : IAsyncAuthorizationFilter
 {
 	public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
 	{
 		try
 		{
+			var atributo = context.ActionDescriptor.EndpointMetadata
+								  .OfType<UsuarioAutenticadoAttribute>()
+								  .FirstOrDefault();
+
+			var requerVendedor = atributo?.RequerVendedor ?? false;
+
 			var token = TokenOnRequest(context);
 
 			var identificadorUsuario = accessTokenValidator.ValidarEBuscarIdentificadorDoUsuario(token);

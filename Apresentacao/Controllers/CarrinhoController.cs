@@ -4,10 +4,13 @@ using Aplicacao.UseCase.Carrinho.Criar;
 using Aplicacao.UseCase.Carrinho.LimparCarrinho;
 using Aplicacao.UseCase.Carrinho.RemoverItem;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
+
+[UsuarioAutenticado]
 public class CarrinhoController : PetDeliveryBaseController
 {
 	[HttpPost]

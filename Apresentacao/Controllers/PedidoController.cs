@@ -2,10 +2,13 @@
 using Aplicacao.UseCase.Pedido.Criar;
 using Aplicacao.UseCase.Pedido.ObterPedido;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
+
+[UsuarioAutenticado]
 public class PedidoController : PetDeliveryBaseController
 {
 	[HttpPost]

@@ -3,11 +3,13 @@ using Aplicacao.UseCase.UseEndereco.Buscar;
 using Aplicacao.UseCase.UseEndereco.Criar;
 using Aplicacao.UseCase.UseEndereco.Excluir;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
 
+[UsuarioAutenticado]
 public class EnderecoController : PetDeliveryBaseController
 {
 	[HttpPost]
