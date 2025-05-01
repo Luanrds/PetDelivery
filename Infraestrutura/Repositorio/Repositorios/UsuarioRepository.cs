@@ -20,6 +20,9 @@ public class UsuarioRepository(PetDeliveryDbContext dbContext) : IUsuarioWriteOn
 		_dbContext.Usuario.Remove(usuario!);
 	}
 
+	public async Task<Usuario?> GetByIdentificador(Guid identificadorUsuario) =>
+		await _dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.IdentificadorDoUsuario.Equals(identificadorUsuario) && u.Ativo);
+
 	public async Task<Usuario> GetById(long id) =>
 		await _dbContext.Usuario.FirstAsync(u => u.Id == id);
 

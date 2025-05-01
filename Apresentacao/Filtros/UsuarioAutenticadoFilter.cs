@@ -9,7 +9,7 @@ using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace PetDelivery.API.Filtros;
 
-public class UsuarioAutenticadoFilter(IAccessTokenValidator accessTokenValidator, IUsuarioReadOnly usuarioReadOnly) : IAsyncAuthorizationFilter
+public class UsuarioAutenticadoFilter(IAccessTokenValidator accessTokenValidator, IUsuarioReadOnly usuarioReadOnly, bool requerVendedor) : IAsyncAuthorizationFilter
 {
 	public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
 	{
@@ -19,27 +19,41 @@ public class UsuarioAutenticadoFilter(IAccessTokenValidator accessTokenValidator
 
 			var identificadorUsuario = accessTokenValidator.ValidarEBuscarIdentificadorDoUsuario(token);
 
-			var existe = await usuarioReadOnly.ExisteUsuarioAtivoComIdentificador(identificadorUsuario);
-			if (existe.IsFalse())
+			var usuario = await usuarioReadOnly.GetByIdentificador(identificadorUsuario);
+
+			if (usuario is null || !usuario.Ativo)
 			{
 				throw new UnauthorizedException("Você não pode acessar este recurso");
+			}
+
+			if (requerVendedor)
+			{
+				if (usuario.EhVendedor.IsFalse())
+				{
+					throw new ForbiddenException("Acesso negado. Permissão de vendedor necessária.");
+				}
 			}
 		}
 		catch (SecurityTokenExpiredException)
 		{
-			context.Result = new UnauthorizedObjectResult(new ResponseErrorJson("TokenIsExpired")
+			context.Result = new UnauthorizedObjectResult(new ResponseErrorJson("Token expirado.")
 			{
 				TokenIsExpired = true,
 			});
+		}
+		catch (ForbiddenException forbiddenException)
+		{
+			context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+			context.Result = new ObjectResult(new ResponseErrorJson(forbiddenException.Message));
 		}
 		catch (PetDeliveryExceptions petDeliveryException)
 		{
 			context.HttpContext.Response.StatusCode = (int)petDeliveryException.GetStatusCode();
 			context.Result = new ObjectResult(new ResponseErrorJson(petDeliveryException.GetMensagensDeErro()));
 		}
-		catch
+		catch (Exception ex)
 		{
-			context.Result = new UnauthorizedObjectResult(new ResponseErrorJson("Você não pode acessar este recurso"));
+			context.Result = new UnauthorizedObjectResult(new ResponseErrorJson($"Erro de autenticação: {ex.Message}"));
 		}
 	}
 
