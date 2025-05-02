@@ -3,6 +3,8 @@ using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Produto;
+using Dominio.Servicos.UsuarioLogado;
+using FluentValidation.Results;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
@@ -12,26 +14,32 @@ namespace Aplicacao.UseCase.UseProduto.Criar;
 public class ProdutoUseCase : IProdutoUseCase
 {
 	private readonly IProdutoWriteOnly _writeOnly;
-	private readonly IProdutoReadOnly _readOnly;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
+	private readonly IUsuarioLogado _usuarioLogado;
 
-	public ProdutoUseCase(IProdutoWriteOnly writeOnly, IProdutoReadOnly readOnly, IUnitOfWork unitOfWork, IMapper mapper)
+	public ProdutoUseCase(
+		IProdutoWriteOnly writeOnly,
+		IUnitOfWork unitOfWork,
+		IMapper mapper,
+		IUsuarioLogado usuarioLogado)
 	{
 		_writeOnly = writeOnly;
-		_readOnly = readOnly;
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
+		_usuarioLogado = usuarioLogado;
 	}
 
 	public async Task<ResponseProdutoJson> ExecuteAsync(RequestProdutoJson request)
 	{
+		Usuario vendedorLogado = await _usuarioLogado.Usuario();
+
 		Validate(request);
 
-		var produto = _mapper.Map<Produto>(request);
+		Produto produto = _mapper.Map<Produto>(request);
+		produto.UsuarioId = vendedorLogado.Id;
 
 		await _writeOnly.Add(produto);
-
 		await _unitOfWork.Commit();
 
 		return _mapper.Map<ResponseProdutoJson>(produto);
@@ -39,13 +47,13 @@ public class ProdutoUseCase : IProdutoUseCase
 
 	private static void Validate(RequestProdutoJson request)
 	{
-		var validator = new ProdutoValidator();
+		ProdutoValidator validator = new();
 
-		var result = validator.Validate(request);
+		ValidationResult result = validator.Validate(request);
 
 		if (result.IsValid == false)
 		{
-			var mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
+			List<string> mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
 
 			throw new ErrorOnValidationException(mensagensDeErro);
 		}

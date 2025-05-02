@@ -14,7 +14,7 @@ namespace PetDelivery.API.Controllers;
 public class ProdutoController : PetDeliveryBaseController
 {
 	[HttpPost]
-	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status204NoContent)]
 	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> CrieProduto(
@@ -60,14 +60,14 @@ public class ProdutoController : PetDeliveryBaseController
 		[FromServices] IObtenhaProdutosPorCategoria useCase,
 		[FromRoute] string categoria)
 	{
-		IEnumerable<ResponseProdutoJson> response = await useCase.ExecuteAsync(categoria);
+		IEnumerable<ResponseProdutoJson> resposta = await useCase.ExecuteAsync(categoria);
 
-		if (response == null || !response.Any())
+		if (resposta == null || !resposta.Any())
 		{
 			return NoContent();
 		}
 
-		return Ok(response);
+		return Ok(resposta);
 	}
 
 	[HttpDelete]
