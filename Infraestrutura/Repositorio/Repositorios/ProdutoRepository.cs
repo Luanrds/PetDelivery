@@ -6,38 +6,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infraestrutura.Repositorio.Repositorios;
 
-public class ProdutoRepository : IProdutoWriteOnly, IProdutoReadOnly, IProdutoUpdateOnly
+public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOnly, IProdutoReadOnly, IProdutoUpdateOnly
 {
-    private readonly PetDeliveryDbContext _dbContext;
+	public async Task Add(Produto produto) => await dbContext.Produto.AddAsync(produto);
 
-    public ProdutoRepository(PetDeliveryDbContext dbContext) => _dbContext = dbContext;
+	public void Atualize(Produto produto) => dbContext.Produto.Update(produto);
 
-    public async Task Add(Produto produto) => await _dbContext.Produto.AddAsync(produto);
-
-	public void Atualize(Produto produto) => _dbContext.Produto.Update(produto);
-
-	public Task<List<Produto>> GetAll() => _dbContext.Produto.ToListAsync();
+	public Task<List<Produto>> GetAll() => dbContext.Produto.ToListAsync();
 
 	public async Task Excluir(long produtoId)
 	{
-		var produto = await _dbContext.Produto.FindAsync(produtoId);
+		var produto = await dbContext.Produto.FindAsync(produtoId);
 
-		_dbContext.Produto.Remove(produto!);
+		dbContext.Produto.Remove(produto!);
 	}
 
-
-	public Task<Produto?> GetById(long ProdutoId)
-	{
-		return _dbContext.Produto
-			.AsNoTracking()
-			.FirstOrDefaultAsync(produto => produto.Id == ProdutoId);
-	}
+	public Task<Produto?> GetById(long ProdutoId) => 
+		dbContext.Produto
+		.AsNoTracking()
+		.FirstOrDefaultAsync(produto => produto.Id == ProdutoId);
 
 	public async Task<IEnumerable<Produto>> ObterPorCategoria(string categoria) =>
 		Enum.TryParse<CategoriaProduto>(categoria, true, out var categoriaEnum)
-			? await _dbContext.Produto
+			? await dbContext.Produto
 				.AsNoTracking()
 				.Where(produto => produto.Categoria == categoriaEnum)
 				.ToListAsync()
 			: (IEnumerable<Produto>)([]);
+
+	public async Task<IEnumerable<Produto>> GetByUsuarioIdAsync(long usuarioId) =>
+		await dbContext.Produto
+		.AsNoTracking()
+		.Where(p => p.UsuarioId == usuarioId)
+		.ToListAsync();
+	
 }

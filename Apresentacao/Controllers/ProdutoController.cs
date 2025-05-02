@@ -2,6 +2,7 @@
 using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
+using Aplicacao.UseCase.UseProduto.GetByVendedor;
 using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,23 @@ public class ProdutoController : PetDeliveryBaseController
 		[FromServices] IObtenhaTodosProdutos useCase)
 	{
 		IEnumerable<ResponseProdutoJson> response = await useCase.ExecuteAsync();
+
+		return Ok(response);
+	}
+
+	[HttpGet("meus-produtos")]
+	[ProducesResponseType(typeof(IEnumerable<ResponseProdutoJson>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[UsuarioAutenticado(requerVendedor: true)]
+	public async Task<IActionResult> GetMeusProdutos(
+		[FromServices] IGetProdutosPorVendedorUseCase useCase)
+	{
+		IEnumerable<ResponseProdutoJson> response = await useCase.ExecuteAsync();
+
+		if (response == null || !response.Any())
+		{
+			return NoContent();
+		}
 
 		return Ok(response);
 	}
