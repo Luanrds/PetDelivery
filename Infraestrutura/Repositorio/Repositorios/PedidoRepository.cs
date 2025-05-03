@@ -38,4 +38,27 @@ public class PedidoRepository(PetDeliveryDbContext dbContext) : IPedidoReadOnly,
 			dbContext.Pedido.Update(pedido);
 		}
 	}
+	public async Task<List<long>> ObterIdsDePedidosComPagamentoPendenteAsync(int maximoPedidos, CancellationToken cancellationToken)
+	{
+		return await dbContext.Pedido
+			.Include(p => p.Pagamento) // Incluir Pagamento para filtrar pelo status dele
+			.Where(p => p.Pagamento != null && p.Pagamento.StatusPagamento == StatusPagamento.Pendente)
+			.OrderBy(p => p.DataPedido) // Processar os mais antigos primeiro
+			.Select(p => p.Id)          // Selecionar apenas o ID
+			.Take(maximoPedidos)        // Limitar a quantidade por ciclo
+			.ToListAsync(cancellationToken);
+	}
+
+	public async Task<List<long>> ObterIdsDePedidosParaProcessarEntregaAsync(int maximoPedidos, CancellationToken cancellationToken)
+	{
+		// Pedidos que precisam iniciar a entrega (Processando) ou já estão em trânsito (Enviado)
+		var statusParaProcessar = new List<StatusPedido> { StatusPedido.Processando, StatusPedido.Enviado };
+
+		return await dbContext.Pedido
+			.Where(p => statusParaProcessar.Contains(p.Status))
+			.OrderBy(p => p.DataPedido) // Ou talvez por data de atualização?
+			.Select(p => p.Id)
+			.Take(maximoPedidos)
+			.ToListAsync(cancellationToken);
+	}
 }

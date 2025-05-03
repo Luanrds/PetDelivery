@@ -12,6 +12,6 @@ public class Versao0000005 : VersaoBase
 			.WithColumn("MetodoPagamento").AsInt32().NotNullable()
 			.WithColumn("StatusPagamento").AsInt32().NotNullable()
 			.WithColumn("Valor").AsDecimal().NotNullable()
-			.WithColumn("DataPagamento").AsDateTime().NotNullable();
+			.WithColumn("DataPagamento").AsCustom("timestamp with time zone").NotNullable();
 	}
 }

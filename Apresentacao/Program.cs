@@ -3,6 +3,7 @@ using Dominio.Seguranca.Tokens;
 using Infraestrutura;
 using Infraestrutura.Extensoes;
 using Infraestrutura.Migrations;
+using Infraestrutura.Servicos.Background;
 using Microsoft.OpenApi.Models;
 using PetDelivery.API.Conversoes;
 using PetDelivery.API.Filtros;
@@ -72,6 +73,9 @@ builder.Services.AddCors(options =>
 				  .AllowAnyHeader();
 		});
 });
+
+builder.Services.AddHostedService<ProcessadorPagamentoPendenteService>();
+builder.Services.AddHostedService<ProcessadorEntregaPendenteService>();
 
 var app = builder.Build();
 
