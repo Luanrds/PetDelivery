@@ -11,7 +11,7 @@ public class Versao0000007 : VersaoBase
 			.WithColumn("UsuarioId").AsInt64().NotNullable().ForeignKey("FK_Pedido_Usuario", "Usuario", "Id")
 			.WithColumn("EnderecoId").AsInt64().NotNullable().ForeignKey("FK_Pedido_Endereco", "Endereco", "Id")
 			.WithColumn("Status").AsInt32().NotNullable()
-			.WithColumn("DataPedido").AsDateTime().NotNullable()
+			.WithColumn("DataPedido").AsCustom("timestamp with time zone").NotNullable()
 			.WithColumn("ValorTotal").AsDecimal(10, 2).NotNullable();
 
 		CreateTable("ItemPedido")
