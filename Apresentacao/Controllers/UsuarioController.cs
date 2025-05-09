@@ -3,13 +3,14 @@ using Aplicacao.UseCase.UseUsuario.Atualizar;
 using Aplicacao.UseCase.UseUsuario.Buscar;
 using Aplicacao.UseCase.UseUsuario.Criar;
 using Aplicacao.UseCase.UseUsuario.Excluir;
-using Aplicacao.UseCase.UseUsuario.Login;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
+
 public class UsuarioController : PetDeliveryBaseController
 {
 	[HttpPost("Cadastro")]
@@ -24,50 +25,38 @@ public class UsuarioController : PetDeliveryBaseController
 		return Created(string.Empty, resposta);
 	}
 
-	[HttpPost("login")]
-	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> Login(
-	[FromServices] ILoginUsuarioUseCase useCase,
-	[FromBody] RequestLoginUsuarioJson request)
+	[HttpGet]
+	[ProducesResponseType(typeof(ResponsePerfilUsuarioJson), StatusCodes.Status200OK)]
+	[UsuarioAutenticado]
+	public async Task<IActionResult> ObterPerfilUsuario(
+	[FromServices] IObterPerfilUsuarioUseCase UseCase)
 	{
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(ModelState);
-		}
-
-		var usuarioLogado = await useCase.ExecuteAsync(request);
-
-		if (usuarioLogado == null)
-		{
-			return Unauthorized("Credenciais inválidas.");
-		}
-
-		return Ok(usuarioLogado);
-	}
-
-	[HttpGet("{id}")]
-	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status404NotFound)]
-	public async Task<IActionResult> Obter(
-	[FromServices] IObterUsuarioUseCase UseCase,
-	[FromRoute] long id)
-	{
-		ResponseUsuarioJson resposta = await UseCase.ExecuteAsync(id);
+		ResponsePerfilUsuarioJson resposta = await UseCase.ExecuteAsync();
 
 		return Ok(resposta);
 	}
 
-	[HttpPut("{id}")]
-	[ProducesResponseType(typeof(ResponseUsuarioJson), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status404NotFound)]
+	[HttpPut]
+	[ProducesResponseType (StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status400BadRequest)]
+	[UsuarioAutenticado]
 	public async Task<IActionResult> Atualizar(
 	[FromServices] IAtualizarUsuarioUseCase UseCase,
-	[FromRoute] long id,
 	[FromBody] RequestAtualizarUsuarioJson request)
 	{
-		await UseCase.ExecuteAsync(id, request);
+		await UseCase.ExecuteAsync(request);
+
+		return NoContent();
+	}
+
+	[HttpPut("alterar-senha")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> AlterarSenha(
+	[FromServices] IAlterarSenhaUsuarioUseCase UseCase,
+	[FromBody] RequestAlterarSenhaUsuarioJson request)
+	{
+		await UseCase.ExecuteAsync(request);
 
 		return NoContent();
 	}
@@ -80,19 +69,6 @@ public class UsuarioController : PetDeliveryBaseController
 			[FromRoute] long id)
 	{
 		await UseCase.ExecuteAsync(id);
-
-		return NoContent();
-	}
-
-	[HttpPut("{id}/senha")]
-	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> AlterarSenha(
-		[FromServices] IAlterarSenhaUsuarioUseCase UseCase,
-		[FromRoute] long id,
-		[FromBody] RequestAlterarSenhaUsuarioJson request)
-	{
-		await UseCase.ExecuteAsync(id, request);
 
 		return NoContent();
 	}

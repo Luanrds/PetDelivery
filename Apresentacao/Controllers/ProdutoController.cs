@@ -2,9 +2,11 @@
 using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
+using Aplicacao.UseCase.UseProduto.GetByVendedor;
 using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
@@ -13,8 +15,9 @@ namespace PetDelivery.API.Controllers;
 public class ProdutoController : PetDeliveryBaseController
 {
 	[HttpPost]
-	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ResponseErrosJson), StatusCodes.Status204NoContent)]
+	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> CrieProduto(
 		[FromServices] IProdutoUseCase useCase,
 		[FromBody] RequestProdutoJson request)
@@ -50,15 +53,14 @@ public class ProdutoController : PetDeliveryBaseController
 		return Ok(response);
 	}
 
-	[HttpGet]
-	[Route("categoria/{categoria}")]
+	[HttpGet("meus-produtos")]
 	[ProducesResponseType(typeof(IEnumerable<ResponseProdutoJson>), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	public async Task<IActionResult> ObtenhaProdutosPorCategoria(
-		[FromServices] IObtenhaProdutosPorCategoria useCase,
-		[FromRoute] string categoria)
+	[UsuarioAutenticado(requerVendedor: true)]
+	public async Task<IActionResult> GetMeusProdutos(
+		[FromServices] IGetProdutosPorVendedorUseCase useCase)
 	{
-		IEnumerable<ResponseProdutoJson> response = await useCase.ExecuteAsync(categoria);
+		IEnumerable<ResponseProdutoJson> response = await useCase.ExecuteAsync();
 
 		if (response == null || !response.Any())
 		{
@@ -68,10 +70,29 @@ public class ProdutoController : PetDeliveryBaseController
 		return Ok(response);
 	}
 
+	[HttpGet]
+	[Route("categoria/{categoria}")]
+	[ProducesResponseType(typeof(IEnumerable<ResponseProdutoJson>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<IActionResult> ObtenhaProdutosPorCategoria(
+		[FromServices] IObtenhaProdutosPorCategoria useCase,
+		[FromRoute] string categoria)
+	{
+		IEnumerable<ResponseProdutoJson> resposta = await useCase.ExecuteAsync(categoria);
+
+		if (resposta == null || !resposta.Any())
+		{
+			return NoContent();
+		}
+
+		return Ok(resposta);
+	}
+
 	[HttpDelete]
 	[Route("{id}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> ExcluirProduto(
 		[FromServices] IExcluirProdutoUseCase useCase,
 		[FromRoute] long id)
@@ -85,6 +106,7 @@ public class ProdutoController : PetDeliveryBaseController
 	[Route("{id}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> AtualizeProduto(
 		[FromServices] IAtualizeProdutoUseCase useCase,
 		[FromBody] RequestProdutoJson requisicao,
