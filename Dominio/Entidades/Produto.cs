@@ -10,5 +10,6 @@ public class Produto : EntidadeBase
     public decimal Valor { get; set; }
 	public CategoriaProduto Categoria { get; set; } 
     public int QuantidadeEstoque { get; set; }
+    public string? ImagemIdentificador { get; set; }
 	public virtual Usuario Usuario { get; set; } = null!;
 }

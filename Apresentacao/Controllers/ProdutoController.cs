@@ -3,6 +3,7 @@ using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.GetByVendedor;
+using Aplicacao.UseCase.UseProduto.Imagem;
 using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Microsoft.AspNetCore.Mvc;
@@ -113,6 +114,20 @@ public class ProdutoController : PetDeliveryBaseController
 		[FromRoute] long id)
 	{
 		await useCase.ExecuteAsync(id, requisicao);
+
+		return NoContent();
+	}
+
+	[HttpPut]
+	[Route("image/{id}")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> AtualizeImagem(
+		[FromServices] IAddUpdateImageCoverUseCase useCase,
+		[FromRoute] long id,
+		IFormFile file)
+	{
+		await useCase.Execute(id, file);
 
 		return NoContent();
 	}
