@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infraestrutura.Repositorio.Repositorios;
 
-public class UsuarioRepository(PetDeliveryDbContext dbContext) : IUsuarioWriteOnly, IUsuarioReadOnly
+public class UsuarioRepository(PetDeliveryDbContext dbContext) : IUsuarioWriteOnly, IUsuarioReadOnly, IUsuarioUpdateOnly
 {
 	private readonly PetDeliveryDbContext _dbContext = dbContext;
 
@@ -20,18 +20,22 @@ public class UsuarioRepository(PetDeliveryDbContext dbContext) : IUsuarioWriteOn
 		_dbContext.Usuario.Remove(usuario!);
 	}
 
-	public async Task<Usuario?> GetById(long id) => 
-		await _dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+	public async Task<Usuario?> GetByIdentificador(Guid identificadorUsuario) =>
+		await _dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.IdentificadorDoUsuario.Equals(identificadorUsuario) && u.Ativo);
 
-	public Task<List<Usuario>> GetAll()
-	{
-		throw new NotImplementedException();
-	}
+	public async Task<Usuario> GetById(long id) =>
+		await _dbContext.Usuario.FirstAsync(u => u.Id == id);
 
-	public Task<Usuario?> GetByEmail(string email)
-	{
-		return _dbContext.Usuario
-			.AsNoTracking()
-			.FirstOrDefaultAsync(u => u.Email == email);
-	}
+	public async Task<Usuario?> GetByEmail(string email) =>
+	await _dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Ativo && u.Email.Equals(email));
+
+	public async Task<bool> ExisteUsuarioAtivoComEmail(string email) =>
+		await _dbContext.Usuario.AnyAsync(u => u.Email.Equals(email) && u.Ativo);
+
+	public async Task<bool> ExisteUsuarioAtivoComIdentificador(Guid identificadorUsuario) =>
+		await _dbContext.Usuario.AnyAsync(u => u.IdentificadorDoUsuario.Equals(identificadorUsuario) && u.Ativo);
+
+	public Task<Usuario?> GetByEmailESenha(string email, string senha) =>
+		_dbContext.Usuario.AsNoTracking().FirstOrDefaultAsync(u => u.Ativo && u.Email.Equals(email) && u.Senha.Equals(senha));
+
 }

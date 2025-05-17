@@ -16,6 +16,7 @@ using Aplicacao.UseCase.UseProduto.Atualizar;
 using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
+using Aplicacao.UseCase.UseProduto.GetByVendedor;
 using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Aplicacao.UseCase.UseUsuario.AlterarSenha;
@@ -47,8 +48,8 @@ public static class InjecaoDeDependenciaExtensao
 	private static void AdicioneUseCase(IServiceCollection services)
 	{
 		services.AddScoped<IUsuarioUseCase, UsuarioUseCase>();
-		services.AddScoped<IObterUsuarioUseCase, ObterUsuarioUseCase>();
-		services.AddScoped<ILoginUsuarioUseCase, LoginUsuarioUseCase>();
+		services.AddScoped<IObterPerfilUsuarioUseCase, ObterPerfilUsuarioUseCase>();
+		services.AddScoped<ILoginUseCase, LoginUseCase>();
 		services.AddScoped<IAtualizarUsuarioUseCase, AtualizarUsuarioUseCase>();
 		services.AddScoped<IExcluirUsuarioUseCase, ExcluirUsuarioUseCase>();
 		services.AddScoped<IAlterarSenhaUsuarioUseCase, AlterarSenhaUsuarioUseCase>();
@@ -58,6 +59,7 @@ public static class InjecaoDeDependenciaExtensao
 		services.AddScoped<IExcluirEnderecoUseCase, ExcluirEnderecoUseCase>();
 		services.AddScoped<IProdutoUseCase, ProdutoUseCase>();
 		services.AddScoped<IGetProdutoById, GetProdutoById>();
+		services.AddScoped<IGetProdutosPorVendedorUseCase, GetProdutosPorVendedorUseCase>();
 		services.AddScoped<IObtenhaTodosProdutos, ObtenhaTodosProdutos>();
 		services.AddScoped<IObtenhaProdutosPorCategoria, ObtenhaProdutosPorCategoriaUseCase>();
 		services.AddScoped<IExcluirProdutoUseCase, ExcluirProdutoUseCase>();

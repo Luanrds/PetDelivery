@@ -3,5 +3,5 @@
 namespace Aplicacao.UseCase.Carrinho.Buscar;
 public interface IObterCarrinhoUseCase
 {
-	Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(long usuarioId);
+	Task<ResponseCarrinhoDeComprasJson> ExecuteAsync();
 }

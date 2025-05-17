@@ -51,5 +51,10 @@ public class PetDeliveryDbContext(DbContextOptions<PetDeliveryDbContext> options
 			pagamento.Property(p => p.Valor).HasColumnType("decimal(10,2)");
 		});
 
+		modelBuilder.Entity<Produto>()
+		.HasOne(p => p.Usuario)
+		.WithMany()
+		.HasForeignKey(p => p.UsuarioId)
+		.OnDelete(DeleteBehavior.Restrict);
 	}
 }

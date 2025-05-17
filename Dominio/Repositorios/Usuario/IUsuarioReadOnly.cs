@@ -2,7 +2,9 @@
 
 public interface IUsuarioReadOnly
 {
-	Task<Entidades.Usuario?> GetById(long id);
+	Task<bool> ExisteUsuarioAtivoComEmail(string email);
+	Task<bool> ExisteUsuarioAtivoComIdentificador(Guid identificadorUsuario);
+	Task<Entidades.Usuario?> GetByIdentificador(Guid identificadorUsuario);
+	Task<Entidades.Usuario?> GetByEmailESenha(string email, string senha);
 	Task<Entidades.Usuario?> GetByEmail(string email);
-	Task<List<Entidades.Usuario>> GetAll();
 }

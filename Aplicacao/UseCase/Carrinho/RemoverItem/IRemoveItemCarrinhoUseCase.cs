@@ -1,7 +1,5 @@
-﻿using Dominio.Entidades;
-
-namespace Aplicacao.UseCase.Carrinho.RemoverItem;
+﻿namespace Aplicacao.UseCase.Carrinho.RemoverItem;
 public interface IRemoveItemCarrinhoUseCase
 {
-	Task ExecuteAsync(long itemId, long usuarioId);
+	Task ExecuteAsync(long itemId);
 }

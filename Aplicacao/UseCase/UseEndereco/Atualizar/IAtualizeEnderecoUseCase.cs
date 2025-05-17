@@ -3,5 +3,5 @@
 namespace Aplicacao.UseCase.UseEndereco.Atualizar;
 public interface IAtualizeEnderecoUseCase
 {
-	Task ExecuteAsync(long usuarioId, long endedrecoId, RequestAtualizarEnderecoJson request);
+	Task ExecuteAsync(long endedrecoId, RequestAtualizarEnderecoJson request);
 }
