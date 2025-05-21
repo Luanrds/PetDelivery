@@ -1,4 +1,6 @@
-﻿using Dominio.Repositorios;
+﻿using Azure.Storage.Blobs;
+using Dominio.Extensoes;
+using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Endereco;
 using Dominio.Repositorios.Pagamento;
@@ -7,6 +9,7 @@ using Dominio.Repositorios.Produto;
 using Dominio.Repositorios.Usuario;
 using Dominio.Seguranca.Criptografia;
 using Dominio.Seguranca.Tokens;
+using Dominio.Servicos.Storage;
 using Dominio.Servicos.UsuarioLogado;
 using FluentMigrator.Runner;
 using Infraestrutura.Configuracao;
@@ -15,6 +18,7 @@ using Infraestrutura.Repositorio.Repositorios;
 using Infraestrutura.Seguranca.Criptografia;
 using Infraestrutura.Seguranca.Tokens.Access.Generator;
 using Infraestrutura.Seguranca.Tokens.Access.Validador;
+using Infraestrutura.Servicos.Storage;
 using Infraestrutura.Servicos.UsuarioLogado;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,6 +38,7 @@ public static class InjecaoDeDependenciaExtensaoRG
 		AdicioneDbContext_Npga(services, configuration);
 		AdicioneFluentMigrator_Npga(services, configuration);
 		AdicioneRepositorios(services);
+		AddAzureStorage(services, configuration);
 	}
 
 	private static void AdicioneDbContext_Npga(IServiceCollection services, IConfiguration configuration)
@@ -101,4 +106,14 @@ public static class InjecaoDeDependenciaExtensaoRG
 
 	private static void AddUsuarioLogado(IServiceCollection services) =>
 		services.AddScoped<IUsuarioLogado, UsuarioLogado>();
+
+	private static void AddAzureStorage(IServiceCollection services, IConfiguration configuration)
+	{
+		var connectionString = configuration.GetValue<string>("Settings:BlobStorage:Azure");
+
+		if (connectionString.NotEmpty())
+		{
+			services.AddScoped<IBlobStorageService>(c => new AzureStorageService(new BlobServiceClient(connectionString)));
+		}
+	}
 }

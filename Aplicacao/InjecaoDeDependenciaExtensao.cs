@@ -17,6 +17,7 @@ using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.GetByVendedor;
+using Aplicacao.UseCase.UseProduto.Imagem;
 using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Aplicacao.UseCase.UseUsuario.AlterarSenha;
@@ -72,5 +73,6 @@ public static class InjecaoDeDependenciaExtensao
 		services.AddScoped<ICriarPedidoUseCase, CriarPedidoUseCase>();
 		services.AddScoped<IObterPedidoPorIdUseCase, ObterPedidoPorIdUseCase>();
 		services.AddScoped<IObterPedidosPorUsuarioUseCase, ObterPedidosPorUsuarioUseCase>();
+		services.AddScoped<IAddUpdateImageCoverUseCase, AddUpdateImageCoverUseCase>();
 	}
 }

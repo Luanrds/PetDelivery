@@ -1,6 +1,8 @@
 ﻿using Dominio.Entidades;
+using Dominio.Extensoes;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Produto;
+using Dominio.Servicos.Storage;
 using Dominio.Servicos.UsuarioLogado;
 using PetDelivery.Exceptions.ExceptionsBase;
 
@@ -11,29 +13,37 @@ public class ExcluirProdutoUseCase : IExcluirProdutoUseCase
 	private readonly IProdutoReadOnly _repositoryRead;
 	private readonly IProdutoWriteOnly _repositoryWrite;
 	private readonly IUsuarioLogado _usuarioLogado;
+	private readonly IBlobStorageService _blobStorageService;
 
 	public ExcluirProdutoUseCase(
 		IProdutoReadOnly repositoryRead,
 		IProdutoWriteOnly repositoryWrite,
 		IUnitOfWork unitOfWork,
-		IUsuarioLogado usuarioLogado)
+		IUsuarioLogado usuarioLogado,
+		IBlobStorageService blobStorageService)
 	{
 		_repositoryRead = repositoryRead;
 		_repositoryWrite = repositoryWrite;
 		_unitOfWork = unitOfWork;
 		_usuarioLogado = usuarioLogado;
+		_blobStorageService = blobStorageService;
 	}
 
 	public async Task ExecuteAsync(long produtoId)
 	{
-		Usuario vendedorLogado = await _usuarioLogado.Usuario();
+		Usuario usuarioLogado = await _usuarioLogado.Usuario();
 
 		Produto produto = await _repositoryRead.GetById(produtoId)
 			?? throw new NotFoundException($"Produto com ID {produtoId} não encontrado.");
 
-		if (produto.UsuarioId != vendedorLogado.Id)
+		if (produto.UsuarioId != usuarioLogado.Id)
 		{
 			throw new UnauthorizedException("Você não tem permissão para excluir este produto.");
+		}
+
+		if (produto.ImagemIdentificador.NotEmpty())
+		{
+			await _blobStorageService.Excluir(usuarioLogado, produto.ImagemIdentificador);
 		}
 
 		await _repositoryWrite.Excluir(produtoId);
