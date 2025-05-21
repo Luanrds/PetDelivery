@@ -21,7 +21,7 @@ public class ProdutoController : PetDeliveryBaseController
 	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> CrieProduto(
 		[FromServices] IProdutoUseCase useCase,
-		[FromBody] RequestProdutoJson request)
+		[FromForm] RequestRegistroProdutoFormData request)
 	{
 		ResponseProdutoJson response = await useCase.ExecuteAsync(request);
 

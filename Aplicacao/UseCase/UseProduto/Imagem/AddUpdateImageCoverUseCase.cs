@@ -1,4 +1,5 @@
-﻿using Dominio.Entidades;
+﻿using Aplicacao.Extensoes;
+using Dominio.Entidades;
 using Dominio.Extensoes;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Produto;
@@ -38,22 +39,16 @@ public class AddUpdateImageCoverUseCase : IAddUpdateImageCoverUseCase
 
 		Stream fileStream = file.OpenReadStream();
 
-		if (fileStream.Is<PortableNetworkGraphic>().IsFalse()
-			&& fileStream.Is<JointPhotographicExpertsGroup>().IsFalse())
+		(var isValidImage, var extension) = fileStream.ValidateAndGetImageExtension();
+
+		if (isValidImage.IsFalse())
 		{
-			throw new ErrorOnValidationException(["Somente Imagens"]);
+			throw new ErrorOnValidationException(["Somente imagens"]);
 		}
-
-		//(var isValidImage, var extension) = fileStream.ValidateAndGetImageExtension();
-
-		//if (isValidImage.IsFalse())
-		//{
-		//	throw new ErrorOnValidationException(["Somente imagens"]);
-		//}
 
 		if (string.IsNullOrEmpty(produto.ImagemIdentificador))
 		{
-			produto.ImagemIdentificador = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+			produto.ImagemIdentificador = $"{Guid.NewGuid()}{extension}";
 
 			_produtoUpdateOnly.Atualize(produto);
 
