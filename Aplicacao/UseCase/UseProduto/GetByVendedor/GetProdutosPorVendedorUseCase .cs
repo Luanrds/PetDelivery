@@ -1,8 +1,11 @@
-﻿using AutoMapper;
+﻿using Aplicacao.Extensoes;
+using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Repositorios.Produto;
+using Dominio.Servicos.Storage;
 using Dominio.Servicos.UsuarioLogado;
 using PetDelivery.Communication.Response;
+using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.UseCase.UseProduto.GetByVendedor;
 public class GetProdutosPorVendedorUseCase : IGetProdutosPorVendedorUseCase
@@ -10,22 +13,42 @@ public class GetProdutosPorVendedorUseCase : IGetProdutosPorVendedorUseCase
 	private readonly IUsuarioLogado _usuarioLogado;
 	private readonly IProdutoReadOnly _produtoRepository;
 	private readonly IMapper _mapper;
+	private readonly IBlobStorageService _blobStorageService;
 
 	public GetProdutosPorVendedorUseCase(
 		IUsuarioLogado usuarioLogado,
 		IProdutoReadOnly produtoRepository,
-		IMapper mapper)
+		IMapper mapper,
+		IBlobStorageService blobStorageService)
 	{
 		_usuarioLogado = usuarioLogado;
 		_produtoRepository = produtoRepository;
 		_mapper = mapper;
+		_blobStorageService = blobStorageService;
 	}
 	public async Task<IEnumerable<ResponseProdutoJson>> ExecuteAsync()
 	{
-		Usuario vendedorLogado = await _usuarioLogado.Usuario();
+		Usuario usuarioLogado = await _usuarioLogado.Usuario();
 
-		IEnumerable<Produto> produtos = await _produtoRepository.GetByUsuarioIdAsync(vendedorLogado.Id);
+		IEnumerable<Produto> produtos = await _produtoRepository.GetByUsuarioIdAsync(usuarioLogado.Id);
 
 		return _mapper.Map<IEnumerable<ResponseProdutoJson>>(produtos);
+	}
+
+	async Task<ResponseProdutosJson> IGetProdutosPorVendedorUseCase.ExecuteAsync()
+	{
+		Usuario usuarioLogado = await _usuarioLogado.Usuario();
+
+		List<Produto> produtos = await _produtoRepository.GetByUsuarioIdAsync(usuarioLogado.Id);
+
+		if (produtos.Count == 0)
+		{
+			throw new NotFoundException("Nenhum produto encontrado.");
+		}
+
+		return new ResponseProdutosJson
+		{
+			Produtos = await produtos.MapToProdutoJson(usuarioLogado, _blobStorageService, _mapper)
+		};
 	}
 }

@@ -43,32 +43,37 @@ public class ProdutoController : PetDeliveryBaseController
 
 	[HttpGet]
 	[Route("produtos")]
-	[ProducesResponseType(typeof(ResponseProdutoJson), StatusCodes.Status200OK)]
-	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status204NoContent)]
 
 	public async Task<IActionResult> ObtenhaProdutos(
 		[FromServices] IObtenhaTodosProdutos useCase)
 	{
-		IEnumerable<ResponseProdutoJson> response = await useCase.ExecuteAsync();
+		ResponseProdutosJson response = await useCase.ExecuteAsync();
 
-		return Ok(response);
+		if (response.Produtos.Any())
+		{
+			return Ok(response);
+		}
+
+		return NoContent();
 	}
 
 	[HttpGet("meus-produtos")]
-	[ProducesResponseType(typeof(IEnumerable<ResponseProdutoJson>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> GetMeusProdutos(
 		[FromServices] IGetProdutosPorVendedorUseCase useCase)
 	{
-		IEnumerable<ResponseProdutoJson> response = await useCase.ExecuteAsync();
+		ResponseProdutosJson response = await useCase.ExecuteAsync();
 
-		if (response == null || !response.Any())
+		if (response.Produtos.Any())
 		{
-			return NoContent();
+			return Ok(response);
 		}
 
-		return Ok(response);
+		return NoContent();
 	}
 
 	[HttpGet]

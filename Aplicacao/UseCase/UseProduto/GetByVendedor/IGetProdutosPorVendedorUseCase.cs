@@ -3,5 +3,5 @@
 namespace Aplicacao.UseCase.UseProduto.GetByVendedor;
 public interface IGetProdutosPorVendedorUseCase
 {
-	Task<IEnumerable<ResponseProdutoJson>> ExecuteAsync();
+	Task<ResponseProdutosJson> ExecuteAsync();
 }

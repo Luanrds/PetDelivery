@@ -34,7 +34,7 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 				.ToListAsync()
 			: (IEnumerable<Produto>)([]);
 
-	public async Task<IEnumerable<Produto>> GetByUsuarioIdAsync(long usuarioId) =>
+	public async Task<List<Produto>> GetByUsuarioIdAsync(long usuarioId) =>
 		await dbContext.Produto
 		.AsNoTracking()
 		.Where(p => p.UsuarioId == usuarioId)
