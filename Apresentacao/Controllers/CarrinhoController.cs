@@ -4,10 +4,13 @@ using Aplicacao.UseCase.Carrinho.Criar;
 using Aplicacao.UseCase.Carrinho.LimparCarrinho;
 using Aplicacao.UseCase.Carrinho.RemoverItem;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
+
+[UsuarioAutenticado]
 public class CarrinhoController : PetDeliveryBaseController
 {
 	[HttpPost]
@@ -27,10 +30,9 @@ public class CarrinhoController : PetDeliveryBaseController
 	[ProducesResponseType(typeof(ResponseCarrinhoDeComprasJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> ObterCarrinho(
-		[FromServices] IObterCarrinhoUseCase useCase,
-		[FromQuery] long usuarioId)
+		[FromServices] IObterCarrinhoUseCase useCase)
 	{
-		ResponseCarrinhoDeComprasJson resposta = await useCase.ExecuteAsync(usuarioId);
+		ResponseCarrinhoDeComprasJson resposta = await useCase.ExecuteAsync();
 
 		return Ok(resposta);
 	}
@@ -52,10 +54,9 @@ public class CarrinhoController : PetDeliveryBaseController
 	[HttpDelete]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<IActionResult> LimparCarrinho(
-		[FromServices] ILimpeCarrinhoUseCase useCase,
-		[FromQuery] long usuarioId)
+		[FromServices] ILimpeCarrinhoUseCase useCase)
 	{
-		await useCase.ExecuteAsync(usuarioId);
+		await useCase.ExecuteAsync();
 
 		return NoContent();
 	}
@@ -65,10 +66,9 @@ public class CarrinhoController : PetDeliveryBaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<IActionResult> RemoverItemCarrinho(
 	[FromServices] IRemoveItemCarrinhoUseCase useCase,
-	[FromRoute] long itemId,
-	[FromQuery] long usuarioId)
+	[FromRoute] long itemId)
 	{
-		await useCase.ExecuteAsync(itemId, usuarioId);
+		await useCase.ExecuteAsync(itemId);
 
 		return NoContent();
 	}

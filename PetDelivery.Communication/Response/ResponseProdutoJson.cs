@@ -11,4 +11,5 @@ public class ResponseProdutoJson
     public decimal Valor { get; set; } = decimal.Zero;
 	public string Categoria { get; set; } = string.Empty;
 	public int QuantidadeEstoque { get; set; }
+	public string? ImagemUrl { get; set; }
 }

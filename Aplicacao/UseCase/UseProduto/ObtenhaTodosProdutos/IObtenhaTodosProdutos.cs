@@ -3,5 +3,5 @@
 namespace Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 public interface IObtenhaTodosProdutos
 {
-	Task<IEnumerable<ResponseProdutoJson>> ExecuteAsync();
+	Task<ResponseProdutosJson> ExecuteAsync();
 }

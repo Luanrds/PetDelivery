@@ -2,7 +2,7 @@
 using PetDelivery.Communication.Response;
 
 namespace Aplicacao.UseCase.UseUsuario.Login;
-public interface ILoginUsuarioUseCase
+public interface ILoginUseCase
 {
 	Task<ResponseUsuarioJson?> ExecuteAsync(RequestLoginUsuarioJson request);
 }
