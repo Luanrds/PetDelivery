@@ -45,7 +45,6 @@ public class ProdutoController : PetDeliveryBaseController
 	[Route("produtos")]
 	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status204NoContent)]
-
 	public async Task<IActionResult> ObtenhaProdutos(
 		[FromServices] IObtenhaTodosProdutos useCase)
 	{

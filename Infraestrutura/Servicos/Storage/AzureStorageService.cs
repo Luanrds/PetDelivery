@@ -59,6 +59,15 @@ public class AzureStorageService : IBlobStorageService
 		return string.Empty;
 	}
 
+	public Task<string> GetImageUrl(string userContainerName, string imagemIdentificador)
+	{
+		if (string.IsNullOrWhiteSpace(userContainerName) || string.IsNullOrWhiteSpace(imagemIdentificador))
+		{
+			return Task.FromResult(string.Empty);
+		}
+		return Task.FromResult($"{_blobServiceClient.Uri.AbsoluteUri}{userContainerName}/{imagemIdentificador}");
+	}
+
 	public async Task Excluir(Usuario usuario, string fileName)
 	{
 		BlobContainerClient containerClient = _blobServiceClient.GetBlobContainerClient(usuario.IdentificadorDoUsuario.ToString());

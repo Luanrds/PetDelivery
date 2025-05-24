@@ -26,14 +26,6 @@ public class GetProdutosPorVendedorUseCase : IGetProdutosPorVendedorUseCase
 		_mapper = mapper;
 		_blobStorageService = blobStorageService;
 	}
-	public async Task<IEnumerable<ResponseProdutoJson>> ExecuteAsync()
-	{
-		Usuario usuarioLogado = await _usuarioLogado.Usuario();
-
-		IEnumerable<Produto> produtos = await _produtoRepository.GetByUsuarioIdAsync(usuarioLogado.Id);
-
-		return _mapper.Map<IEnumerable<ResponseProdutoJson>>(produtos);
-	}
 
 	async Task<ResponseProdutosJson> IGetProdutosPorVendedorUseCase.ExecuteAsync()
 	{
@@ -48,7 +40,7 @@ public class GetProdutosPorVendedorUseCase : IGetProdutosPorVendedorUseCase
 
 		return new ResponseProdutosJson
 		{
-			Produtos = await produtos.MapToProdutoJson(usuarioLogado, _blobStorageService, _mapper)
+			Produtos = await produtos.MapToUserSpecificProdutoJson(usuarioLogado, _blobStorageService, _mapper)
 		};
 	}
 }

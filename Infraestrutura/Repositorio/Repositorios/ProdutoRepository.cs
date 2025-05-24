@@ -12,7 +12,7 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 
 	public void Atualize(Produto produto) => dbContext.Produto.Update(produto);
 
-	public Task<List<Produto>> GetAll() => dbContext.Produto.ToListAsync();
+	public Task<List<Produto>> GetAll() => dbContext.Produto.Include(p => p.Usuario).ToListAsync();
 
 	public async Task Excluir(long produtoId)
 	{
@@ -21,7 +21,7 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 		dbContext.Produto.Remove(produto!);
 	}
 
-	public Task<Produto?> GetById(long ProdutoId) => 
+	public Task<Produto?> GetById(long ProdutoId) =>
 		dbContext.Produto
 		.AsNoTracking()
 		.FirstOrDefaultAsync(produto => produto.Id == ProdutoId);
@@ -37,7 +37,8 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 	public async Task<List<Produto>> GetByUsuarioIdAsync(long usuarioId) =>
 		await dbContext.Produto
 		.AsNoTracking()
+		.Include(p => p.Usuario)
 		.Where(p => p.UsuarioId == usuarioId)
 		.ToListAsync();
-	
+
 }
