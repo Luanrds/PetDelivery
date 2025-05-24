@@ -56,7 +56,7 @@ public class AutoMapping : Profile
 		CreateMap<Endereco, ResponseEnderecoJson>();
 
 		CreateMap<Produto, ResponseProdutoJson>()
-			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()))
+			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => (int)src.Categoria))
 			.ForMember(dest => dest.QuantidadeEstoque, opt => opt.MapFrom(src => src.QuantidadeEstoque));
 
 		CreateMap<ItemCarrinhoDeCompra, ResponseItemCarrinhoJson>()

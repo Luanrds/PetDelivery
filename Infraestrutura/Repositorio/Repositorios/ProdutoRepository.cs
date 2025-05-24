@@ -24,6 +24,7 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 	public Task<Produto?> GetById(long ProdutoId) =>
 		dbContext.Produto
 		.AsNoTracking()
+		.Include(p => p.Usuario)
 		.FirstOrDefaultAsync(produto => produto.Id == ProdutoId);
 
 	public async Task<IEnumerable<Produto>> ObterPorCategoria(string categoria) =>

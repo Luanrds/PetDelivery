@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using Dominio.Entidades;
 using Dominio.Extensoes;
@@ -18,7 +19,7 @@ public class AzureStorageService : IBlobStorageService
 	public async Task Uploud(Usuario usuario, Stream file, string fileName)
 	{
 		var container = _blobServiceClient.GetBlobContainerClient(usuario.IdentificadorDoUsuario.ToString());
-		await container.CreateIfNotExistsAsync();
+		await container.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
 		var blobClient = container.GetBlobClient(fileName);
 
