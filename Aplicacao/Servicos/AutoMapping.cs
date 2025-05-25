@@ -60,7 +60,10 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.QuantidadeEstoque, opt => opt.MapFrom(src => src.QuantidadeEstoque));
 
 		CreateMap<ItemCarrinhoDeCompra, ResponseItemCarrinhoJson>()
-			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()));
+					.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()))
+					.ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Produto.Nome))
+					.ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Produto.Descricao));
+
 
 		CreateMap<CarrinhoDeCompras, ResponseCarrinhoDeComprasJson>()
 			.ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho))

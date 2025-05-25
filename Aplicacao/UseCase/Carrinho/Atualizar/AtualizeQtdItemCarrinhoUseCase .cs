@@ -1,8 +1,10 @@
-﻿using AutoMapper;
+﻿using Aplicacao.Extensoes;
+using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Produto;
+using Dominio.Servicos.Storage;
 using Dominio.Servicos.UsuarioLogado;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
@@ -18,6 +20,7 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
 	private readonly IUsuarioLogado _usuarioLogado;
+	private readonly IBlobStorageService _blobStorageService; 
 
 	public AtualizeQtdItemCarrinhoUseCase(
 		ICarrinhoReadOnly carrinhoReadOnly,
@@ -25,7 +28,8 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 		IProdutoReadOnly produtoReadOnly,
 		IUnitOfWork unitOfWork,
 		IMapper mapper,
-		IUsuarioLogado usuarioLogado)
+		IUsuarioLogado usuarioLogado,
+		IBlobStorageService blobStorageService)
 	{
 		_carrinhoReadOnly = carrinhoReadOnly;
 		_carrinhoWriteOnly = carrinhoWriteOnly;
@@ -33,6 +37,7 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
 		_usuarioLogado = usuarioLogado;
+		_blobStorageService = blobStorageService; 
 	}
 
 	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(long itemCarrinhoId, RequestAtualizarItemCarrinhoJson request)
@@ -51,8 +56,8 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 		}
 		else
 		{
-			Produto? produto = (item.Produto
-				?? await _produtoReadOnly.GetById(item.ProdutoId)) 
+			Produto produto = item.Produto
+				?? await _produtoReadOnly.GetById(item.ProdutoId)
 				?? throw new InvalidOperationException($"Produto associado ao item ID {itemCarrinhoId} não encontrado.");
 
 			if (request.Quantidade > produto.QuantidadeEstoque)
@@ -66,10 +71,25 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 
 		await _unitOfWork.Commit();
 
-		CarrinhoDeCompras? carrinhoAtualizado =
-			await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioLogado.Id);
+		CarrinhoDeCompras? carrinhoAtualizado = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioLogado.Id);
 
-		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinhoAtualizado);
+		if (carrinhoAtualizado == null)
+		{
+			return new ResponseCarrinhoDeComprasJson 
+			{ 
+				Id = carrinho?.Id ?? 0, 
+				Itens = [], Total = 0 
+			};
+		}
+
+		ResponseCarrinhoDeComprasJson response = 
+			_mapper.Map<ResponseCarrinhoDeComprasJson>(carrinhoAtualizado);
+
+		response.Itens = carrinhoAtualizado.ItensCarrinho != null && carrinhoAtualizado.ItensCarrinho.Count != 0
+			? await carrinhoAtualizado.ItensCarrinho.MapToResponseItemCarrinhoJsonComImagens(_blobStorageService, _mapper)
+			: ([]);
+
+		return response;
 	}
 
 	//private static void Validate(RequestAtualizarItemCarrinhoJson request)
