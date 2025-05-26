@@ -31,10 +31,11 @@ public class CarrinhoRepository(PetDeliveryDbContext dbContext) : ICarrinhoReadO
 		}
 	}
 
-	public async Task<CarrinhoDeCompras?> ObtenhaCarrinhoAtivo(long usuarioId) => 
+	public async Task<CarrinhoDeCompras?> ObtenhaCarrinhoAtivo(long usuarioId) =>
 		await dbContext.CarrinhoDeCompras
 			.Include(c => c.ItensCarrinho)
 				.ThenInclude(i => i.Produto)
+				.ThenInclude(p => p.Usuario)
 			.Where(c => c.UsuarioId == usuarioId)
 			.OrderByDescending(c => c.Id)
 			.FirstOrDefaultAsync();

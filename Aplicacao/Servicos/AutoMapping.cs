@@ -2,7 +2,6 @@
 using Dominio.Entidades;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
-using System.Linq; // Necessário para Sum()
 
 namespace Aplicacao.Servicos;
 public class AutoMapping : Profile
@@ -23,8 +22,7 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
 		CreateMap<RequestEnderecoJson, Endereco>()
-					.ForMember(dest => dest.Id, opt => opt.Ignore())
-					.ForMember(dest => dest.UsuarioId, opt => opt.MapFrom(src => src.UsuarioId));
+					.ForMember(dest => dest.Id, opt => opt.Ignore());
 
 		CreateMap<RequestAtualizarEnderecoJson, Endereco>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
@@ -53,17 +51,19 @@ public class AutoMapping : Profile
 
 	private void DomainToResponse()
 	{
-		CreateMap<Usuario, ResponseUsuarioJson>()
-			.ForMember(dest => dest.EhVendedor, opt => opt.MapFrom(src => src.EhVendedor));
+		CreateMap<Usuario, ResponsePerfilUsuarioJson>();
 
 		CreateMap<Endereco, ResponseEnderecoJson>();
 
 		CreateMap<Produto, ResponseProdutoJson>()
-			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()))
+			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => (int)src.Categoria))
 			.ForMember(dest => dest.QuantidadeEstoque, opt => opt.MapFrom(src => src.QuantidadeEstoque));
 
 		CreateMap<ItemCarrinhoDeCompra, ResponseItemCarrinhoJson>()
-			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()));
+					.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()))
+					.ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Produto.Nome))
+					.ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Produto.Descricao));
+
 
 		CreateMap<CarrinhoDeCompras, ResponseCarrinhoDeComprasJson>()
 			.ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho))
