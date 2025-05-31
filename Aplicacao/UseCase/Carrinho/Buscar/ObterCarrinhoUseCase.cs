@@ -1,45 +1,50 @@
 ﻿using Aplicacao.Extensoes;
 using AutoMapper;
-using Dominio.Entidades;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Servicos.Storage;
 using Dominio.Servicos.UsuarioLogado;
 using PetDelivery.Communication.Response;
-using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.UseCase.Carrinho.Buscar;
 
 public class ObterCarrinhoUseCase : IObterCarrinhoUseCase
 {
-	private readonly ICarrinhoReadOnly _carrinhoReadOnly;
-	private readonly IMapper _mapper;
+	private readonly ICarrinhoReadOnly _readOnlyRepository;
 	private readonly IUsuarioLogado _usuarioLogado;
+	private readonly IMapper _mapper;
 	private readonly IBlobStorageService _blobStorageService;
 
 	public ObterCarrinhoUseCase(
-		ICarrinhoReadOnly carrinhoReadOnly,
-		IMapper mapper,
+		ICarrinhoReadOnly readOnlyRepository,
 		IUsuarioLogado usuarioLogado,
+		IMapper mapper,
 		IBlobStorageService blobStorageService)
 	{
-		_carrinhoReadOnly = carrinhoReadOnly;
-		_mapper = mapper;
+		_readOnlyRepository = readOnlyRepository;
 		_usuarioLogado = usuarioLogado;
+		_mapper = mapper;
 		_blobStorageService = blobStorageService;
 	}
 
 	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync()
 	{
-		Usuario usuarioQueEstaVendoOCarrinho = await _usuarioLogado.Usuario();
+		var usuario = await _usuarioLogado.Usuario();
+		Dominio.Entidades.CarrinhoDeCompras? carrinho = await _readOnlyRepository.ObtenhaCarrinhoAtivo(usuario.Id);
 
-		CarrinhoDeCompras carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioQueEstaVendoOCarrinho.Id) 
-			?? throw new NotFoundException("Nenhum carrinho ativo encontrado para este usuário.");
+		if (carrinho == null || carrinho.ItensCarrinho == null || !carrinho.ItensCarrinho.Any())
+		{
+			return new ResponseCarrinhoDeComprasJson
+			{
+				Id = carrinho?.Id ?? 0,
+				Itens = [],
+				Total = 0
+			};
+		}
 
 		ResponseCarrinhoDeComprasJson response = _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
 
-		response.Itens = carrinho.ItensCarrinho != null && carrinho.ItensCarrinho.Count != 0
-			? await carrinho.ItensCarrinho.MapToResponseItemCarrinhoJsonComImagens(_blobStorageService, _mapper)
-			: ([]);
+		response.Itens = await carrinho.ItensCarrinho.MapToResponseItensCarrinhoJson(usuario, _blobStorageService, _mapper);
+		response.Total = carrinho.ItensCarrinho.Sum(item => item.Quantidade * item.PrecoUnitario);
 
 		return response;
 	}

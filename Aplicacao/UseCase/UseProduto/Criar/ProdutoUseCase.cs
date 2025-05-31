@@ -41,44 +41,65 @@ public class ProdutoUseCase : IProdutoUseCase
 	public async Task<ResponseProdutoJson> ExecuteAsync(RequestRegistroProdutoFormData request)
 	{
 		Usuario usuarioLogado = await _usuarioLogado.Usuario();
-
 		Validate(request);
 
 		Produto produto = _mapper.Map<Produto>(request);
 		produto.UsuarioId = usuarioLogado.Id;
+		produto.ImagensIdentificadores = [];
 
-		if(request.Imagem is not null)
+		if (request.Imagens != null && request.Imagens.Count != 0)
 		{
-			var fileStream = request.Imagem.OpenReadStream();
-
-			(var isValidImage, var extension) = fileStream.ValidateAndGetImageExtension();
-
-			if (isValidImage.IsFalse())
+			foreach (var imagemFile in request.Imagens)
 			{
-				throw new ErrorOnValidationException(["Somente Imagens"]);
+				var fileStream = imagemFile.OpenReadStream();
+				(var isValidImage, var extension) = fileStream.ValidateAndGetImageExtension();
+
+				if (isValidImage.IsFalse())
+				{
+					throw new ErrorOnValidationException([$"Arquivo '{imagemFile.FileName}' não é uma imagem válida."]);
+				}
+
+				var imagemIdentificador = $"{Guid.NewGuid()}{extension}";
+				produto.ImagensIdentificadores.Add(imagemIdentificador);
+
+				await _blobStorageService.Uploud(usuarioLogado, fileStream, imagemIdentificador);
 			}
-
-			produto.ImagemIdentificador = $"{Guid.NewGuid()}{extension}";
-
-			await _blobStorageService.Uploud(usuarioLogado, fileStream, produto.ImagemIdentificador);
 		}
 
 		await _writeOnly.Add(produto);
 		await _unitOfWork.Commit();
 
-		return _mapper.Map<ResponseProdutoJson>(produto);
+		var response = _mapper.Map<ResponseProdutoJson>(produto);
+		if (produto.ImagensIdentificadores.Count != 0)
+		{
+			response.ImagemUrl = await _blobStorageService.GetFileUrl(usuarioLogado, produto.ImagensIdentificadores.First());
+		}
+
+		return response;
 	}
 
-	private static void Validate(RequestProdutoJson request)
+	private static void Validate(RequestRegistroProdutoFormData request)
 	{
 		ProdutoValidator validator = new();
-
 		ValidationResult result = validator.Validate(request);
+
+		if (request is RequestRegistroProdutoFormData formData)
+		{
+			if (formData.Imagens != null)
+			{
+				foreach (var imagem in formData.Imagens)
+				{
+					if (imagem.Length == 0)
+					{
+						result.Errors.Add(new ValidationFailure(nameof(request.Imagens), $"O arquivo de imagem '{imagem.FileName}' está vazio."));
+					}
+				}
+			}
+		}
 
 		if (result.IsValid == false)
 		{
 			List<string> mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
-
 			throw new ErrorOnValidationException(mensagensDeErro);
 		}
 	}

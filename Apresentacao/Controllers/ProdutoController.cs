@@ -127,7 +127,8 @@ public class ProdutoController : PetDeliveryBaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
-	public async Task<IActionResult> AtualizeImagem(
+	[UsuarioAutenticado(requerVendedor: true)]
+	public async Task<IActionResult> AdicionarImagemProduto(
 		[FromServices] IAddUpdateImageCoverUseCase useCase,
 		[FromRoute] long id,
 		IFormFile file)

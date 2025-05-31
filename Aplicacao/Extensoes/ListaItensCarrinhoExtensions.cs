@@ -8,32 +8,37 @@ namespace Aplicacao.Extensoes;
 
 public static class ListaItensCarrinhoExtensions
 {
-	public static async Task<List<ResponseItemCarrinhoJson>> MapToResponseItemCarrinhoJsonComImagens(
-		this IList<ItemCarrinhoDeCompra> itensCarrinho,
+	public static async Task<List<ResponseItemCarrinhoJson>> MapToResponseItensCarrinhoJson(
+		this IList<ItemCarrinhoDeCompra> itens,
+		Usuario usuario,
 		IBlobStorageService blobStorageService,
 		IMapper mapper)
 	{
-		if (itensCarrinho == null || !itensCarrinho.Any())
+		if (itens == null || !itens.Any())
 		{
 			return [];
 		}
 
-		var tasks = itensCarrinho.Select(async itemOriginal =>
+		var responseItens = new List<ResponseItemCarrinhoJson>();
+
+		foreach (var item in itens)
 		{
-			var itemResponse = mapper.Map<ResponseItemCarrinhoJson>(itemOriginal);
+			ResponseItemCarrinhoJson responseItem = mapper.Map<ResponseItemCarrinhoJson>(item);
 
-			if (itemOriginal.Produto != null &&
-				itemOriginal.Produto.Usuario != null &&
-				itemOriginal.Produto.ImagemIdentificador.NotEmpty())
+			if (item.Produto != null && item.Produto.ImagensIdentificadores != null && item.Produto.ImagensIdentificadores.Any())
 			{
-				string nomeContainerDoVendedor = itemOriginal.Produto.Usuario.IdentificadorDoUsuario.ToString();
-
-				itemResponse.ImagemUrl = await blobStorageService.GetImageUrl(nomeContainerDoVendedor, itemOriginal.Produto.ImagemIdentificador);
+				var primeiraImagemId = item.Produto.ImagensIdentificadores.First();
+				if (primeiraImagemId.NotEmpty())
+				{
+					responseItem.ImagemUrl = await blobStorageService.GetFileUrl(item.Produto.Usuario, primeiraImagemId);
+				}
 			}
-			return itemResponse;
-		});
-
-		var resultados = await Task.WhenAll(tasks);
-		return [.. resultados];
+			else
+			{
+				responseItem.ImagemUrl = null; 
+			}
+			responseItens.Add(responseItem);
+		}
+		return responseItens;
 	}
 }

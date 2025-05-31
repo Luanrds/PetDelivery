@@ -27,15 +27,15 @@ public class GetProdutosPorVendedorUseCase : IGetProdutosPorVendedorUseCase
 		_blobStorageService = blobStorageService;
 	}
 
-	async Task<ResponseProdutosJson> IGetProdutosPorVendedorUseCase.ExecuteAsync()
+	public async Task<ResponseProdutosJson> ExecuteAsync()
 	{
 		Usuario usuarioLogado = await _usuarioLogado.Usuario();
 
 		List<Produto> produtos = await _produtoRepository.GetByUsuarioIdAsync(usuarioLogado.Id);
 
-		if (produtos.Count == 0)
+		if (produtos == null || produtos.Count == 0)
 		{
-			throw new NotFoundException("Nenhum produto encontrado.");
+			throw new NotFoundException("Nenhum produto encontrado para este vendedor.");
 		}
 
 		return new ResponseProdutosJson

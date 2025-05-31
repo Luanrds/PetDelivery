@@ -12,21 +12,42 @@ public static class ListaProdutosExtensions
 		IBlobStorageService blobStorageService,
 		IMapper mapper)
 	{
-		IEnumerable<Task<ResponseProdutoJson>> resultado = produtos.Select(async produto =>
+		if (produtos == null || !produtos.Any())
+		{
+			return [];
+		}
+
+		IEnumerable<Task<ResponseProdutoJson>> tasks = produtos.Select(async produto =>
 		{
 			ResponseProdutoJson resposta = mapper.Map<ResponseProdutoJson>(produto);
 
-			if (produto.ImagemIdentificador.NotEmpty() && produto.Usuario != null)
+			if (produto.ImagensIdentificadores != null && produto.ImagensIdentificadores.Count != 0)
 			{
-				resposta.ImagemUrl = await blobStorageService.GetImageUrl(produto.Usuario.IdentificadorDoUsuario.ToString(), produto.ImagemIdentificador);
+				string primeiraImagemId = produto.ImagensIdentificadores.First();
+				if (primeiraImagemId.NotEmpty() && produto.Usuario != null)
+				{
+					resposta.ImagemUrl = await blobStorageService.GetImageUrl(produto.Usuario.IdentificadorDoUsuario.ToString(), primeiraImagemId);
+				}
+
+				resposta.ImagensUrl = [];
+				foreach (string imagemId in produto.ImagensIdentificadores)
+				{
+					if (imagemId.NotEmpty() && produto.Usuario != null)
+					{
+						resposta.ImagensUrl.Add(await blobStorageService.GetImageUrl(produto.Usuario.IdentificadorDoUsuario.ToString(), imagemId));
+					}
+				}
+			}
+			else
+			{
+				resposta.ImagemUrl = null;
+				resposta.ImagensUrl = [];
 			}
 
 			return resposta;
 		});
 
-		ResponseProdutoJson[] resposta = await Task.WhenAll(resultado);
-
-		return resposta;
+		return await Task.WhenAll(tasks);
 	}
 
 	public static async Task<IList<ResponseProdutoJson>> MapToUserSpecificProdutoJson(
@@ -35,20 +56,41 @@ public static class ListaProdutosExtensions
 		IBlobStorageService blobStorageService,
 		IMapper mapper)
 	{
-		IEnumerable<Task<ResponseProdutoJson>> resultado = produtos.Select(async produto =>
+		if (produtos == null || !produtos.Any())
+		{
+			return [];
+		}
+
+		IEnumerable<Task<ResponseProdutoJson>> tasks = produtos.Select(async produto =>
 		{
 			ResponseProdutoJson resposta = mapper.Map<ResponseProdutoJson>(produto);
 
-			if (produto.ImagemIdentificador.NotEmpty())
+			if (produto.ImagensIdentificadores != null && produto.ImagensIdentificadores.Count != 0)
 			{
-				resposta.ImagemUrl = await blobStorageService.GetFileUrl(usuarioLogado, produto.ImagemIdentificador);
+				string primeiraImagemId = produto.ImagensIdentificadores.First();
+				if (primeiraImagemId.NotEmpty())
+				{
+					resposta.ImagemUrl = await blobStorageService.GetFileUrl(usuarioLogado, primeiraImagemId);
+				}
+
+				resposta.ImagensUrl = [];
+				foreach (string imagemId in produto.ImagensIdentificadores)
+				{
+					if (imagemId.NotEmpty())
+					{
+						resposta.ImagensUrl.Add(await blobStorageService.GetFileUrl(usuarioLogado, imagemId));
+					}
+				}
+			}
+			else
+			{
+				resposta.ImagemUrl = null;
+				resposta.ImagensUrl = [];
 			}
 
 			return resposta;
 		});
 
-		ResponseProdutoJson[] resposta = await Task.WhenAll(resultado);
-
-		return resposta;
+		return await Task.WhenAll(tasks);
 	}
 }

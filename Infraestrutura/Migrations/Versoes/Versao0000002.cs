@@ -14,6 +14,6 @@ public class Versao0000002 : VersaoBase
             .WithColumn("Valor").AsDecimal().NotNullable()
             .WithColumn("Categoria").AsInt32().NotNullable()
             .WithColumn("QuantidadeEstoque").AsInt32().NotNullable()
-            .WithColumn("ImagemIdentificador").AsString().Nullable();
+            .WithColumn("ImagensIdentificadores").AsCustom("jsonb").Nullable();
 	}
 }

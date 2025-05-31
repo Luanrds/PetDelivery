@@ -27,20 +27,29 @@ public class GetProdutoById : IGetProdutoById
 		_blobStorageService = blobStorageService;
 	}
 
-	public async Task<ResponseProdutoJson> ExecuteAsync(long ProdutoId)
+	public async Task<ResponseProdutoJson> ExecuteAsync(long produtoId)
 	{
-		Usuario usuarioLogado = await _usuarioLogado.Usuario();
-
-		var produto = await _repository.GetById(ProdutoId) //implementar para que ele passe como parametro o id do usuario logado
+		Produto produto = await _repository.GetById(produtoId)
 			?? throw new NotFoundException("Produto não encontrado.");
 
 		ResponseProdutoJson response = _mapper.Map<ResponseProdutoJson>(produto);
 
-		if(produto.ImagemIdentificador.NotEmpty())
+		if (produto.ImagensIdentificadores != null && produto.ImagensIdentificadores.Count != 0)
 		{
-			var url = await _blobStorageService.GetFileUrl(usuarioLogado, produto.ImagemIdentificador);
+			string primeiraImagemId = produto.ImagensIdentificadores.First();
+			if (primeiraImagemId.NotEmpty())
+			{
+				response.ImagemUrl = await _blobStorageService.GetFileUrl(produto.Usuario, primeiraImagemId);
+			}
 
-			response.ImagemUrl = url;
+			response.ImagensUrl = [];
+			foreach (string imagemId in produto.ImagensIdentificadores)
+			{
+				if (imagemId.NotEmpty())
+				{
+					response.ImagensUrl.Add(await _blobStorageService.GetFileUrl(produto.Usuario, imagemId));
+				}
+			}
 		}
 
 		return response;

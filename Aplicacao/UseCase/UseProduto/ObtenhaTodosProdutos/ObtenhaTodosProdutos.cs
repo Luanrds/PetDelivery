@@ -3,9 +3,7 @@ using AutoMapper;
 using Dominio.Entidades;
 using Dominio.Repositorios.Produto;
 using Dominio.Servicos.Storage;
-using Dominio.Servicos.UsuarioLogado;
 using PetDelivery.Communication.Response;
-using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 public class ObtenhaTodosProdutos : IObtenhaTodosProdutos
@@ -24,14 +22,16 @@ public class ObtenhaTodosProdutos : IObtenhaTodosProdutos
 		_blobStorageService = blobStorageService;
 	}
 
-	async Task<ResponseProdutosJson> IObtenhaTodosProdutos.ExecuteAsync()
+	public async Task<ResponseProdutosJson> ExecuteAsync()
 	{
-
 		List<Produto> produtos = await _repository.GetAll();
 
-		if (produtos.Count == 0)
+		if (produtos == null || produtos.Count == 0)
 		{
-			return new ResponseProdutosJson();
+			return new ResponseProdutosJson
+			{
+				Produtos = []
+			};
 		}
 
 		return new ResponseProdutosJson

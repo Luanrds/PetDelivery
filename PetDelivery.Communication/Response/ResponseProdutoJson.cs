@@ -12,4 +12,5 @@ public class ResponseProdutoJson
 	public int Categoria { get; set; }
 	public int QuantidadeEstoque { get; set; }
 	public string? ImagemUrl { get; set; }
+	public List<string>? ImagensUrl { get; set; }
 }

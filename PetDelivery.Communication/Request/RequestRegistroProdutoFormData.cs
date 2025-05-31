@@ -3,5 +3,5 @@
 namespace PetDelivery.Communication.Request;
 public class RequestRegistroProdutoFormData : RequestProdutoJson
 {
-	public IFormFile? Imagem { get; set; }
+	public List<IFormFile>? Imagens { get; set; }
 }

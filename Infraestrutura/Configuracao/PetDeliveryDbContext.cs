@@ -1,32 +1,28 @@
 ﻿using Dominio.Entidades;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Infraestrutura.Configuracao;
 
 public class PetDeliveryDbContext(DbContextOptions<PetDeliveryDbContext> options) : DbContext(options)
 {
-    public DbSet<Usuario> Usuario { get; set; }
-    public DbSet<Produto> Produto { get; set; }
-    public DbSet<CarrinhoDeCompras> CarrinhoDeCompras { get; set; }
-    public DbSet<ItemCarrinhoDeCompra> ItemCarrinhoDeCompra { get; set; }
-    public DbSet<Endereco> Endereco { get; set; }
-    public DbSet<Pedido> Pedido { get; set; }
-    public DbSet<Pagamento> Pagamento { get; set; }
-    public DbSet<ItemPedido> ItemPedido { get; set; }
+	public DbSet<Usuario> Usuario { get; set; }
+	public DbSet<Produto> Produto { get; set; }
+	public DbSet<CarrinhoDeCompras> CarrinhoDeCompras { get; set; }
+	public DbSet<ItemCarrinhoDeCompra> ItemCarrinhoDeCompra { get; set; }
+	public DbSet<Endereco> Endereco { get; set; }
+	public DbSet<Pedido> Pedido { get; set; }
+	public DbSet<Pagamento> Pagamento { get; set; }
+	public DbSet<ItemPedido> ItemPedido { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PetDeliveryDbContext).Assembly);
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		modelBuilder.ApplyConfigurationsFromAssembly(typeof(PetDeliveryDbContext).Assembly);
 
-        modelBuilder.Entity<Pedido>()
-            .HasOne(p => p.Pagamento)
-            .WithOne(pg => pg.Pedido)
-            .HasForeignKey<Pagamento>(pg => pg.PedidoId);
-
-        modelBuilder.Entity<ItemCarrinhoDeCompra>()
-            .HasOne<CarrinhoDeCompras>()
-            .WithMany(c => c.ItensCarrinho)
-            .HasForeignKey(i => i.CarrinhoId);
+		modelBuilder.Entity<ItemCarrinhoDeCompra>()
+			.HasOne<CarrinhoDeCompras>()
+			.WithMany(c => c.ItensCarrinho)
+			.HasForeignKey(i => i.CarrinhoId);
 
 		modelBuilder.Entity<Pedido>(pedido =>
 		{
@@ -51,10 +47,25 @@ public class PetDeliveryDbContext(DbContextOptions<PetDeliveryDbContext> options
 			pagamento.Property(p => p.Valor).HasColumnType("decimal(10,2)");
 		});
 
-		modelBuilder.Entity<Produto>()
-		.HasOne(p => p.Usuario)
-		.WithMany()
-		.HasForeignKey(p => p.UsuarioId)
-		.OnDelete(DeleteBehavior.Restrict);
+		modelBuilder.Entity<Produto>(builder =>
+		{
+			builder.HasOne(p => p.Usuario)
+				   .WithMany()
+				   .HasForeignKey(p => p.UsuarioId)
+				   .OnDelete(DeleteBehavior.Restrict);
+
+			builder.Property(p => p.ImagensIdentificadores)
+				.HasColumnType("jsonb")
+				.HasConversion(
+					v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+					v => string.IsNullOrEmpty(v)
+						 ? new List<string>()
+						 : JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>()
+				)
+				.Metadata.SetValueComparer(new Microsoft.EntityFrameworkCore.ChangeTracking.ValueComparer<List<string>>(
+					(c1, c2) => (c1 == null && c2 == null) || (c1 != null && c2 != null && c1.SequenceEqual(c2)),
+					c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+					c => c.ToList()));
+		});
 	}
 }

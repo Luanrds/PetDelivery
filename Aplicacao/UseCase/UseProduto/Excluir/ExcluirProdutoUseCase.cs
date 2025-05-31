@@ -32,7 +32,6 @@ public class ExcluirProdutoUseCase : IExcluirProdutoUseCase
 	public async Task ExecuteAsync(long produtoId)
 	{
 		Usuario usuarioLogado = await _usuarioLogado.Usuario();
-
 		Produto produto = await _repositoryRead.GetById(produtoId)
 			?? throw new NotFoundException($"Produto com ID {produtoId} não encontrado.");
 
@@ -41,13 +40,18 @@ public class ExcluirProdutoUseCase : IExcluirProdutoUseCase
 			throw new UnauthorizedException("Você não tem permissão para excluir este produto.");
 		}
 
-		if (produto.ImagemIdentificador.NotEmpty())
+		if (produto.ImagensIdentificadores != null && produto.ImagensIdentificadores.Any())
 		{
-			await _blobStorageService.Excluir(usuarioLogado, produto.ImagemIdentificador);
+			foreach (var imagemIdentificador in produto.ImagensIdentificadores)
+			{
+				if (imagemIdentificador.NotEmpty())
+				{
+					await _blobStorageService.Excluir(usuarioLogado, imagemIdentificador);
+				}
+			}
 		}
 
 		await _repositoryWrite.Excluir(produtoId);
-
 		await _unitOfWork.Commit();
 	}
 }

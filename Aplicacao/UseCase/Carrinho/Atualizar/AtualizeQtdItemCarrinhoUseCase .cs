@@ -20,7 +20,7 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
 	private readonly IUsuarioLogado _usuarioLogado;
-	private readonly IBlobStorageService _blobStorageService; 
+	private readonly IBlobStorageService _blobStorageService;
 
 	public AtualizeQtdItemCarrinhoUseCase(
 		ICarrinhoReadOnly carrinhoReadOnly,
@@ -37,14 +37,14 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
 		_usuarioLogado = usuarioLogado;
-		_blobStorageService = blobStorageService; 
+		_blobStorageService = blobStorageService;
 	}
 
 	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(long itemCarrinhoId, RequestAtualizarItemCarrinhoJson request)
 	{
 		Usuario usuarioLogado = await _usuarioLogado.Usuario();
 
-		CarrinhoDeCompras? carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioLogado.Id)
+		Dominio.Entidades.CarrinhoDeCompras? carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioLogado.Id)
 			?? throw new NotFoundException($"Carrinho não encontrado para o usuário.");
 
 		ItemCarrinhoDeCompra? item = carrinho.ItensCarrinho.FirstOrDefault(i => i.Id == itemCarrinhoId)
@@ -75,34 +75,23 @@ public class AtualizeQtdItemCarrinhoUseCase : IAtualizeQtdItemCarrinhoUseCase
 
 		if (carrinhoAtualizado == null)
 		{
-			return new ResponseCarrinhoDeComprasJson 
-			{ 
-				Id = carrinho?.Id ?? 0, 
-				Itens = [], Total = 0 
+			return new ResponseCarrinhoDeComprasJson
+			{
+				Id = carrinho?.Id ?? 0,
+				Itens = [],
+				Total = 0
 			};
 		}
 
-		ResponseCarrinhoDeComprasJson response = 
+		ResponseCarrinhoDeComprasJson response =
 			_mapper.Map<ResponseCarrinhoDeComprasJson>(carrinhoAtualizado);
 
-		response.Itens = carrinhoAtualizado.ItensCarrinho != null && carrinhoAtualizado.ItensCarrinho.Count != 0
-			? await carrinhoAtualizado.ItensCarrinho.MapToResponseItemCarrinhoJsonComImagens(_blobStorageService, _mapper)
-			: ([]);
+		response.Itens = carrinhoAtualizado.ItensCarrinho != null && carrinhoAtualizado.ItensCarrinho.Any()
+			? await carrinhoAtualizado.ItensCarrinho.MapToResponseItensCarrinhoJson(usuarioLogado, _blobStorageService, _mapper)
+			: [];
+
+		response.Total = response.Itens.Sum(i => i.SubTotal);
 
 		return response;
 	}
-
-	//private static void Validate(RequestAtualizarItemCarrinhoJson request)
-	//{
-	//	var validator = new CarrinhoValidator();
-
-	//	var result = validator.Validate(request);
-
-	//	if (result.IsValid == false)
-	//	{
-	//		var mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
-
-	//		throw new ErrorOnValidationException(mensagensDeErro);
-	//	}
-	//}
 }
