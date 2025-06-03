@@ -59,7 +59,7 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => (int)src.Categoria))
 			.ForMember(dest => dest.QuantidadeEstoque, opt => opt.MapFrom(src => src.QuantidadeEstoque))
 			.ForMember(dest => dest.ImagemUrl, opt => opt.MapFrom(src =>
-				(src.ImagensIdentificadores != null && src.ImagensIdentificadores.Any())
+				(src.ImagensIdentificadores != null && src.ImagensIdentificadores.Count != 0)
 				? src.ImagensIdentificadores.First()
 				: null))
 			 .ForMember(dest => dest.ImagensUrl, opt => opt.Ignore());

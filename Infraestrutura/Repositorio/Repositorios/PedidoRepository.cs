@@ -21,6 +21,7 @@ public class PedidoRepository(PetDeliveryDbContext dbContext) : IPedidoReadOnly,
 			.AsNoTracking()
 			.Where(p => p.UsuarioId == usuarioId)
 			.Include(p => p.Itens)
+				.ThenInclude(i => i.Produto)
 			.Include(p => p.Pagamento)
 			.Include(p => p.Endereco)
 			.OrderByDescending(p => p.DataPedido)
