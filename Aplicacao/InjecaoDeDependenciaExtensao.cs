@@ -5,6 +5,7 @@ using Aplicacao.UseCase.Carrinho.Criar;
 using Aplicacao.UseCase.Carrinho.Limpar;
 using Aplicacao.UseCase.Carrinho.LimparCarrinho;
 using Aplicacao.UseCase.Carrinho.RemoverItem;
+using Aplicacao.UseCase.Dashboard.VendasHoje;
 using Aplicacao.UseCase.Pedido.BuscarPorUsuario;
 using Aplicacao.UseCase.Pedido.Criar;
 using Aplicacao.UseCase.Pedido.ObterPedido;
@@ -74,5 +75,6 @@ public static class InjecaoDeDependenciaExtensao
 		services.AddScoped<IObterPedidoPorIdUseCase, ObterPedidoPorIdUseCase>();
 		services.AddScoped<IObterPedidosPorUsuarioUseCase, ObterPedidosPorUsuarioUseCase>();
 		services.AddScoped<IAddUpdateImageCoverUseCase, AddUpdateImageCoverUseCase>();
+		services.AddScoped<IObterVendasHojeUseCase, ObterVendasHojeUseCase>();
 	}
 }

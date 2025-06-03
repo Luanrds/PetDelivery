@@ -3,4 +3,6 @@ public interface IPedidoReadOnly
 {
 	Task<Entidades.Pedido?> GetByIdAsync(long pedidoId);
 	Task<IList<Entidades.Pedido>> GetByUsuarioIdAsync(long usuarioId);
+	Task<decimal> GetTotalVendasDeHojePorVendedorAsync(long vendedorId);
+	Task<decimal> GetTotalVendasDeOntemPorVendedorAsync(long vendedorId);
 }
