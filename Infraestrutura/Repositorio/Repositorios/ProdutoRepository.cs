@@ -42,4 +42,10 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 		.Where(p => p.UsuarioId == usuarioId)
 		.ToListAsync();
 
+	public async Task<int> GetTotalEstoquePorVendedorAsync(long vendedorId) =>
+		await dbContext.Produto
+		.AsNoTracking()
+		.Where(p => p.UsuarioId == vendedorId)
+		.SumAsync(p => p.QuantidadeEstoque);
+	
 }
