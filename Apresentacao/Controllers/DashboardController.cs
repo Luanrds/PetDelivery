@@ -1,4 +1,5 @@
-﻿using Aplicacao.UseCase.Dashboard.VendasHoje;
+﻿using Aplicacao.UseCase.Dashboard.NovosPedidosHoje;
+using Aplicacao.UseCase.Dashboard.VendasHoje;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Response;
@@ -13,7 +14,18 @@ public class DashboardController : PetDeliveryBaseController
 	public async Task<IActionResult> GetVendasHoje(
 		 [FromServices] IObterVendasHojeUseCase useCase)
 	{
-		var response = await useCase.ExecuteAsync();
+		ResponseVendasHojeJson response = await useCase.ExecuteAsync();
+		return Ok(response);
+	}
+
+	[HttpGet]
+	[Route("novos-pedidos-hoje")]
+	[ProducesResponseType(typeof(ResponseNovosPedidosHojeJson), StatusCodes.Status200OK)]
+	[UsuarioAutenticado(requerVendedor: true)]
+	public async Task<IActionResult> GetNovosPedidosHoje(
+		[FromServices] IObterNovosPedidosHojeUseCase useCase)
+	{
+		ResponseNovosPedidosHojeJson response = await useCase.ExecuteAsync();
 		return Ok(response);
 	}
 }

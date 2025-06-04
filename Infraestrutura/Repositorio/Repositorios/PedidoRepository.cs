@@ -69,4 +69,30 @@ public class PedidoRepository(PetDeliveryDbContext dbContext) : IPedidoReadOnly,
 							 item.Produto.UsuarioId == vendedorId))
 			.SumAsync(p => p.ValorTotal);
 	}
+
+	public async Task<int> GetContagemNovosPedidosDeHojePorVendedorAsync(long vendedorId)
+	{
+		var hoje = DateTime.UtcNow.Date;
+		var amanha = hoje.AddDays(1);
+
+		return await dbContext.Pedido
+			.AsNoTracking()
+			.Where(p => p.DataPedido >= hoje && p.DataPedido < amanha &&
+						 p.Pagamento != null && p.Pagamento.StatusPagamento == StatusPagamento.Aprovado &&
+						 p.Itens.Any(item => item.Produto != null && item.Produto.UsuarioId == vendedorId))
+			.CountAsync();
+	}
+	public async Task<int> GetContagemNovosPedidosDeOntemPorVendedorAsync(long vendedorId)
+	{
+		var ontem = DateTime.UtcNow.Date.AddDays(-1);
+		var hoje = DateTime.UtcNow.Date;
+
+		return await dbContext.Pedido
+			.AsNoTracking()
+			.Where(p => p.DataPedido >= ontem && p.DataPedido < hoje &&
+						 p.Pagamento != null && p.Pagamento.StatusPagamento == StatusPagamento.Aprovado &&
+						 p.Itens.Any(item => item.Produto != null && item.Produto.UsuarioId == vendedorId))
+			.CountAsync();
+	}
+
 }

@@ -5,4 +5,6 @@ public interface IPedidoReadOnly
 	Task<IList<Entidades.Pedido>> GetByUsuarioIdAsync(long usuarioId);
 	Task<decimal> GetTotalVendasDeHojePorVendedorAsync(long vendedorId);
 	Task<decimal> GetTotalVendasDeOntemPorVendedorAsync(long vendedorId);
+	Task<int> GetContagemNovosPedidosDeHojePorVendedorAsync(long vendedorId);
+	Task<int> GetContagemNovosPedidosDeOntemPorVendedorAsync(long vendedorId);
 }
