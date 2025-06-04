@@ -1,4 +1,5 @@
 ﻿using Aplicacao.UseCase.Dashboard.NovosPedidosHoje;
+using Aplicacao.UseCase.Dashboard.ObterUltimosPedidos;
 using Aplicacao.UseCase.Dashboard.ProdutosEmEstoque;
 using Aplicacao.UseCase.Dashboard.ProdutosMaisVendidos;
 using Aplicacao.UseCase.Dashboard.VendasHoje;
@@ -53,6 +54,22 @@ public class DashboardController : PetDeliveryBaseController
 	{
 		var response = await useCase.ExecuteAsync(topN);
 		if (response.Produtos != null && response.Produtos.Any())
+		{
+			return Ok(response);
+		}
+		return NoContent();
+	}
+
+	[HttpGet]
+	[Route("ultimos-pedidos")]
+	[ProducesResponseType(typeof(ResponseUltimosPedidosJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<IActionResult> GetUltimosPedidos(
+	[FromServices] IObterUltimosPedidosUseCase useCase,
+	[FromQuery] int topN = 5)
+	{
+		var response = await useCase.ExecuteAsync(topN);
+		if (response.Pedidos != null && response.Pedidos.Any())
 		{
 			return Ok(response);
 		}

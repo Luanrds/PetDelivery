@@ -88,5 +88,10 @@ public class AutoMapping : Profile
 
 		CreateMap<ProdutoVendidoInfo, ResponseProdutoMaisVendidoJson>()
 			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()));
+
+		CreateMap<Pedido, ResponseUltimoPedidoJson>()
+			.ForMember(dest => dest.PedidoId, opt => opt.MapFrom(src => $"#{src.Id}"))
+		    .ForMember(dest => dest.NomeCliente, opt => opt.MapFrom(src => src.Usuario != null ? src.Usuario.Nome : "Cliente Desconhecido"))
+			.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
 	}
 }

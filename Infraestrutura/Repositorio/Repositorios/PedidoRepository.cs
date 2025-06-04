@@ -95,4 +95,16 @@ public class PedidoRepository(PetDeliveryDbContext dbContext) : IPedidoReadOnly,
 			.CountAsync();
 	}
 
+	public async Task<IList<Pedido>> GetUltimosPedidosContendoProdutosDoVendedorAsync(long vendedorId, int topN = 5)
+	{
+		return await dbContext.Pedido
+			.AsNoTracking()
+			.Include(p => p.Usuario)
+			.Include(p => p.Itens)
+				.ThenInclude(i => i.Produto)
+			.Where(p => p.Itens.Any(item => item.Produto != null && item.Produto.UsuarioId == vendedorId))
+			.OrderByDescending(p => p.DataPedido)
+			.Take(topN)
+			.ToListAsync();
+	}
 }
