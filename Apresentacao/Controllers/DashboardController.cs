@@ -1,5 +1,6 @@
 ﻿using Aplicacao.UseCase.Dashboard.NovosPedidosHoje;
 using Aplicacao.UseCase.Dashboard.ProdutosEmEstoque;
+using Aplicacao.UseCase.Dashboard.ProdutosMaisVendidos;
 using Aplicacao.UseCase.Dashboard.VendasHoje;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.API.Atributos;
@@ -39,5 +40,22 @@ public class DashboardController : PetDeliveryBaseController
 	{
 		var response = await useCase.ExecuteAsync();
 		return Ok(response);
+	}
+
+	[HttpGet]
+	[Route("produtos-mais-vendidos")]
+	[ProducesResponseType(typeof(ResponseProdutosMaisVendidosJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[UsuarioAutenticado(requerVendedor: true)]
+	public async Task<IActionResult> GetProdutosMaisVendidos(
+		[FromServices] IObterProdutosMaisVendidosUseCase useCase,
+		[FromQuery] int topN = 5)
+	{
+		var response = await useCase.ExecuteAsync(topN);
+		if (response.Produtos != null && response.Produtos.Any())
+		{
+			return Ok(response);
+		}
+		return NoContent();
 	}
 }

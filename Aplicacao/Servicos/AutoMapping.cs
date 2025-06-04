@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Dominio.Entidades;
+using Dominio.ObjetosDeValor;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
@@ -84,5 +85,8 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.Quantidade * src.PrecoUnitario));
 
 		CreateMap<Pagamento, ResponsePagamentoJson>();
+
+		CreateMap<ProdutoVendidoInfo, ResponseProdutoMaisVendidoJson>()
+			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()));
 	}
 }
