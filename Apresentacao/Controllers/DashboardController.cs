@@ -3,6 +3,7 @@ using Aplicacao.UseCase.Dashboard.ObterUltimosPedidos;
 using Aplicacao.UseCase.Dashboard.ProdutosEmEstoque;
 using Aplicacao.UseCase.Dashboard.ProdutosMaisVendidos;
 using Aplicacao.UseCase.Dashboard.VendasHoje;
+using Aplicacao.UseCase.Dashboard.VendasMensais;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Response;
@@ -64,6 +65,7 @@ public class DashboardController : PetDeliveryBaseController
 	[Route("ultimos-pedidos")]
 	[ProducesResponseType(typeof(ResponseUltimosPedidosJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> GetUltimosPedidos(
 	[FromServices] IObterUltimosPedidosUseCase useCase,
 	[FromQuery] int topN = 5)
@@ -74,5 +76,17 @@ public class DashboardController : PetDeliveryBaseController
 			return Ok(response);
 		}
 		return NoContent();
+	}
+
+	[HttpGet]
+	[Route("vendas-mensais")]
+	[ProducesResponseType(typeof(ResponseVendasMensaisGraficoJson), StatusCodes.Status200OK)]
+	[UsuarioAutenticado(requerVendedor: true)]
+	public async Task<IActionResult> GetVendasMensais(
+	[FromServices] IObterVendasMensaisUseCase useCase,
+	[FromQuery] string periodo = "ultimos-6-meses")
+	{
+		var response = await useCase.ExecuteAsync(periodo);
+		return Ok(response);
 	}
 }

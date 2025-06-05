@@ -1,4 +1,5 @@
 ﻿using Dominio.Entidades;
+using Dominio.ObjetosDeValor;
 using Dominio.Enums;
 using Dominio.Repositorios.Pedido;
 using Infraestrutura.Configuracao;
@@ -105,6 +106,28 @@ public class PedidoRepository(PetDeliveryDbContext dbContext) : IPedidoReadOnly,
 			.Where(p => p.Itens.Any(item => item.Produto != null && item.Produto.UsuarioId == vendedorId))
 			.OrderByDescending(p => p.DataPedido)
 			.Take(topN)
+			.ToListAsync();
+	}
+
+	public async Task<IList<VendaMensalInfo>> GetVendasMensaisPorVendedorAsync(long vendedorId, DateTime dataInicioUtc, DateTime dataFimUtc)
+	{
+		DateTime dataFimExclusive = dataFimUtc.Date.AddDays(1);
+
+		return await dbContext.Pedido
+			.AsNoTracking()
+			.Where(p => p.DataPedido >= dataInicioUtc && p.DataPedido < dataFimExclusive &&
+						 p.Pagamento != null &&
+						 p.Pagamento.StatusPagamento == StatusPagamento.Aprovado &&
+						 p.Itens.Any(item => item.Produto != null && item.Produto.UsuarioId == vendedorId))
+			.GroupBy(p => new { p.DataPedido.Year, p.DataPedido.Month })
+			.Select(g => new VendaMensalInfo
+			{
+				Ano = g.Key.Year,
+				Mes = g.Key.Month,
+				TotalVendas = g.Sum(p => p.ValorTotal)
+			})
+			.OrderBy(vm => vm.Ano)
+			.ThenBy(vm => vm.Mes)
 			.ToListAsync();
 	}
 }
