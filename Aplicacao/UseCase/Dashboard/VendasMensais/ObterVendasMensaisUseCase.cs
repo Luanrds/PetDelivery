@@ -1,14 +1,9 @@
-﻿// File: Aplicacao/UseCase/Dashboard/VendasMensais/ObterVendasMensaisUseCase.cs
-using Dominio.Entidades;
-using Dominio.ObjetosDeValor; // Certifique-se que VendaMensalInfo está aqui ou em Dominio.Repositorios.Pedido
+﻿using Dominio.Entidades;
+using Dominio.ObjetosDeValor;
 using Dominio.Repositorios.Pedido;
 using Dominio.Servicos.UsuarioLogado;
 using PetDelivery.Communication.Response;
-using System; // Adicionado para DateTime e DateTimeKind
-using System.Collections.Generic; // Adicionado para IList e List
 using System.Globalization;
-using System.Linq; // Adicionado para FirstOrDefault
-using System.Threading.Tasks; // Adicionado para Task
 
 namespace Aplicacao.UseCase.Dashboard.VendasMensais;
 
