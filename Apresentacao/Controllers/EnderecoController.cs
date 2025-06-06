@@ -3,11 +3,13 @@ using Aplicacao.UseCase.UseEndereco.Buscar;
 using Aplicacao.UseCase.UseEndereco.Criar;
 using Aplicacao.UseCase.UseEndereco.Excluir;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
 
+[UsuarioAutenticado]
 public class EnderecoController : PetDeliveryBaseController
 {
 	[HttpPost]
@@ -17,44 +19,44 @@ public class EnderecoController : PetDeliveryBaseController
 		[FromServices] IEnderecoUseCase useCase,
 		[FromBody] RequestEnderecoJson request)
 	{
-		var response = await useCase.ExecuteAsync(request);
+		ResponseEnderecoJson resposta = await useCase.ExecuteAsync(request);
 
-		return Created(string.Empty, response);
+		return Created(string.Empty, resposta);
 	}
 
-	[HttpGet("{usuarioId}")]
+	[HttpGet]
 	[ProducesResponseType(typeof(IEnumerable<ResponseEnderecoJson>), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> BuscarEnderecos(
-	[FromServices] IBuscarEnderecosUseCase useCase,
-	[FromRoute] long usuarioId)
+	[FromServices] IBuscarEnderecosUseCase useCase)
 	{
-		IEnumerable<ResponseEnderecoJson> response = await useCase.ExecuteAsync(usuarioId);
+		IEnumerable<ResponseEnderecoJson> resposta = await useCase.ExecuteAsync();
 
-		return Ok(response);
+		return Ok(resposta);
 	}
 
-	[HttpPut("{id}")]
+	[HttpPut("endereco/{enderecoId:long}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> Atualize(
 		[FromServices] IAtualizeEnderecoUseCase useCase,
 		[FromBody] RequestAtualizarEnderecoJson request,
-		[FromRoute] long id)
+		[FromRoute] long enderecoId)
 	{
-		await useCase.ExecuteAsync(id, request);
+		await useCase.ExecuteAsync(enderecoId, request);
 
 		return NoContent();
 	}
 
-	[HttpDelete("{id}")]
+	[HttpDelete("endereco/{enderecoId:long}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> ExcluirEndereco(
 		[FromServices] IExcluirEnderecoUseCase useCase,
-		[FromRoute] long id)
+		[FromRoute] long enderecoId)
 	{
-		await useCase.ExecuteAsync(id);
+		await useCase.ExecuteAsync(enderecoId);
 
 		return NoContent();
 	}

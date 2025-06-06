@@ -9,6 +9,8 @@ public class ResponseProdutoJson
     public string Nome { get; set; } = string.Empty;
     public string Descricao { get; set; } = string.Empty;
     public decimal Valor { get; set; } = decimal.Zero;
-	public string Categoria { get; set; } = string.Empty;
+	public int Categoria { get; set; }
 	public int QuantidadeEstoque { get; set; }
+	public string? ImagemUrl { get; set; }
+	public List<string>? ImagensUrl { get; set; }
 }

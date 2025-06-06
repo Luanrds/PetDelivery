@@ -1,29 +1,42 @@
-﻿using AutoMapper;
+﻿using Aplicacao.Extensoes;
+using AutoMapper;
+using Dominio.Entidades;
 using Dominio.Repositorios.Produto;
+using Dominio.Servicos.Storage;
 using PetDelivery.Communication.Response;
-using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 public class ObtenhaTodosProdutos : IObtenhaTodosProdutos
 {
 	private readonly IMapper _mapper;
 	private readonly IProdutoReadOnly _repository;
+	private readonly IBlobStorageService _blobStorageService;
 
-	public ObtenhaTodosProdutos(IMapper mapper, IProdutoReadOnly repository)
+	public ObtenhaTodosProdutos(
+		IMapper mapper,
+		IProdutoReadOnly repository,
+		IBlobStorageService blobStorageService)
 	{
 		_mapper = mapper;
 		_repository = repository;
+		_blobStorageService = blobStorageService;
 	}
 
-	public async Task<IEnumerable<ResponseProdutoJson>> ExecuteAsync()
+	public async Task<ResponseProdutosJson> ExecuteAsync()
 	{
-		var produtos = await _repository.GetAll();
+		List<Produto> produtos = await _repository.GetAll();
 
-		if (produtos.Count == 0)
+		if (produtos == null || produtos.Count == 0)
 		{
-			throw new NotFoundException("Nenhum produto encontrado.");
+			return new ResponseProdutosJson
+			{
+				Produtos = []
+			};
 		}
 
-		return _mapper.Map<IEnumerable<ResponseProdutoJson>>(produtos);
+		return new ResponseProdutosJson
+		{
+			Produtos = await produtos.MapToPublicProdutoJson(_blobStorageService, _mapper)
+		};
 	}
 }

@@ -14,6 +14,6 @@ public class Versao0000004 : VersaoBase
 			.WithColumn("CarrinhoId").AsInt64().NotNullable().ForeignKey("CarrinhoDeCompras", "Id")
 			.WithColumn("ProdutoId").AsInt64().NotNullable().ForeignKey("Produto", "Id")
 			.WithColumn("Quantidade").AsInt32().NotNullable()
-			.WithColumn("PrecoUnitario").AsDecimal().NotNullable();
+			.WithColumn("PrecoUnitario").AsDecimal().Nullable();
 	}
 }

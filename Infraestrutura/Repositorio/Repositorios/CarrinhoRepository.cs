@@ -5,47 +5,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infraestrutura.Repositorio.Repositorios;
 
-public class CarrinhoRepository : ICarrinhoReadOnly, ICarrinhoWriteOnly
+public class CarrinhoRepository(PetDeliveryDbContext dbContext) : ICarrinhoReadOnly, ICarrinhoWriteOnly
 {
-	private readonly PetDeliveryDbContext _dbContext;
+	public async Task Add(CarrinhoDeCompras carrinho) => await dbContext.CarrinhoDeCompras.AddAsync(carrinho);
 
-	public CarrinhoRepository(PetDeliveryDbContext dbContext) => _dbContext = dbContext;
-
-	public async Task Add(CarrinhoDeCompras carrinho) =>
-		await _dbContext.CarrinhoDeCompras.AddAsync(carrinho);
-
-	public async Task<CarrinhoDeCompras?> ObtenhaCarrinhoAtivo(long usuarioId)
+	public async Task LimparItensAsync(long carrinhoId)
 	{
-		return await _dbContext.CarrinhoDeCompras
-			.Include(c => c.ItensCarrinho)
-			.Where(c => c.UsuarioId == usuarioId)
-			.OrderByDescending(c => c.Id)
-			.FirstOrDefaultAsync();
+		List<ItemCarrinhoDeCompra> itensParaRemover = await dbContext.ItemCarrinhoDeCompra
+									 .Where(i => i.CarrinhoId == carrinhoId)
+									 .ToListAsync();
+
+		if (itensParaRemover.Count != 0)
+		{
+			dbContext.ItemCarrinhoDeCompra.RemoveRange(itensParaRemover);
+		}
 	}
 
-	public async Task<ItemCarrinhoDeCompra?> ObterItemCarrinhoPorId(long itemId, long usuarioId)
+	public async Task RemoverItemCarrinho(long itemCarrinhoId)
 	{
-		return await _dbContext.ItemCarrinhoDeCompra
-			.Where(i => i.Id == itemId && _dbContext.CarrinhoDeCompras.Any(c => c.Id == i.CarrinhoId && c.UsuarioId == usuarioId))
-			.FirstOrDefaultAsync();
-	}
-
-	public async Task LimparCarrinho(CarrinhoDeCompras carrinho)
-	{
-		_dbContext.ItemCarrinhoDeCompra.RemoveRange(carrinho.ItensCarrinho);
-		await _dbContext.SaveChangesAsync();
-	}
-
-	public async Task RemoverItemCarrinho(long itemId, long usuarioId)
-	{
-		var item = await _dbContext.ItemCarrinhoDeCompra
-			.Where(i => i.Id == itemId && _dbContext.CarrinhoDeCompras.Any(c => c.Id == i.CarrinhoId && c.UsuarioId == usuarioId))
-			.FirstOrDefaultAsync();
+		ItemCarrinhoDeCompra? item = await dbContext.ItemCarrinhoDeCompra.FindAsync(itemCarrinhoId);
 
 		if (item != null)
 		{
-			_dbContext.ItemCarrinhoDeCompra.Remove(item);
-			await _dbContext.SaveChangesAsync();
+			dbContext.ItemCarrinhoDeCompra.Remove(item);
 		}
 	}
+
+	public async Task<CarrinhoDeCompras?> ObtenhaCarrinhoAtivo(long usuarioId) =>
+		await dbContext.CarrinhoDeCompras
+			.Include(c => c.ItensCarrinho)
+				.ThenInclude(i => i.Produto)
+				.ThenInclude(p => p.Usuario)
+			.Where(c => c.UsuarioId == usuarioId)
+			.OrderByDescending(c => c.Id)
+			.FirstOrDefaultAsync();
+
+	public void AtualizarItem(ItemCarrinhoDeCompra item) =>
+		dbContext.ItemCarrinhoDeCompra.Update(item);
 }
