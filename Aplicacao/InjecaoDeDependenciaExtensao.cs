@@ -5,6 +5,12 @@ using Aplicacao.UseCase.Carrinho.Criar;
 using Aplicacao.UseCase.Carrinho.Limpar;
 using Aplicacao.UseCase.Carrinho.LimparCarrinho;
 using Aplicacao.UseCase.Carrinho.RemoverItem;
+using Aplicacao.UseCase.Dashboard.NovosPedidosHoje;
+using Aplicacao.UseCase.Dashboard.ObterUltimosPedidos;
+using Aplicacao.UseCase.Dashboard.ProdutosEmEstoque;
+using Aplicacao.UseCase.Dashboard.ProdutosMaisVendidos;
+using Aplicacao.UseCase.Dashboard.VendasHoje;
+using Aplicacao.UseCase.Dashboard.VendasMensais;
 using Aplicacao.UseCase.Pedido.BuscarPorUsuario;
 using Aplicacao.UseCase.Pedido.Criar;
 using Aplicacao.UseCase.Pedido.ObterPedido;
@@ -16,6 +22,8 @@ using Aplicacao.UseCase.UseProduto.Atualizar;
 using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
+using Aplicacao.UseCase.UseProduto.GetByVendedor;
+using Aplicacao.UseCase.UseProduto.Imagem;
 using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
 using Aplicacao.UseCase.UseUsuario.AlterarSenha;
@@ -47,8 +55,8 @@ public static class InjecaoDeDependenciaExtensao
 	private static void AdicioneUseCase(IServiceCollection services)
 	{
 		services.AddScoped<IUsuarioUseCase, UsuarioUseCase>();
-		services.AddScoped<IObterUsuarioUseCase, ObterUsuarioUseCase>();
-		services.AddScoped<ILoginUsuarioUseCase, LoginUsuarioUseCase>();
+		services.AddScoped<IObterPerfilUsuarioUseCase, ObterPerfilUsuarioUseCase>();
+		services.AddScoped<ILoginUseCase, LoginUseCase>();
 		services.AddScoped<IAtualizarUsuarioUseCase, AtualizarUsuarioUseCase>();
 		services.AddScoped<IExcluirUsuarioUseCase, ExcluirUsuarioUseCase>();
 		services.AddScoped<IAlterarSenhaUsuarioUseCase, AlterarSenhaUsuarioUseCase>();
@@ -58,6 +66,7 @@ public static class InjecaoDeDependenciaExtensao
 		services.AddScoped<IExcluirEnderecoUseCase, ExcluirEnderecoUseCase>();
 		services.AddScoped<IProdutoUseCase, ProdutoUseCase>();
 		services.AddScoped<IGetProdutoById, GetProdutoById>();
+		services.AddScoped<IGetProdutosPorVendedorUseCase, GetProdutosPorVendedorUseCase>();
 		services.AddScoped<IObtenhaTodosProdutos, ObtenhaTodosProdutos>();
 		services.AddScoped<IObtenhaProdutosPorCategoria, ObtenhaProdutosPorCategoriaUseCase>();
 		services.AddScoped<IExcluirProdutoUseCase, ExcluirProdutoUseCase>();
@@ -70,5 +79,12 @@ public static class InjecaoDeDependenciaExtensao
 		services.AddScoped<ICriarPedidoUseCase, CriarPedidoUseCase>();
 		services.AddScoped<IObterPedidoPorIdUseCase, ObterPedidoPorIdUseCase>();
 		services.AddScoped<IObterPedidosPorUsuarioUseCase, ObterPedidosPorUsuarioUseCase>();
+		services.AddScoped<IAddUpdateImageCoverUseCase, AddUpdateImageCoverUseCase>();
+		services.AddScoped<IObterVendasHojeUseCase, ObterVendasHojeUseCase>();
+		services.AddScoped<IObterNovosPedidosHojeUseCase, ObterNovosPedidosHojeUseCase>();
+		services.AddScoped<IObterProdutosEstoqueUseCase, ObterProdutosEstoqueUseCase>();
+		services.AddScoped<IObterProdutosMaisVendidosUseCase, ObterProdutosMaisVendidosUseCase>();
+		services.AddScoped<IObterUltimosPedidosUseCase, ObterUltimosPedidosUseCase>();
+		services.AddScoped<IObterVendasMensaisUseCase, ObterVendasMensaisUseCase>();
 	}
 }

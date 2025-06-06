@@ -17,18 +17,6 @@ public class UsuarioValidator : AbstractValidator<RequestUsuarioRegistroJson>
 		   .WithName("Email");
 
 		RuleFor(u => u.Senha)
-			.NotEmpty()
-			.WithMessage("Campo Obrigatório")
-			.Must(ValidacoesDeSenha)
-			.WithMessage("Senha inválida.");
-	}
-
-	private bool ValidacoesDeSenha(string senha)
-	{
-		if (string.IsNullOrEmpty(senha) || senha.Length < 6)
-		{
-			return false;
-		}
-		return true;
+			.SetValidator(new ValidadorDeSenha<RequestUsuarioRegistroJson>());
 	}
 }

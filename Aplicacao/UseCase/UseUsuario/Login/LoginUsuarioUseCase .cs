@@ -1,31 +1,46 @@
 ﻿using AutoMapper;
-using Dominio.Entidades;
+using Dominio.Extensoes;
 using Dominio.Repositorios.Usuario;
+using Dominio.Seguranca.Criptografia;
+using Dominio.Seguranca.Tokens;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
+using PetDelivery.Exceptions.ExceptionsBase;
 
 namespace Aplicacao.UseCase.UseUsuario.Login;
-public class LoginUsuarioUseCase : ILoginUsuarioUseCase
+public class LoginUseCase : ILoginUseCase
 {
 	private readonly IUsuarioReadOnly _usuarioReadOnly;
+	private readonly ISenhaEncripter _senhaEncripter;
+	private readonly IAccessTokenGenerator _accessTokenGenerator;
 	private readonly IMapper _mapper;
 
-	public LoginUsuarioUseCase(IUsuarioReadOnly usuarioReadOnly, IMapper mapper)
+	public LoginUseCase(IUsuarioReadOnly usuarioReadOnly,
+		ISenhaEncripter senhaEncripter, IAccessTokenGenerator
+		accessTokenGenerator,
+		IMapper mapper)
 	{
 		_usuarioReadOnly = usuarioReadOnly;
+		_senhaEncripter = senhaEncripter;
+		_accessTokenGenerator = accessTokenGenerator;
 		_mapper = mapper;
 	}
 
 	public async Task<ResponseUsuarioJson?> ExecuteAsync(RequestLoginUsuarioJson request)
 	{
-		Usuario? usuario = await _usuarioReadOnly.GetByEmail(request.Email);
+		var usuario = await _usuarioReadOnly.GetByEmail(request.Email);
 
-		if (usuario is null || usuario.Senha != request.Senha)
+		if (usuario is null || _senhaEncripter.IsValid(request.Senha, usuario.Senha).IsFalse())
+			throw new LoginInvalidoException();
+
+		return new ResponseUsuarioJson
 		{
-			return null;
-		}
-
-		var response = _mapper.Map<ResponseUsuarioJson>(usuario);
-		return response;
+			Nome = usuario.Nome,
+			EhVendedor = usuario.EhVendedor,
+			Tokens = new ResponseTokensJson
+			{
+				AccessToken = _accessTokenGenerator.Gererate(usuario.IdentificadorDoUsuario)
+			}
+		};
 	}
 }

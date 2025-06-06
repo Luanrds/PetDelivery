@@ -2,16 +2,18 @@
 
 namespace Infraestrutura.Migrations.Versoes;
 
-[Migration(VersoesDeBancoDeDados.TABLE_USUARIO, "Criar tabelas para usuarios")]
+[Migration(VersoesDeBancoDeDados.TABLE_PRODUTO, "Criar tabela para salvar as informações do Produto ")]
 public class Versao0000002 : VersaoBase
 {
-	public override void Up()
-	{
-		CreateTable("Usuario")
-			.WithColumn("Nome").AsString(255).NotNullable()
-			.WithColumn("Email").AsString(255).NotNullable().Unique()
-			.WithColumn("Senha").AsString(2000).NotNullable()
-			.WithColumn("DataNascimento").AsDateTime().Nullable()
-			.WithColumn("EhVendedor").AsBoolean().NotNullable().WithDefaultValue(false);
+    public override void Up()
+    {
+        CreateTable("Produto")
+            .WithColumn("UsuarioId").AsInt64().NotNullable().ForeignKey("FK_Produto_Usuario", "Usuario", "Id")
+            .WithColumn("Nome").AsString(255).NotNullable()
+            .WithColumn("Descricao").AsString(1000).Nullable()
+            .WithColumn("Valor").AsDecimal().NotNullable()
+            .WithColumn("Categoria").AsInt32().NotNullable()
+            .WithColumn("QuantidadeEstoque").AsInt32().NotNullable()
+            .WithColumn("ImagensIdentificadores").AsCustom("jsonb").Nullable();
 	}
 }

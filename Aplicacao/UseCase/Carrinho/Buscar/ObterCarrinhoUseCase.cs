@@ -1,30 +1,51 @@
-﻿using AutoMapper;
-using Dominio.Entidades;
+﻿using Aplicacao.Extensoes;
+using AutoMapper;
 using Dominio.Repositorios.Carrinho;
+using Dominio.Servicos.Storage;
+using Dominio.Servicos.UsuarioLogado;
 using PetDelivery.Communication.Response;
 
 namespace Aplicacao.UseCase.Carrinho.Buscar;
 
 public class ObterCarrinhoUseCase : IObterCarrinhoUseCase
 {
-	private readonly ICarrinhoReadOnly _carrinhoReadOnly;
+	private readonly ICarrinhoReadOnly _readOnlyRepository;
+	private readonly IUsuarioLogado _usuarioLogado;
 	private readonly IMapper _mapper;
+	private readonly IBlobStorageService _blobStorageService;
 
-	public ObterCarrinhoUseCase(ICarrinhoReadOnly carrinhoReadOnly, IMapper mapper)
+	public ObterCarrinhoUseCase(
+		ICarrinhoReadOnly readOnlyRepository,
+		IUsuarioLogado usuarioLogado,
+		IMapper mapper,
+		IBlobStorageService blobStorageService)
 	{
-		_carrinhoReadOnly = carrinhoReadOnly;
+		_readOnlyRepository = readOnlyRepository;
+		_usuarioLogado = usuarioLogado;
 		_mapper = mapper;
+		_blobStorageService = blobStorageService;
 	}
 
-	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(long usuarioId)
+	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync()
 	{
-		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioId);
+		var usuario = await _usuarioLogado.Usuario();
+		Dominio.Entidades.CarrinhoDeCompras? carrinho = await _readOnlyRepository.ObtenhaCarrinhoAtivo(usuario.Id);
 
-		if (carrinho == null)
+		if (carrinho == null || carrinho.ItensCarrinho == null || !carrinho.ItensCarrinho.Any())
 		{
-			return null;
+			return new ResponseCarrinhoDeComprasJson
+			{
+				Id = carrinho?.Id ?? 0,
+				Itens = [],
+				Total = 0
+			};
 		}
 
-		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
+		ResponseCarrinhoDeComprasJson response = _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
+
+		response.Itens = await carrinho.ItensCarrinho.MapToResponseItensCarrinhoJson(usuario, _blobStorageService, _mapper);
+		response.Total = carrinho.ItensCarrinho.Sum(item => item.Quantidade * item.PrecoUnitario);
+
+		return response;
 	}
 }

@@ -3,5 +3,5 @@
 namespace Aplicacao.UseCase.Pedido.BuscarPorUsuario;
 public interface IObterPedidosPorUsuarioUseCase
 {
-	Task<ResponseListaPedidosJson> Execute(long usuarioId);
+	Task<ResponseListaPedidosJson> Execute();
 }

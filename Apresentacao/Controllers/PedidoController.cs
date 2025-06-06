@@ -2,10 +2,13 @@
 using Aplicacao.UseCase.Pedido.Criar;
 using Aplicacao.UseCase.Pedido.ObterPedido;
 using Microsoft.AspNetCore.Mvc;
+using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 
 namespace PetDelivery.API.Controllers;
+
+[UsuarioAutenticado]
 public class PedidoController : PetDeliveryBaseController
 {
 	[HttpPost]
@@ -16,9 +19,9 @@ public class PedidoController : PetDeliveryBaseController
 		[FromServices] ICriarPedidoUseCase useCase,
 		[FromBody] RequestCheckoutJson request)
 	{
-		var response = await useCase.Execute(request);
+		ResponsePedidoCriadoJson resposta = await useCase.Execute(request);
 
-		return CreatedAtAction(nameof(GetPedidoPorId), new { pedidoId = response.PedidoId }, response);
+		return CreatedAtAction(nameof(GetPedidoPorId), new { pedidoId = resposta.PedidoId }, resposta);
 	}
 
 	[HttpGet("{pedidoId:long}", Name = "GetPedidoPorId")]
@@ -28,17 +31,16 @@ public class PedidoController : PetDeliveryBaseController
 		[FromServices] IObterPedidoPorIdUseCase useCase,
 		[FromRoute] long pedidoId)
 	{
-		var response = await useCase.Execute(pedidoId);
-		return Ok(response);
+		ResponsePedidoJson resposta = await useCase.Execute(pedidoId);
+		return Ok(resposta);
 	}
 
-	[HttpGet("usuario/{usuarioId:long}")]
+	[HttpGet]
 	[ProducesResponseType(typeof(ResponseListaPedidosJson), StatusCodes.Status200OK)]
 	public async Task<IActionResult> GetPedidosPorUsuario(
-		[FromServices] IObterPedidosPorUsuarioUseCase useCase,
-		[FromRoute] long usuarioId)
+		[FromServices] IObterPedidosPorUsuarioUseCase useCase)
 	{
-		var response = await useCase.Execute(usuarioId);
-		return Ok(response);
+		ResponseListaPedidosJson resposta = await useCase.Execute();
+		return Ok(resposta);
 	}
 }

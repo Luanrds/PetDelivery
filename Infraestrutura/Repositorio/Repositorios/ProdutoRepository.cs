@@ -1,43 +1,107 @@
 ﻿using Dominio.Entidades;
 using Dominio.Enums;
+using Dominio.ObjetosDeValor;
 using Dominio.Repositorios.Produto;
 using Infraestrutura.Configuracao;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infraestrutura.Repositorio.Repositorios;
 
-public class ProdutoRepository : IProdutoWriteOnly, IProdutoReadOnly, IProdutoUpdateOnly
+public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOnly, IProdutoReadOnly, IProdutoUpdateOnly
 {
-    private readonly PetDeliveryDbContext _dbContext;
+	public async Task Add(Produto produto) => await dbContext.Produto.AddAsync(produto);
 
-    public ProdutoRepository(PetDeliveryDbContext dbContext) => _dbContext = dbContext;
+	public void Atualize(Produto produto) => dbContext.Produto.Update(produto);
 
-    public async Task Add(Produto produto) => await _dbContext.Produto.AddAsync(produto);
-
-	public void Atualize(Produto produto) => _dbContext.Produto.Update(produto);
-
-	public Task<List<Produto>> GetAll() => _dbContext.Produto.ToListAsync();
+	public Task<List<Produto>> GetAll() => dbContext.Produto.Include(p => p.Usuario).ToListAsync();
 
 	public async Task Excluir(long produtoId)
 	{
-		var produto = await _dbContext.Produto.FindAsync(produtoId);
-
-		_dbContext.Produto.Remove(produto!);
+		var produto = await dbContext.Produto.FindAsync(produtoId);
+		if (produto != null)
+			dbContext.Produto.Remove(produto);
 	}
 
-
-	public Task<Produto?> GetById(long ProdutoId)
-	{
-		return _dbContext.Produto
+	public Task<Produto?> GetById(long ProdutoId) =>
+		dbContext.Produto
 			.AsNoTracking()
+			.Include(p => p.Usuario)
 			.FirstOrDefaultAsync(produto => produto.Id == ProdutoId);
-	}
 
 	public async Task<IEnumerable<Produto>> ObterPorCategoria(string categoria) =>
 		Enum.TryParse<CategoriaProduto>(categoria, true, out var categoriaEnum)
-			? await _dbContext.Produto
+			? await dbContext.Produto
 				.AsNoTracking()
 				.Where(produto => produto.Categoria == categoriaEnum)
 				.ToListAsync()
 			: (IEnumerable<Produto>)([]);
+
+	public async Task<List<Produto>> GetByUsuarioIdAsync(long usuarioId) =>
+		await dbContext.Produto
+			.AsNoTracking()
+			.Include(p => p.Usuario)
+			.Where(p => p.UsuarioId == usuarioId)
+			.ToListAsync();
+
+	public async Task<int> GetTotalEstoquePorVendedorAsync(long vendedorId) =>
+		await dbContext.Produto
+			.AsNoTracking()
+			.Where(p => p.UsuarioId == vendedorId)
+			.SumAsync(p => p.QuantidadeEstoque);
+
+	public async Task<IList<ProdutoVendidoInfo>> GetProdutosMaisVendidosPorVendedorAsync(long vendedorId, int topN = 5)
+	{
+
+		var produtoIds = (await dbContext.ItemPedido
+			.AsNoTracking()
+			.Where(ip => dbContext.Produto.Any(p => p.Id == ip.ProdutoId && p.UsuarioId == vendedorId) &&
+						dbContext.Pedido.Any(ped => ped.Id == ip.PedidoId &&
+							dbContext.Pagamento.Any(pag => pag.PedidoId == ped.Id &&
+								pag.StatusPagamento == StatusPagamento.Aprovado)))
+			.Select(ip => new
+			{
+				ip.ProdutoId,
+				ip.Quantidade
+			})
+			.ToListAsync()).Select(x => x.ProdutoId).Distinct().ToList();
+		var produtos = await dbContext.Produto
+			.AsNoTracking()
+			.Where(p => produtoIds.Contains(p.Id))
+			.Select(p => new
+			{
+				p.Id,
+				p.Nome,
+				p.Categoria
+			})
+			.ToListAsync();
+
+		var resultado = (await dbContext.ItemPedido
+			.AsNoTracking()
+			.Where(ip => dbContext.Produto.Any(p => p.Id == ip.ProdutoId && p.UsuarioId == vendedorId) &&
+						dbContext.Pedido.Any(ped => ped.Id == ip.PedidoId &&
+							dbContext.Pagamento.Any(pag => pag.PedidoId == ped.Id &&
+								pag.StatusPagamento == StatusPagamento.Aprovado)))
+			.Select(ip => new
+			{
+				ip.ProdutoId,
+				ip.Quantidade
+			})
+			.ToListAsync())
+			.GroupBy(x => x.ProdutoId)
+			.Select(g =>
+			{
+				var produto = produtos.First(p => p.Id == g.Key);
+				return new ProdutoVendidoInfo(
+					g.Key,
+					produto.Nome,
+					produto.Categoria,
+					g.Sum(x => x.Quantidade)
+				);
+			})
+			.OrderByDescending(x => x.QuantidadeVendas)
+			.Take(topN)
+			.ToList();
+
+		return resultado;
+	}
 }

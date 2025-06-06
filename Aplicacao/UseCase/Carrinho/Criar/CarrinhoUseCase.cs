@@ -1,10 +1,12 @@
 ﻿using Aplicacao.Validadores;
 using AutoMapper;
 using Dominio.Entidades;
+using Dominio.Extensoes;
 using Dominio.Repositorios;
 using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Produto;
-using Dominio.Repositorios.Usuario;
+using Dominio.Servicos.UsuarioLogado;
+using FluentValidation.Results;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
 using PetDelivery.Exceptions.ExceptionsBase;
@@ -16,39 +18,38 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 	private readonly ICarrinhoWriteOnly _carrinhoWriteOnly;
 	private readonly ICarrinhoReadOnly _carrinhoReadOnly;
 	private readonly IProdutoReadOnly _produtoReadOnly;
-	private readonly IUsuarioReadOnly _usuarioReadOnly;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
+	private readonly IUsuarioLogado _usuarioLogado;
 
 	public CarrinhoUseCase(
 		ICarrinhoWriteOnly carrinhoWriteOnly,
 		ICarrinhoReadOnly carrinhoReadOnly,
 		IProdutoReadOnly produtoReadOnly,
-		IUsuarioReadOnly usuarioReadOnly,
 		IUnitOfWork unitOfWork,
-		IMapper mapper)
+		IMapper mapper,
+		IUsuarioLogado usuarioLogado)
 	{
 		_carrinhoWriteOnly = carrinhoWriteOnly;
 		_carrinhoReadOnly = carrinhoReadOnly;
 		_produtoReadOnly = produtoReadOnly;
-		_usuarioReadOnly = usuarioReadOnly;
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
+		_usuarioLogado = usuarioLogado;
 	}
 
 	public async Task<ResponseCarrinhoDeComprasJson> ExecuteAsync(RequestItemCarrinhoJson request)
 	{
+		Usuario usuarioLogado = await _usuarioLogado.Usuario();
+
 		Validate(request);
 
-		Usuario usuario = await _usuarioReadOnly.GetById(request.UsuarioId)
-			?? throw new NotFoundException($"Usuário com ID {request.UsuarioId} não encontrado.");
-
-		CarrinhoDeCompras carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId)
+		CarrinhoDeCompras carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioLogado.Id)
 			?? new CarrinhoDeCompras
-				{
-					UsuarioId = request.UsuarioId,
-					ItensCarrinho = []
-				};
+			{
+				UsuarioId = usuarioLogado.Id,
+				ItensCarrinho = []
+			};
 
 		Produto produto = await _produtoReadOnly.GetById(request.ProdutoId)
 			?? throw new NotFoundException($"Produto com ID {request.ProdutoId} não encontrado.");
@@ -62,7 +63,6 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 		{
 			throw new ErrorOnValidationException([$"Estoque insuficiente para '{produto.Nome}'. Disponível: {produto.QuantidadeEstoque}, Solicitado no total: {quantidadeFinalNecessaria}."]);
 		}
-
 
 		if (itemExistente != null)
 		{
@@ -85,21 +85,20 @@ public class CarrinhoUseCase : ICarrinhoUseCase
 
 		await _unitOfWork.Commit();
 
-		CarrinhoDeCompras? carrinhoAtualizado = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(request.UsuarioId);
+		CarrinhoDeCompras? carrinhoAtualizado = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioLogado.Id);
 
 		return _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinhoAtualizado);
 	}
 
 	private static void Validate(RequestItemCarrinhoJson request)
 	{
-		var validator = new CarrinhoValidator();
+		CarrinhoValidator validator = new();
 
-		var result = validator.Validate(request);
+		ValidationResult result = validator.Validate(request);
 
-		if (result.IsValid == false)
+		if (result.IsValid.IsFalse())
 		{
-			var mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
-
+			List<string> mensagensDeErro = result.Errors.Select(e => e.ErrorMessage).ToList();
 			throw new ErrorOnValidationException(mensagensDeErro);
 		}
 	}

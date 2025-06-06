@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Dominio.Entidades;
+using Dominio.ObjetosDeValor;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
-using System.Linq; // Necessário para Sum()
 
 namespace Aplicacao.Servicos;
 public class AutoMapping : Profile
@@ -23,8 +23,7 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
 
 		CreateMap<RequestEnderecoJson, Endereco>()
-					.ForMember(dest => dest.Id, opt => opt.Ignore())
-					.ForMember(dest => dest.UsuarioId, opt => opt.MapFrom(src => src.UsuarioId));
+					.ForMember(dest => dest.Id, opt => opt.Ignore());
 
 		CreateMap<RequestAtualizarEnderecoJson, Endereco>()
 			.ForMember(dest => dest.Id, opt => opt.Ignore());
@@ -53,17 +52,26 @@ public class AutoMapping : Profile
 
 	private void DomainToResponse()
 	{
-		CreateMap<Usuario, ResponseUsuarioJson>()
-			.ForMember(dest => dest.EhVendedor, opt => opt.MapFrom(src => src.EhVendedor));
+		CreateMap<Usuario, ResponsePerfilUsuarioJson>();
 
 		CreateMap<Endereco, ResponseEnderecoJson>();
 
 		CreateMap<Produto, ResponseProdutoJson>()
-			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()))
-			.ForMember(dest => dest.QuantidadeEstoque, opt => opt.MapFrom(src => src.QuantidadeEstoque));
+			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => (int)src.Categoria))
+			.ForMember(dest => dest.QuantidadeEstoque, opt => opt.MapFrom(src => src.QuantidadeEstoque))
+			.ForMember(dest => dest.ImagemUrl, opt => opt.MapFrom(src =>
+				(src.ImagensIdentificadores != null && src.ImagensIdentificadores.Count != 0)
+				? src.ImagensIdentificadores.First()
+				: null))
+			 .ForMember(dest => dest.ImagensUrl, opt => opt.Ignore());
+
 
 		CreateMap<ItemCarrinhoDeCompra, ResponseItemCarrinhoJson>()
-			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()));
+			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()))
+			.ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Produto.Nome))
+			.ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Produto.Descricao))
+			.ForMember(dest => dest.ImagemUrl, opt => opt.Ignore());
+
 
 		CreateMap<CarrinhoDeCompras, ResponseCarrinhoDeComprasJson>()
 			.ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho))
@@ -77,5 +85,13 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.Quantidade * src.PrecoUnitario));
 
 		CreateMap<Pagamento, ResponsePagamentoJson>();
+
+		CreateMap<ProdutoVendidoInfo, ResponseProdutoMaisVendidoJson>()
+			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()));
+
+		CreateMap<Pedido, ResponseUltimoPedidoJson>()
+			.ForMember(dest => dest.PedidoId, opt => opt.MapFrom(src => $"#{src.Id}"))
+		    .ForMember(dest => dest.NomeCliente, opt => opt.MapFrom(src => src.Usuario != null ? src.Usuario.Nome : "Cliente Desconhecido"))
+			.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
 	}
 }

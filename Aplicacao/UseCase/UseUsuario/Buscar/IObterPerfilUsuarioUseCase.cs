@@ -1,7 +1,7 @@
 ﻿using PetDelivery.Communication.Response;
 
 namespace Aplicacao.UseCase.UseUsuario.Buscar;
-public interface IObterUsuarioUseCase
+public interface IObterPerfilUsuarioUseCase
 {
-	Task<ResponseUsuarioJson> ExecuteAsync(long id);
+	Task<ResponsePerfilUsuarioJson> ExecuteAsync();
 }
