@@ -14,6 +14,7 @@ public class PetDeliveryDbContext(DbContextOptions<PetDeliveryDbContext> options
 	public DbSet<Pedido> Pedido { get; set; }
 	public DbSet<Pagamento> Pagamento { get; set; }
 	public DbSet<ItemPedido> ItemPedido { get; set; }
+	public DbSet<MetodoPagamentoUsuario> MetodoPagamentoUsuario { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

@@ -48,6 +48,8 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.ProdutoId, opt => opt.MapFrom(src => src.ProdutoId))
 			.ForMember(dest => dest.Quantidade, opt => opt.MapFrom(src => src.Quantidade))
 			.ForMember(dest => dest.PrecoUnitario, opt => opt.MapFrom(src => src.Produto != null ? src.Produto.Valor : 0));
+
+		CreateMap<RequestCartaoCreditoJson, MetodoPagamentoUsuario>();
 	}
 
 	private void DomainToResponse()
@@ -89,9 +91,17 @@ public class AutoMapping : Profile
 		CreateMap<ProdutoVendidoInfo, ResponseProdutoMaisVendidoJson>()
 			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()));
 
+		CreateMap<Pedido, ResponsePedidoCriadoJson>();
+
 		CreateMap<Pedido, ResponseUltimoPedidoJson>()
 			.ForMember(dest => dest.PedidoId, opt => opt.MapFrom(src => $"#{src.Id}"))
 		    .ForMember(dest => dest.NomeCliente, opt => opt.MapFrom(src => src.Usuario != null ? src.Usuario.Nome : "Cliente Desconhecido"))
 			.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+		CreateMap<MetodoPagamentoUsuario, ResponseCartaoCreditoJson>()
+			.ForMember(dest => dest.NumeroCartaoUltimosQuatro, opt => opt.MapFrom(src =>
+				!string.IsNullOrEmpty(src.NumeroCartao) && src.NumeroCartao.Length > 4
+				? src.NumeroCartao.Substring(src.NumeroCartao.Length - 4)
+				: string.Empty));
 	}
 }

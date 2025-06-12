@@ -11,6 +11,11 @@ using Aplicacao.UseCase.Dashboard.ProdutosEmEstoque;
 using Aplicacao.UseCase.Dashboard.ProdutosMaisVendidos;
 using Aplicacao.UseCase.Dashboard.VendasHoje;
 using Aplicacao.UseCase.Dashboard.VendasMensais;
+using Aplicacao.UseCase.Pagamento.Criar;
+using Aplicacao.UseCase.Pagamento.CriarMetodoPagamento;
+using Aplicacao.UseCase.Pagamento.Excluir;
+using Aplicacao.UseCase.Pagamento.Listar;
+using Aplicacao.UseCase.Pagamento.ListarMetodoPagamento;
 using Aplicacao.UseCase.Pedido.BuscarPorUsuario;
 using Aplicacao.UseCase.Pedido.Criar;
 using Aplicacao.UseCase.Pedido.ObterPedido;
@@ -86,5 +91,8 @@ public static class InjecaoDeDependenciaExtensao
 		services.AddScoped<IObterProdutosMaisVendidosUseCase, ObterProdutosMaisVendidosUseCase>();
 		services.AddScoped<IObterUltimosPedidosUseCase, ObterUltimosPedidosUseCase>();
 		services.AddScoped<IObterVendasMensaisUseCase, ObterVendasMensaisUseCase>();
+		services.AddScoped<ICriarMetodoPagamentoUseCase, CriarMetodoPagamentoUseCase>();
+		services.AddScoped<IListarMetodosPagamentoUseCase, ListarMetodosPagamentoUseCase>();
+		services.AddScoped<IExcluirMetodoPagamentoUseCase, ExcluirMetodoPagamentoUseCase>();
 	}
 }
