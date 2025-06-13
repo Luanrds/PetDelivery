@@ -44,7 +44,7 @@ public class ObterCarrinhoUseCase : IObterCarrinhoUseCase
 		ResponseCarrinhoDeComprasJson response = _mapper.Map<ResponseCarrinhoDeComprasJson>(carrinho);
 
 		response.Itens = await carrinho.ItensCarrinho.MapToResponseItensCarrinhoJson(usuario, _blobStorageService, _mapper);
-		response.Total = carrinho.ItensCarrinho.Sum(item => item.Quantidade * item.PrecoUnitario);
+		response.Total = carrinho.ItensCarrinho.Sum(item => item.CalcularSubTotal());
 
 		return response;
 	}
