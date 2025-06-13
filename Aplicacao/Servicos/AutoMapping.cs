@@ -71,7 +71,7 @@ public class AutoMapping : Profile
 		CreateMap<ItemCarrinhoDeCompra, ResponseItemCarrinhoJson>()
 			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()))
 			.ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Produto.Nome))
-			.ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Produto.Descricao))
+			.ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Produto.DescricaoResumida))
 			.ForMember(dest => dest.ImagemUrl, opt => opt.Ignore());
 
 
