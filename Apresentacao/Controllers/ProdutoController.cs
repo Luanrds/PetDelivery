@@ -114,7 +114,7 @@ public class ProdutoController : PetDeliveryBaseController
 	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> AtualizeProduto(
 		[FromServices] IAtualizeProdutoUseCase useCase,
-		[FromBody] RequestProdutoJson requisicao,
+		[FromForm] RequestRegistroProdutoFormData requisicao,
 		[FromRoute] long id)
 	{
 		await useCase.ExecuteAsync(id, requisicao);
