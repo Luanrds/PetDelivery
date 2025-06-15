@@ -130,4 +130,7 @@ public class PedidoRepository(PetDeliveryDbContext dbContext) : IPedidoReadOnly,
 			.ThenBy(vm => vm.Mes)
 			.ToListAsync();
 	}
+
+	public async Task<bool> ProdutoJaVendido(long produtoId) =>
+		await dbContext.ItemPedido.AnyAsync(item => item.ProdutoId == produtoId);
 }

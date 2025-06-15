@@ -80,7 +80,10 @@ public class CriarPedidoUseCase : ICriarPedidoUseCase
 			{
 				ProdutoId = itemCarrinho.ProdutoId,
 				Quantidade = itemCarrinho.Quantidade,
-				PrecoUnitario = itemCarrinho.Produto.Valor
+				PrecoUnitarioOriginal = itemCarrinho.Produto.Valor,
+				PrecoUnitarioPago = itemCarrinho.Produto.ObterPrecoFinal(),
+				ValorDesconto = itemCarrinho.Produto.ValorDesconto,
+				TipoDesconto = itemCarrinho.Produto.TipoDesconto
 			};
 			pedido.Itens.Add(itemPedido);
 

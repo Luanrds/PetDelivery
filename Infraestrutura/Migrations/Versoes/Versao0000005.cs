@@ -17,7 +17,10 @@ public class Versao0000005 : VersaoBase
 		CreateTable("ItemPedido")
 			.WithColumn("PedidoId").AsInt64().NotNullable().ForeignKey("Pedido", "Id")
 			.WithColumn("ProdutoId").AsInt64().NotNullable().ForeignKey("Produto", "Id")
-			.WithColumn("PrecoUnitario").AsDecimal().NotNullable()
+			.WithColumn("PrecoUnitarioOriginal").AsDecimal(10, 2).NotNullable().WithDefaultValue(0)
+			.WithColumn("PrecoUnitarioPago").AsDecimal().NotNullable()
+			.WithColumn("ValorDesconto").AsDecimal(10, 2).Nullable()
+			.WithColumn("TipoDesconto").AsInt32().Nullable()
 			.WithColumn("Quantidade").AsInt32().NotNullable();
 	}
 }

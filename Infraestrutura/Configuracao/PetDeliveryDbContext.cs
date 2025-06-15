@@ -38,7 +38,7 @@ public class PetDeliveryDbContext(DbContextOptions<PetDeliveryDbContext> options
 		modelBuilder.Entity<ItemPedido>(item =>
 		{
 			item.HasKey(i => i.Id);
-			item.Property(i => i.PrecoUnitario).HasColumnType("decimal(10,2)");
+			item.Property(i => i.PrecoUnitarioPago).HasColumnType("decimal(10,2)");
 			item.HasOne(i => i.Produto).WithMany().HasForeignKey(i => i.ProdutoId).OnDelete(DeleteBehavior.Restrict);
 		});
 

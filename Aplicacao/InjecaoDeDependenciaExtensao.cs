@@ -25,6 +25,7 @@ using Aplicacao.UseCase.UseEndereco.Criar;
 using Aplicacao.UseCase.UseEndereco.Excluir;
 using Aplicacao.UseCase.UseProduto.Atualizar;
 using Aplicacao.UseCase.UseProduto.Criar;
+using Aplicacao.UseCase.UseProduto.Desconto;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.GetByVendedor;
@@ -94,5 +95,6 @@ public static class InjecaoDeDependenciaExtensao
 		services.AddScoped<ICriarMetodoPagamentoUseCase, CriarMetodoPagamentoUseCase>();
 		services.AddScoped<IListarMetodosPagamentoUseCase, ListarMetodosPagamentoUseCase>();
 		services.AddScoped<IExcluirMetodoPagamentoUseCase, ExcluirMetodoPagamentoUseCase>();
+		services.AddScoped<IAplicarDescontoUseCase, AplicarDescontoUseCase>();
 	}
 }

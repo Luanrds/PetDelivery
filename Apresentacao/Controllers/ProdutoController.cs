@@ -1,5 +1,6 @@
 ﻿using Aplicacao.UseCase.UseProduto.Atualizar;
 using Aplicacao.UseCase.UseProduto.Criar;
+using Aplicacao.UseCase.UseProduto.Desconto;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.GetByVendedor;
@@ -135,6 +136,20 @@ public class ProdutoController : PetDeliveryBaseController
 	{
 		await useCase.Execute(id, file);
 
+		return NoContent();
+	}
+
+	[HttpPut]
+	[Route("{id}/desconto")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+	[UsuarioAutenticado(requerVendedor: true)]
+	public async Task<IActionResult> AplicarDesconto(
+		[FromServices] IAplicarDescontoUseCase useCase,
+		[FromRoute] long id,
+		[FromBody] RequestAplicarDescontoJson request)
+	{
+		await useCase.Execute(id, request);
 		return NoContent();
 	}
 }
