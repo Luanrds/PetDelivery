@@ -104,4 +104,44 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 
 		return resultado;
 	}
+
+	public async Task<(IList<Produto> Produtos, int TotalItens)> Buscar(BuscaProdutosCriteria criteria)
+	{
+		IQueryable<Produto> query = dbContext.Produto.AsNoTracking().Include(p => p.Usuario).Where(p => p.Ativo);
+
+		if (!string.IsNullOrWhiteSpace(criteria.Termo))
+		{
+			query = query.Where(p =>
+				EF.Functions.ILike(PetDeliveryDbContext.Unaccent(p.Nome), "%" + PetDeliveryDbContext.Unaccent(criteria.Termo) + "%") ||
+				EF.Functions.ILike(PetDeliveryDbContext.Unaccent(p.Descricao), "%" + PetDeliveryDbContext.Unaccent(criteria.Termo) + "%")
+			);
+		}
+
+		if (criteria.PrecoMin.HasValue)
+		{
+			query = query.Where(p => p.Valor >= criteria.PrecoMin.Value);
+		}
+
+		if (criteria.PrecoMax.HasValue)
+		{
+			query = query.Where(p => p.Valor <= criteria.PrecoMax.Value);
+		}
+
+		query = criteria.OrdenarPor?.ToLowerInvariant() switch
+		{
+			"precoasc" => query.OrderBy(p => p.Valor),
+			"precodesc" => query.OrderByDescending(p => p.Valor),
+			"nome" => query.OrderBy(p => p.Nome),
+			_ => query.OrderBy(p => p.Nome)
+		};
+
+		int totalItens = await query.CountAsync();
+
+		List<Produto> produtos = await query
+			.Skip((criteria.Pagina - 1) * criteria.ItensPorPagina)
+			.Take(criteria.ItensPorPagina)
+			.ToListAsync();
+
+		return (produtos, totalItens);
+	}
 }

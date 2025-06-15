@@ -13,6 +13,7 @@ public class ExcluirProdutoUseCase : IExcluirProdutoUseCase
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IProdutoReadOnly _repositoryRead;
 	private readonly IProdutoWriteOnly _repositoryWrite;
+	private readonly IProdutoUpdateOnly _produtoUpdateOnly;
 	private readonly IUsuarioLogado _usuarioLogado;
 	private readonly IBlobStorageService _blobStorageService;
 	private readonly IPedidoReadOnly _pedidoReadOnly;
@@ -20,6 +21,7 @@ public class ExcluirProdutoUseCase : IExcluirProdutoUseCase
 	public ExcluirProdutoUseCase(
 		IProdutoReadOnly repositoryRead,
 		IProdutoWriteOnly repositoryWrite,
+		IProdutoUpdateOnly produtoUpdateOnly,
 		IUnitOfWork unitOfWork,
 		IUsuarioLogado usuarioLogado,
 		IBlobStorageService blobStorageService,
@@ -27,6 +29,7 @@ public class ExcluirProdutoUseCase : IExcluirProdutoUseCase
 	{
 		_repositoryRead = repositoryRead;
 		_repositoryWrite = repositoryWrite;
+		_produtoUpdateOnly = produtoUpdateOnly;
 		_unitOfWork = unitOfWork;
 		_usuarioLogado = usuarioLogado;
 		_blobStorageService = blobStorageService;
@@ -44,10 +47,16 @@ public class ExcluirProdutoUseCase : IExcluirProdutoUseCase
 			throw new UnauthorizedException("Você não tem permissão para excluir este produto.");
 		}
 
-		var produtoJaVendido = await _pedidoReadOnly.ProdutoJaVendido(produtoId);
+		bool produtoJaVendido = await _pedidoReadOnly.ProdutoJaVendido(produtoId);
 		if (produtoJaVendido)
 		{
-			throw new ErrorOnValidationException(["Este produto não pode ser excluído pois já está vinculado a um ou mais pedidos."]);
+			produto.Ativo = false;
+			_produtoUpdateOnly.Atualize(produto);
+		}
+		else
+		{
+			produto.Ativo = false;
+			_produtoUpdateOnly.Atualize(produto);
 		}
 
 		if (produto.ImagensIdentificadores != null && produto.ImagensIdentificadores.Any())

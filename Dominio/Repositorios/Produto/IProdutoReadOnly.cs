@@ -10,4 +10,5 @@ public interface IProdutoReadOnly
 	Task<List<Entidades.Produto>> GetByUsuarioIdAsync(long usuarioId);
 	Task<int> GetTotalEstoquePorVendedorAsync(long vendedorId);
 	Task<IList<ProdutoVendidoInfo>> GetProdutosMaisVendidosPorVendedorAsync(long vendedorId, int topN = 5);
+	Task<(IList<Entidades.Produto> Produtos, int TotalItens)> Buscar(BuscaProdutosCriteria criteria);
 }

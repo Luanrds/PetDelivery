@@ -15,9 +15,12 @@ public class PetDeliveryDbContext(DbContextOptions<PetDeliveryDbContext> options
 	public DbSet<Pagamento> Pagamento { get; set; }
 	public DbSet<ItemPedido> ItemPedido { get; set; }
 	public DbSet<MetodoPagamentoUsuario> MetodoPagamentoUsuario { get; set; }
-
+	public static string Unaccent(string text) => throw new NotSupportedException("Este método é apenas para uso em queries LINQ do EF Core.");
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
+		modelBuilder.HasDbFunction(typeof(PetDeliveryDbContext).GetMethod(nameof(Unaccent), [typeof(string)])!)
+				.HasName("unaccent");
+
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(PetDeliveryDbContext).Assembly);
 
 		modelBuilder.Entity<ItemCarrinhoDeCompra>()

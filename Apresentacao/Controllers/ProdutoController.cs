@@ -1,4 +1,5 @@
 ﻿using Aplicacao.UseCase.UseProduto.Atualizar;
+using Aplicacao.UseCase.UseProduto.Buscar;
 using Aplicacao.UseCase.UseProduto.Criar;
 using Aplicacao.UseCase.UseProduto.Desconto;
 using Aplicacao.UseCase.UseProduto.Excluir;
@@ -92,6 +93,16 @@ public class ProdutoController : PetDeliveryBaseController
 		}
 
 		return Ok(resposta);
+	}
+
+	[HttpGet("buscar")]
+	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
+	public async Task<IActionResult> Buscar(
+	[FromServices] IBuscarProdutosUseCase useCase,
+	[FromQuery] RequestBuscaProdutosJson request)
+	{
+		ResponseProdutosJson response = await useCase.Execute(request);
+		return Ok(response);
 	}
 
 	[HttpDelete]

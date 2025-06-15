@@ -13,6 +13,7 @@ public class Produto : EntidadeBase
 	public TipoDesconto? TipoDesconto { get; set; }
 	public CategoriaProduto Categoria { get; set; } 
     public int QuantidadeEstoque { get; set; }
+	public bool Ativo { get; set; } = true;
 	public List<string> ImagensIdentificadores { get; set; } = [];
 	public virtual Usuario Usuario { get; set; } = null!;
 

@@ -17,6 +17,7 @@ public class Versao0000002 : VersaoBase
 			.WithColumn("TipoDesconto").AsInt32().Nullable()
             .WithColumn("Categoria").AsInt32().NotNullable()
             .WithColumn("QuantidadeEstoque").AsInt32().NotNullable()
-            .WithColumn("ImagensIdentificadores").AsCustom("jsonb").Nullable();
+            .WithColumn("Ativo").AsBoolean().NotNullable().WithDefaultValue(true)
+			.WithColumn("ImagensIdentificadores").AsCustom("jsonb").Nullable();
 	}
 }
