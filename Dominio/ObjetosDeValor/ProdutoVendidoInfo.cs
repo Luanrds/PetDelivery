@@ -15,4 +15,9 @@ public class ProdutoVendidoInfo
 		Categoria = categoria;
 		QuantidadeVendas = quantidadeVendas;
 	}
+
+    public ProdutoVendidoInfo()
+    {
+
+	}
 }

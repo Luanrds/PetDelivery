@@ -144,4 +144,43 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 
 		return (produtos, totalItens);
 	}
+
+	public async Task<(IList<Produto> Produtos, int TotalItens)> ObterEmPromocaoAsync(int pagina, int itensPorPagina)
+	{
+		IQueryable<Produto> query = dbContext.Produto
+			.AsNoTracking()
+			.Include(p => p.Usuario)
+			.Where(p => p.Ativo && p.ValorDesconto != null && p.ValorDesconto > 0);
+
+		int totalItens = await query.CountAsync();
+
+		List<Produto> produtos = await query
+			.OrderByDescending(p => p.Id)
+			.Skip((pagina - 1) * itensPorPagina)
+			.Take(itensPorPagina)
+			.ToListAsync();
+
+		return (produtos, totalItens);
+	}
+
+	public async Task<IList<Produto>> ObterRelacionadosAsync(long produtoId, CategoriaProduto categoria, int itensPorPagina)
+	{
+		return await dbContext.Produto
+			.AsNoTracking()
+			.Include(p => p.Usuario)
+			.Where(p => p.Categoria == categoria && p.Id != produtoId && p.Ativo)
+			.OrderByDescending(p => p.Id)
+			.Take(itensPorPagina)
+			.ToListAsync();
+	}
+
+	public async Task<IList<Produto>> ObterPorIdsAsync(IEnumerable<long> produtoIds)
+	{
+		return await dbContext.Produto
+			.AsNoTracking()
+			.Include(p => p.Usuario) // Essencial para a URL da imagem
+			.Where(p => produtoIds.Contains(p.Id) && p.Ativo)
+			.ToListAsync();
+	}
 }
+

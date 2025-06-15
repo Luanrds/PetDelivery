@@ -8,6 +8,9 @@ using Aplicacao.UseCase.UseProduto.GetByVendedor;
 using Aplicacao.UseCase.UseProduto.Imagem;
 using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
+using Aplicacao.UseCase.UseProduto.ObterEmPromocao;
+using Aplicacao.UseCase.UseProduto.ObterMaisVendidos;
+using Aplicacao.UseCase.UseProduto.ObterRelacionados;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Request;
@@ -102,6 +105,59 @@ public class ProdutoController : PetDeliveryBaseController
 	[FromQuery] RequestBuscaProdutosJson request)
 	{
 		ResponseProdutosJson response = await useCase.Execute(request);
+		return Ok(response);
+	}
+
+	[HttpGet("em-promocao")]
+	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> ObterPromocoes(
+		[FromServices] IObterProdutosEmPromocaoUseCase useCase,
+		[FromQuery] int pagina = 1,
+		[FromQuery] int itensPorPagina = 10)
+	{
+		var response = await useCase.ExecuteAsync(pagina, itensPorPagina);
+
+		if (response.Produtos.Count == 0)
+		{
+			return NotFound();
+		}
+
+		return Ok(response);
+	}
+
+	[HttpGet("{id}/relacionados")]
+	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<IActionResult> ObterRelacionados(
+		[FromServices] IObterProdutosRelacionadosUseCase useCase,
+		[FromRoute] long id,
+		[FromQuery] int itensPorPagina = 4)
+	{
+		var response = await useCase.ExecuteAsync(id, itensPorPagina);
+
+		if (response.Produtos.Count == 0)
+		{
+			return NoContent();
+		}
+
+		return Ok(response);
+	}
+
+	[HttpGet("mais-vendidos")]
+	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<IActionResult> ObterMaisVendidos(
+		[FromServices] IObterMaisVendidosUseCase useCase,
+		[FromQuery] int limite = 10)
+	{
+		var response = await useCase.ExecuteAsync(limite);
+
+		if (response.Produtos.Count == 0)
+		{
+			return NoContent();
+		}
+
 		return Ok(response);
 	}
 

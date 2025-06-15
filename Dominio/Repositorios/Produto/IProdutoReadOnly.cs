@@ -1,4 +1,5 @@
-﻿using Dominio.ObjetosDeValor;
+﻿using Dominio.Enums;
+using Dominio.ObjetosDeValor;
 
 namespace Dominio.Repositorios.Produto;
 
@@ -11,4 +12,7 @@ public interface IProdutoReadOnly
 	Task<int> GetTotalEstoquePorVendedorAsync(long vendedorId);
 	Task<IList<ProdutoVendidoInfo>> GetProdutosMaisVendidosPorVendedorAsync(long vendedorId, int topN = 5);
 	Task<(IList<Entidades.Produto> Produtos, int TotalItens)> Buscar(BuscaProdutosCriteria criteria);
+	Task<(IList<Entidades.Produto> Produtos, int TotalItens)> ObterEmPromocaoAsync(int pagina, int itensPorPagina);
+	Task<IList<Entidades.Produto>> ObterRelacionadosAsync(long produtoId, CategoriaProduto categoria, int limite);
+	Task<IList<Entidades.Produto>> ObterPorIdsAsync(IEnumerable<long> produtoIds);
 }

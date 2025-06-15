@@ -10,4 +10,5 @@ public interface IPedidoReadOnly
 	Task<IList<Entidades.Pedido>> GetUltimosPedidosContendoProdutosDoVendedorAsync(long vendedorId, int topN = 5);
 	Task<IList<ObjetosDeValor.VendaMensalInfo>> GetVendasMensaisPorVendedorAsync(long vendedorId, DateTime dataInicio, DateTime dataFim);
 	Task<bool> ProdutoJaVendido(long produtoId);
+	Task<IList<ObjetosDeValor.ProdutoVendidoInfo>> ObterProdutosMaisVendidos(int limite);
 }

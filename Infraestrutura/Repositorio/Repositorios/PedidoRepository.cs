@@ -133,4 +133,32 @@ public class PedidoRepository(PetDeliveryDbContext dbContext) : IPedidoReadOnly,
 
 	public async Task<bool> ProdutoJaVendido(long produtoId) =>
 		await dbContext.ItemPedido.AnyAsync(item => item.ProdutoId == produtoId);
+
+	public async Task<IList<ProdutoVendidoInfo>> ObterProdutosMaisVendidos(int limite)
+	{
+		return await dbContext.ItemPedido
+			.AsNoTracking()
+			.Where(item => item.Pedido.Status == StatusPedido.Concluido)
+
+			.GroupBy(item => new { item.ProdutoId, item.Produto.Nome })
+
+			.Select(grupo => new
+			{
+				grupo.Key.ProdutoId,
+				ProdutoNome = grupo.Key.Nome,
+				QuantidadeTotal = grupo.Sum(item => item.Quantidade)
+			})
+
+			.OrderByDescending(resultado => resultado.QuantidadeTotal)
+
+			.Take(limite)
+
+			.Select(resultado => new ProdutoVendidoInfo
+			{
+				ProdutoId = resultado.ProdutoId,
+				NomeProduto = resultado.ProdutoNome,
+				QuantidadeVendas = resultado.QuantidadeTotal
+			})
+			.ToListAsync();
+	}
 }

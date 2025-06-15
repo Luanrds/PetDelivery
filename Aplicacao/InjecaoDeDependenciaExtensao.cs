@@ -33,6 +33,9 @@ using Aplicacao.UseCase.UseProduto.GetByVendedor;
 using Aplicacao.UseCase.UseProduto.Imagem;
 using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
+using Aplicacao.UseCase.UseProduto.ObterEmPromocao;
+using Aplicacao.UseCase.UseProduto.ObterMaisVendidos;
+using Aplicacao.UseCase.UseProduto.ObterRelacionados;
 using Aplicacao.UseCase.UseUsuario.AlterarSenha;
 using Aplicacao.UseCase.UseUsuario.Atualizar;
 using Aplicacao.UseCase.UseUsuario.Buscar;
@@ -98,5 +101,8 @@ public static class InjecaoDeDependenciaExtensao
 		services.AddScoped<IExcluirMetodoPagamentoUseCase, ExcluirMetodoPagamentoUseCase>();
 		services.AddScoped<IAplicarDescontoUseCase, AplicarDescontoUseCase>();
 		services.AddScoped<IBuscarProdutosUseCase, BuscarProdutosUseCase>();
+		services.AddScoped<IObterProdutosEmPromocaoUseCase, ObterProdutosEmPromocaoUseCase>();
+		services.AddScoped<IObterProdutosRelacionadosUseCase, ObterProdutosRelacionadosUseCase>();
+		services.AddScoped<IObterMaisVendidosUseCase, ObterMaisVendidosUseCase>();
 	}
 }
