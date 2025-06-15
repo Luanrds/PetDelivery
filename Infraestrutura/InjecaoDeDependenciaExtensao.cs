@@ -75,6 +75,7 @@ public static class InjecaoDeDependenciaExtensaoRG
 		services.AddScoped<IPedidoReadOnly, PedidoRepository>();
 		services.AddScoped<IPedidoWriteOnly, PedidoRepository>();
 		services.AddScoped<IPagamentoWriteOnly, PagamentoRepository>();
+		services.AddScoped<IMetodoPagamentoUsuarioRepository, MetodoPagamentoUsuarioRepository>();
 	}
 
 	private static void AdicioneFluentMigrator_Npga(IServiceCollection services, IConfiguration configuration)

@@ -36,9 +36,7 @@ public class CarrinhoRepository(PetDeliveryDbContext dbContext) : ICarrinhoReadO
 			.Include(c => c.ItensCarrinho)
 				.ThenInclude(i => i.Produto)
 				.ThenInclude(p => p.Usuario)
-			.Where(c => c.UsuarioId == usuarioId)
-			.OrderByDescending(c => c.Id)
-			.FirstOrDefaultAsync();
+			.FirstOrDefaultAsync(c => c.UsuarioId == usuarioId);
 
 	public void AtualizarItem(ItemCarrinhoDeCompra item) =>
 		dbContext.ItemCarrinhoDeCompra.Update(item);

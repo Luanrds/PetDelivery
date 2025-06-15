@@ -19,8 +19,12 @@ public class ProdutoValidator : AbstractValidator<RequestProdutoJson>
 
         RuleFor(p => p.Descricao)
             .NotEmpty()
-            .WithMessage("Campo obrigatório")
+			.MaximumLength(5000)
+			.WithMessage("Campo obrigatório")
             .WithName("Descrição");
+
+		RuleFor(p => p.DescricaoResumida)
+			.MaximumLength(500).WithMessage("A descrição resumida não pode exceder 500 caracteres.");
 
 		RuleFor(p => p.Categoria)
             .IsInEnum()

@@ -14,6 +14,7 @@ public class ItemCarrinhoDeCompra : EntidadeBase
 		{
 			return 0;
 		}
-		return Quantidade * Produto.Valor;
+
+		return Quantidade * Produto.ObterPrecoFinal();
 	}
 }

@@ -47,7 +47,9 @@ public class AutoMapping : Profile
 			.ForMember(dest => dest.Produto, opt => opt.Ignore())
 			.ForMember(dest => dest.ProdutoId, opt => opt.MapFrom(src => src.ProdutoId))
 			.ForMember(dest => dest.Quantidade, opt => opt.MapFrom(src => src.Quantidade))
-			.ForMember(dest => dest.PrecoUnitario, opt => opt.MapFrom(src => src.Produto != null ? src.Produto.Valor : 0));
+			.ForMember(dest => dest.PrecoUnitarioPago, opt => opt.MapFrom(src => src.Produto != null ? src.Produto.Valor : 0));
+
+		CreateMap<RequestCartaoCreditoJson, MetodoPagamentoUsuario>();
 	}
 
 	private void DomainToResponse()
@@ -59,6 +61,10 @@ public class AutoMapping : Profile
 		CreateMap<Produto, ResponseProdutoJson>()
 			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => (int)src.Categoria))
 			.ForMember(dest => dest.QuantidadeEstoque, opt => opt.MapFrom(src => src.QuantidadeEstoque))
+			.ForMember(dest => dest.ValorOriginal, opt => opt.MapFrom(src => src.Valor))
+			.ForMember(dest => dest.ValorComDesconto, opt => opt.MapFrom(src => src.ObterPrecoFinal()))
+			.ForMember(dest => dest.ValorDesconto, opt => opt.MapFrom(src => src.ValorDesconto))
+			.ForMember(dest => dest.TipoDesconto, opt => opt.MapFrom(src => (int?)src.TipoDesconto))
 			.ForMember(dest => dest.ImagemUrl, opt => opt.MapFrom(src =>
 				(src.ImagensIdentificadores != null && src.ImagensIdentificadores.Count != 0)
 				? src.ImagensIdentificadores.First()
@@ -69,9 +75,14 @@ public class AutoMapping : Profile
 		CreateMap<ItemCarrinhoDeCompra, ResponseItemCarrinhoJson>()
 			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()))
 			.ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Produto.Nome))
-			.ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Produto.Descricao))
-			.ForMember(dest => dest.ImagemUrl, opt => opt.Ignore());
-
+			.ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Produto.DescricaoResumida))
+			.ForMember(dest => dest.ImagemUrl, opt => opt.Ignore())
+			.ForMember(dest => dest.PrecoUnitarioOriginal, opt => opt.MapFrom(src => src.Produto.Valor))
+			.ForMember(dest => dest.PrecoUnitarioComDesconto, opt => opt.MapFrom(src =>
+				src.Produto.ValorDesconto.HasValue ? src.Produto.ObterPrecoFinal() : (decimal?)null))
+			.ForMember(dest => dest.ValorDesconto, opt => opt.MapFrom(src => src.Produto.ValorDesconto))
+			.ForMember(dest => dest.TipoDesconto, opt => opt.MapFrom(src => (int?)src.Produto.TipoDesconto))
+			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.CalcularSubTotal()));
 
 		CreateMap<CarrinhoDeCompras, ResponseCarrinhoDeComprasJson>()
 			.ForMember(dest => dest.Itens, opt => opt.MapFrom(src => src.ItensCarrinho))
@@ -82,16 +93,28 @@ public class AutoMapping : Profile
 
 		CreateMap<ItemPedido, ResponseItemPedidoJson>()
 			.ForMember(dest => dest.NomeProduto, opt => opt.MapFrom(src => src.Produto != null ? src.Produto.Nome : string.Empty))
-			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.Quantidade * src.PrecoUnitario));
+			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.Quantidade * src.PrecoUnitarioPago))
+			.ForMember(dest => dest.PrecoUnitarioOriginal, opt => opt.MapFrom(src => src.PrecoUnitarioOriginal))
+			.ForMember(dest => dest.PrecoUnitarioPago, opt => opt.MapFrom(src => src.PrecoUnitarioPago))
+			.ForMember(dest => dest.ValorDesconto, opt => opt.MapFrom(src => src.ValorDesconto))
+			.ForMember(dest => dest.TipoDesconto, opt => opt.MapFrom(src => (int?)src.TipoDesconto));
 
 		CreateMap<Pagamento, ResponsePagamentoJson>();
 
 		CreateMap<ProdutoVendidoInfo, ResponseProdutoMaisVendidoJson>()
 			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()));
 
+		CreateMap<Pedido, ResponsePedidoCriadoJson>();
+
 		CreateMap<Pedido, ResponseUltimoPedidoJson>()
 			.ForMember(dest => dest.PedidoId, opt => opt.MapFrom(src => $"#{src.Id}"))
 		    .ForMember(dest => dest.NomeCliente, opt => opt.MapFrom(src => src.Usuario != null ? src.Usuario.Nome : "Cliente Desconhecido"))
 			.ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+		CreateMap<MetodoPagamentoUsuario, ResponseCartaoCreditoJson>()
+			.ForMember(dest => dest.NumeroCartaoUltimosQuatro, opt => opt.MapFrom(src =>
+				!string.IsNullOrEmpty(src.NumeroCartao) && src.NumeroCartao.Length > 4
+				? src.NumeroCartao.Substring(src.NumeroCartao.Length - 4)
+				: string.Empty));
 	}
 }
