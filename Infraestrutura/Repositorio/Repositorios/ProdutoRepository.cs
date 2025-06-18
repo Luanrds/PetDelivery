@@ -32,6 +32,7 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 		Enum.TryParse<CategoriaProduto>(categoria, true, out var categoriaEnum)
 			? await dbContext.Produto
 				.AsNoTracking()
+				.Include(p => p.Usuario)
 				.Where(produto => produto.Categoria == categoriaEnum)
 				.ToListAsync()
 			: (IEnumerable<Produto>)([]);

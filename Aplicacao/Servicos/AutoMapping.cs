@@ -93,6 +93,10 @@ public class AutoMapping : Profile
 
 		CreateMap<ItemPedido, ResponseItemPedidoJson>()
 			.ForMember(dest => dest.NomeProduto, opt => opt.MapFrom(src => src.Produto != null ? src.Produto.Nome : string.Empty))
+			.ForMember(dest => dest.ImagemUrl, opt => opt.MapFrom(src =>
+				(src.Produto.ImagensIdentificadores != null && src.Produto.ImagensIdentificadores.Count != 0)
+				? src.Produto.ImagensIdentificadores.First()
+				: null))
 			.ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.Quantidade * src.PrecoUnitarioPago))
 			.ForMember(dest => dest.PrecoUnitarioOriginal, opt => opt.MapFrom(src => src.PrecoUnitarioOriginal))
 			.ForMember(dest => dest.PrecoUnitarioPago, opt => opt.MapFrom(src => src.PrecoUnitarioPago))
@@ -104,7 +108,9 @@ public class AutoMapping : Profile
 		CreateMap<ProdutoVendidoInfo, ResponseProdutoMaisVendidoJson>()
 			.ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.ToString()));
 
-		CreateMap<Pedido, ResponsePedidoCriadoJson>();
+		CreateMap<Pedido, ResponsePedidoCriadoJson>()
+			.ForMember(dest => dest.PedidoId, opt => opt.MapFrom(src => src.Id))
+			.ForMember(dest => dest.StatusInicial, opt => opt.MapFrom(src => src.Status.ToString()));
 
 		CreateMap<Pedido, ResponseUltimoPedidoJson>()
 			.ForMember(dest => dest.PedidoId, opt => opt.MapFrom(src => $"#{src.Id}"))

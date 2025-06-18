@@ -2,12 +2,12 @@
 public class ResponseItemPedidoJson
 {
 	public long Id { get; set; }
-	public long ProdutoId { get; set; }
 	public string NomeProduto { get; set; } = string.Empty;
-	public int Quantidade { get; set; }
+	public string? ImagemUrl { get; set; }
 	public decimal PrecoUnitarioOriginal { get; set; }
 	public decimal PrecoUnitarioPago { get; set; }
 	public decimal? ValorDesconto { get; set; }
 	public int? TipoDesconto { get; set; }
+	public int Quantidade { get; set; }
 	public decimal SubTotal { get; set; }
 }

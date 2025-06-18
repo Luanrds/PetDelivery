@@ -63,7 +63,7 @@ public class CriarPedidoUseCase : ICriarPedidoUseCase
 		{
 			UsuarioId = usuario.Id,
 			EnderecoId = request.EnderecoId,
-			Status = StatusPedido.Pendente,
+			Status = StatusPedido.Concluido,
 			DataPedido = DateTime.UtcNow,
 			Itens = [],
 			ValorTotal = 0
