@@ -6,7 +6,6 @@ using Dominio.Repositorios.Carrinho;
 using Dominio.Repositorios.Endereco;
 using Dominio.Repositorios.Pagamento;
 using Dominio.Repositorios.Pedido;
-using Dominio.Repositorios.Produto;
 using Dominio.Servicos.UsuarioLogado;
 using PetDelivery.Communication.Request;
 using PetDelivery.Communication.Response;
@@ -16,157 +15,123 @@ namespace Aplicacao.UseCase.Pedido.Criar;
 
 public class CriarPedidoUseCase : ICriarPedidoUseCase
 {
+	private readonly IUsuarioLogado _usuarioLogado;
 	private readonly ICarrinhoReadOnly _carrinhoReadOnly;
 	private readonly ICarrinhoWriteOnly _carrinhoWriteOnly;
-	private readonly IEnderecoReadOnly _enderecoReadOnly;
-	private readonly IPedidoWriteOnly _pedidoWriteOnly;
-	private readonly IPagamentoWriteOnly _pagamentoWriteOnly;
-	private readonly IProdutoReadOnly _produtoReadOnly;
+	private readonly IEnderecoReadOnly _enderecoRepository;
+	private readonly IPedidoWriteOnly _pedidoRepository;
+	private readonly IMetodoPagamentoUsuarioRepository _metodoPagamentoRepository;
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
-	private readonly IUsuarioLogado _usuarioLogado;
 
 	public CriarPedidoUseCase(
+		IUsuarioLogado usuarioLogado,
 		ICarrinhoReadOnly carrinhoReadOnly,
 		ICarrinhoWriteOnly carrinhoWriteOnly,
-		IEnderecoReadOnly enderecoReadOnly,
-		IPedidoWriteOnly pedidoWriteOnly,
-		IPagamentoWriteOnly pagamentoWriteOnly,
-		IProdutoReadOnly produtoReadOnly,
+		IEnderecoReadOnly enderecoRepository,
+		IPedidoWriteOnly pedidoRepository,
+		IMetodoPagamentoUsuarioRepository metodoPagamentoRepository,
 		IUnitOfWork unitOfWork,
-		IMapper mapper,
-		IUsuarioLogado usuarioLogado)
+		IMapper mapper)
 	{
+		_usuarioLogado = usuarioLogado;
 		_carrinhoReadOnly = carrinhoReadOnly;
 		_carrinhoWriteOnly = carrinhoWriteOnly;
-		_enderecoReadOnly = enderecoReadOnly;
-		_pedidoWriteOnly = pedidoWriteOnly;
-		_pagamentoWriteOnly = pagamentoWriteOnly;
-		_produtoReadOnly = produtoReadOnly;
+		_enderecoRepository = enderecoRepository;
+		_pedidoRepository = pedidoRepository;
+		_metodoPagamentoRepository = metodoPagamentoRepository;
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
-		_usuarioLogado = usuarioLogado;
 	}
 
 	public async Task<ResponsePedidoCriadoJson> Execute(RequestCheckoutJson request)
 	{
-		Usuario usuario = await _usuarioLogado.Usuario();
+		var usuario = await _usuarioLogado.Usuario();
 
-		_ = await _enderecoReadOnly.GetById(usuario.Id, request.EnderecoId)
-			?? throw new NotFoundException($"Endereço com ID {request.EnderecoId} não encontrado ou não pertence a este usuário.");
+		_ = await _enderecoRepository.GetById(usuario.Id, request.EnderecoId)
+			?? throw new NotFoundException($"Endereço com ID {request.EnderecoId} não foi encontrado ou não pertence a este usuário.");
 
-		CarrinhoDeCompras carrinho = await ObterCarrinhoValido(usuario.Id);
-
-		Dominio.Entidades.Pedido pedido = await CriarPedido(carrinho, usuario.Id, request);
-
-		await FinalizarPedido(pedido, carrinho.Id);
-
-		return new ResponsePedidoCriadoJson
+		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuario.Id);
+		if (carrinho is null || !carrinho.ItensCarrinho.Any())
 		{
-			PedidoId = pedido.Id,
-			StatusInicial = pedido.Status.ToString()
-		};
-	}
+			throw new ErrorOnValidationException(["Seu carrinho está vazio."]);
+		}
 
-	private async Task<CarrinhoDeCompras> ObterCarrinhoValido(long usuarioId)
-	{
-		CarrinhoDeCompras? carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuarioId);
+		var metodoDePagamentoFinal = await ValidarMetodoPagamento(request, usuario.Id);
 
-		if (carrinho == null || carrinho.ItensCarrinho == null || carrinho.ItensCarrinho.Count == 0)
-			throw new ErrorOnValidationException(["O carrinho está vazio."]);
-
-		return carrinho;
-	}
-
-	private async Task<Dominio.Entidades.Pedido> CriarPedido(CarrinhoDeCompras carrinho, long usuarioId, RequestCheckoutJson request)
-	{
-		Dominio.Entidades.Pedido pedido = new()
+		var pedido = new Dominio.Entidades.Pedido
 		{
-			UsuarioId = usuarioId,
+			UsuarioId = usuario.Id,
 			EnderecoId = request.EnderecoId,
+			Status = StatusPedido.Concluido,
 			DataPedido = DateTime.UtcNow,
-			Status = StatusPedido.Pendente,
 			Itens = [],
 			ValorTotal = 0
 		};
 
-		foreach (ItemCarrinhoDeCompra itemCarrinho in carrinho.ItensCarrinho)
+		foreach (var itemCarrinho in carrinho.ItensCarrinho)
 		{
-			Produto produto = await VerificarProdutoNoEstoque(itemCarrinho);
-			ItemPedido itemPedido = CriarItemPedido(itemCarrinho, produto);
+			if (itemCarrinho.Produto.QuantidadeEstoque < itemCarrinho.Quantidade)
+			{
+				throw new ErrorOnValidationException([$"Estoque insuficiente para o produto '{itemCarrinho.Produto.Nome}'. Disponível: {itemCarrinho.Produto.QuantidadeEstoque}."]);
+			}
 
+			var itemPedido = new ItemPedido
+			{
+				ProdutoId = itemCarrinho.ProdutoId,
+				Quantidade = itemCarrinho.Quantidade,
+				PrecoUnitarioOriginal = itemCarrinho.Produto.Valor,
+				PrecoUnitarioPago = itemCarrinho.Produto.ObterPrecoFinal(),
+				ValorDesconto = itemCarrinho.Produto.ValorDesconto,
+				TipoDesconto = itemCarrinho.Produto.TipoDesconto
+			};
 			pedido.Itens.Add(itemPedido);
-			pedido.ValorTotal += itemPedido.SubTotal;
-		}
 
-		pedido.Pagamento = new Pagamento
+			itemCarrinho.Produto.QuantidadeEstoque -= itemCarrinho.Quantidade;
+		}
+		pedido.ValorTotal = pedido.Itens.Sum(item => item.SubTotal);
+
+		var pagamento = new Dominio.Entidades.Pagamento
 		{
-			MetodoPagamento = request.MetodoPagamento,
-			StatusPagamento = StatusPagamento.Pendente,
 			Valor = pedido.ValorTotal,
-			DataPagamento = DateTime.UtcNow
+			MetodoPagamento = metodoDePagamentoFinal,
+			StatusPagamento = StatusPagamento.Pendente,
+			DataPagamento = DateTime.UtcNow,
 		};
+		pedido.Pagamento = pagamento;
 
-		await _pedidoWriteOnly.Adicionar(pedido);
+		await _pedidoRepository.Adicionar(pedido);
+
+		pagamento.StatusPagamento = StatusPagamento.Aprovado;
+		pedido.Status = StatusPedido.Processando;
+
+		await _carrinhoWriteOnly.LimparItensAsync(carrinho.Id);
+
 		await _unitOfWork.Commit();
 
-		return pedido;
+		return _mapper.Map<ResponsePedidoCriadoJson>(pedido);
 	}
 
-	private async Task<Produto> VerificarProdutoNoEstoque(ItemCarrinhoDeCompra item)
+	private async Task<MetodoPagamento> ValidarMetodoPagamento(RequestCheckoutJson request, long usuarioId)
 	{
-		Produto produto = item.Produto ?? await _produtoReadOnly.GetById(item.ProdutoId)
-			?? throw new InvalidOperationException($"Produto com ID {item.ProdutoId} não encontrado.");
-
-		if (item.Quantidade > produto.QuantidadeEstoque)
-			throw new ErrorOnValidationException([$"Estoque insuficiente para '{produto.Nome}'. Disponível: {produto.QuantidadeEstoque}."]);
-
-		return produto;
-	}
-
-	private static ItemPedido CriarItemPedido(ItemCarrinhoDeCompra itemCarrinho, Produto produto) => new()
-	{
-		ProdutoId = produto.Id,
-		Produto = produto,
-		Quantidade = itemCarrinho.Quantidade,
-		PrecoUnitario = produto.Valor
-	};
-
-	private async Task FinalizarPedido(Dominio.Entidades.Pedido pedido, long carrinhoId)
-	{
-		await _carrinhoWriteOnly.LimparItensAsync(carrinhoId);
-
-		if (pedido.Pagamento?.Id == 0)
-			throw new InvalidOperationException($"Falha crítica: pagamento do pedido {pedido.Id} não foi salvo corretamente.");
-
-		StatusPagamento statusPagamento = StatusPagamento.Aprovado;
-		await _pagamentoWriteOnly.AtualizarStatus(pedido.Pagamento!.Id, statusPagamento);
-
-		if (statusPagamento == StatusPagamento.Aprovado)
+		if (request.MetodoPagamentoUsuarioId.HasValue)
 		{
-			AtualizarEstoque(pedido);
-			pedido.Status = StatusPedido.Processando;
-		}
-		else
-		{
-			pedido.Status = StatusPedido.Cancelado;
+			var cartaoSalvo = await _metodoPagamentoRepository.ObterPorIdEUsuarioId(request.MetodoPagamentoUsuarioId.Value, usuarioId);
+
+			return cartaoSalvo is null
+				? throw new NotFoundException("O método de pagamento selecionado não foi encontrado ou não pertence a este usuário.")
+				: cartaoSalvo.Tipo == TipoCartao.Credito ? MetodoPagamento.CartaoCredito : MetodoPagamento.CartaoDebito;
 		}
 
-		await _pedidoWriteOnly.AtualizarStatus(pedido.Id, pedido.Status);
-		await _unitOfWork.Commit();
-	}
-
-	private static void AtualizarEstoque(Dominio.Entidades.Pedido pedido)
-	{
-		foreach (ItemPedido item in pedido.Itens)
+		if (request.MetodoPagamentoAvulso.HasValue)
 		{
-			Produto produto = item.Produto
-				?? throw new InvalidOperationException($"Produto nulo em ItemPedido ID {item.Id}");
+			var metodoAvulso = request.MetodoPagamentoAvulso.Value;
 
-			if (produto.QuantidadeEstoque < item.Quantidade)
-				throw new InvalidOperationException($"Estoque insuficiente para '{produto.Nome}' após commit. Pedido {pedido.Id}");
-
-			produto.QuantidadeEstoque -= item.Quantidade;
+			return metodoAvulso == MetodoPagamento.PIX || metodoAvulso == MetodoPagamento.Boleto
+				? metodoAvulso
+				: throw new ErrorOnValidationException(["O método de pagamento avulso selecionado é inválido."]);
 		}
+
+		throw new ErrorOnValidationException(["É obrigatório fornecer um método de pagamento para criar o pedido."]);
 	}
 }

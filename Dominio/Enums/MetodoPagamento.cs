@@ -1,7 +1,8 @@
 ﻿namespace Dominio.Enums;
 public enum MetodoPagamento
 {
-	CartaoCredito,
+	CartaoCredito, 
+	CartaoDebito,
 	Boleto,
 	PIX,
 	PagamentoSimulado

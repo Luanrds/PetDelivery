@@ -10,10 +10,14 @@ public class Versao0000002 : VersaoBase
         CreateTable("Produto")
             .WithColumn("UsuarioId").AsInt64().NotNullable().ForeignKey("FK_Produto_Usuario", "Usuario", "Id")
             .WithColumn("Nome").AsString(255).NotNullable()
-            .WithColumn("Descricao").AsString(1000).Nullable()
+            .WithColumn("Descricao").AsString(5000).Nullable()
+			.WithColumn("DescricaoResumida").AsString(500).Nullable()
             .WithColumn("Valor").AsDecimal().NotNullable()
+			.WithColumn("ValorDesconto").AsDecimal(10, 2).Nullable()
+			.WithColumn("TipoDesconto").AsInt32().Nullable()
             .WithColumn("Categoria").AsInt32().NotNullable()
             .WithColumn("QuantidadeEstoque").AsInt32().NotNullable()
-            .WithColumn("ImagensIdentificadores").AsCustom("jsonb").Nullable();
+            .WithColumn("Ativo").AsBoolean().NotNullable().WithDefaultValue(true)
+			.WithColumn("ImagensIdentificadores").AsCustom("jsonb").Nullable();
 	}
 }

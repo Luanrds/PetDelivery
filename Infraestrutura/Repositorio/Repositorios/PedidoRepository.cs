@@ -13,6 +13,7 @@ public class PedidoRepository(PetDeliveryDbContext dbContext) : IPedidoReadOnly,
 			.AsNoTracking()
 			.Include(p => p.Itens)
 				.ThenInclude(i => i.Produto)
+				.ThenInclude(p => p.Usuario)
 			.Include(p => p.Pagamento)
 			.Include(p => p.Endereco)
 			.FirstOrDefaultAsync(p => p.Id == pedidoId);
@@ -128,6 +129,37 @@ public class PedidoRepository(PetDeliveryDbContext dbContext) : IPedidoReadOnly,
 			})
 			.OrderBy(vm => vm.Ano)
 			.ThenBy(vm => vm.Mes)
+			.ToListAsync();
+	}
+
+	public async Task<bool> ProdutoJaVendido(long produtoId) =>
+		await dbContext.ItemPedido.AnyAsync(item => item.ProdutoId == produtoId);
+
+	public async Task<IList<ProdutoVendidoInfo>> ObterProdutosMaisVendidos(int limite)
+	{
+		return await dbContext.ItemPedido
+			.AsNoTracking()
+			.Where(item => item.Pedido.Status == StatusPedido.Concluido)
+
+			.GroupBy(item => new { item.ProdutoId, item.Produto.Nome })
+
+			.Select(grupo => new
+			{
+				grupo.Key.ProdutoId,
+				ProdutoNome = grupo.Key.Nome,
+				QuantidadeTotal = grupo.Sum(item => item.Quantidade)
+			})
+
+			.OrderByDescending(resultado => resultado.QuantidadeTotal)
+
+			.Take(limite)
+
+			.Select(resultado => new ProdutoVendidoInfo
+			{
+				ProdutoId = resultado.ProdutoId,
+				NomeProduto = resultado.ProdutoNome,
+				QuantidadeVendas = resultado.QuantidadeTotal
+			})
 			.ToListAsync();
 	}
 }

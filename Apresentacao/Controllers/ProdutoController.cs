@@ -1,11 +1,16 @@
 ﻿using Aplicacao.UseCase.UseProduto.Atualizar;
+using Aplicacao.UseCase.UseProduto.Buscar;
 using Aplicacao.UseCase.UseProduto.Criar;
+using Aplicacao.UseCase.UseProduto.Desconto;
 using Aplicacao.UseCase.UseProduto.Excluir;
 using Aplicacao.UseCase.UseProduto.GetById;
 using Aplicacao.UseCase.UseProduto.GetByVendedor;
 using Aplicacao.UseCase.UseProduto.Imagem;
 using Aplicacao.UseCase.UseProduto.ObetnhaProdutoPorCategoria;
 using Aplicacao.UseCase.UseProduto.ObtenhaTodosProdutos;
+using Aplicacao.UseCase.UseProduto.ObterEmPromocao;
+using Aplicacao.UseCase.UseProduto.ObterMaisVendidos;
+using Aplicacao.UseCase.UseProduto.ObterRelacionados;
 using Microsoft.AspNetCore.Mvc;
 using PetDelivery.API.Atributos;
 using PetDelivery.Communication.Request;
@@ -93,6 +98,69 @@ public class ProdutoController : PetDeliveryBaseController
 		return Ok(resposta);
 	}
 
+	[HttpGet("buscar")]
+	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
+	public async Task<IActionResult> Buscar(
+	[FromServices] IBuscarProdutosUseCase useCase,
+	[FromQuery] RequestBuscaProdutosJson request)
+	{
+		ResponseProdutosJson response = await useCase.Execute(request);
+		return Ok(response);
+	}
+
+	[HttpGet("em-promocao")]
+	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+	public async Task<IActionResult> ObterPromocoes(
+		[FromServices] IObterProdutosEmPromocaoUseCase useCase,
+		[FromQuery] int pagina = 1,
+		[FromQuery] int itensPorPagina = 10)
+	{
+		var response = await useCase.ExecuteAsync(pagina, itensPorPagina);
+
+		if (response.Produtos.Count == 0)
+		{
+			return NotFound();
+		}
+
+		return Ok(response);
+	}
+
+	[HttpGet("{id}/relacionados")]
+	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<IActionResult> ObterRelacionados(
+		[FromServices] IObterProdutosRelacionadosUseCase useCase,
+		[FromRoute] long id,
+		[FromQuery] int itensPorPagina = 4)
+	{
+		var response = await useCase.ExecuteAsync(id, itensPorPagina);
+
+		if (response.Produtos.Count == 0)
+		{
+			return NoContent();
+		}
+
+		return Ok(response);
+	}
+
+	[HttpGet("mais-vendidos")]
+	[ProducesResponseType(typeof(ResponseProdutosJson), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<IActionResult> ObterMaisVendidos(
+		[FromServices] IObterMaisVendidosUseCase useCase,
+		[FromQuery] int limite = 10)
+	{
+		var response = await useCase.ExecuteAsync(limite);
+
+		if (response.Produtos.Count == 0)
+		{
+			return NoContent();
+		}
+
+		return Ok(response);
+	}
+
 	[HttpDelete]
 	[Route("{id}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -114,7 +182,7 @@ public class ProdutoController : PetDeliveryBaseController
 	[UsuarioAutenticado(requerVendedor: true)]
 	public async Task<IActionResult> AtualizeProduto(
 		[FromServices] IAtualizeProdutoUseCase useCase,
-		[FromBody] RequestProdutoJson requisicao,
+		[FromForm] RequestRegistroProdutoFormData requisicao,
 		[FromRoute] long id)
 	{
 		await useCase.ExecuteAsync(id, requisicao);
@@ -135,6 +203,20 @@ public class ProdutoController : PetDeliveryBaseController
 	{
 		await useCase.Execute(id, file);
 
+		return NoContent();
+	}
+
+	[HttpPut]
+	[Route("{id}/desconto")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+	[UsuarioAutenticado(requerVendedor: true)]
+	public async Task<IActionResult> AplicarDesconto(
+		[FromServices] IAplicarDescontoUseCase useCase,
+		[FromRoute] long id,
+		[FromBody] RequestAplicarDescontoJson request)
+	{
+		await useCase.Execute(id, request);
 		return NoContent();
 	}
 }

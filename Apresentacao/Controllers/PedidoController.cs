@@ -24,7 +24,8 @@ public class PedidoController : PetDeliveryBaseController
 		return CreatedAtAction(nameof(GetPedidoPorId), new { pedidoId = resposta.PedidoId }, resposta);
 	}
 
-	[HttpGet("{pedidoId:long}", Name = "GetPedidoPorId")]
+	[HttpGet]
+	[Route("{pedidoId}")]
 	[ProducesResponseType(typeof(ResponsePedidoJson), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> GetPedidoPorId(

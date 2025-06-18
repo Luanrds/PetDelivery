@@ -13,6 +13,7 @@ public class Versao0000001 : VersaoBase
 			.WithColumn("Nome").AsString(255).NotNullable()
 			.WithColumn("Email").AsString(255).NotNullable().Unique()
 			.WithColumn("Senha").AsString(2000).NotNullable()
+			.WithColumn("Telefone").AsString(15).NotNullable().WithDefaultValue("")
 			.WithColumn("IdentificadorDoUsuario").AsGuid().NotNullable()
 			.WithColumn("EhVendedor").AsBoolean().NotNullable().WithDefaultValue(false);	
 	}

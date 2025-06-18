@@ -32,6 +32,7 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 		Enum.TryParse<CategoriaProduto>(categoria, true, out var categoriaEnum)
 			? await dbContext.Produto
 				.AsNoTracking()
+				.Include(p => p.Usuario)
 				.Where(produto => produto.Categoria == categoriaEnum)
 				.ToListAsync()
 			: (IEnumerable<Produto>)([]);
@@ -104,4 +105,83 @@ public class ProdutoRepository(PetDeliveryDbContext dbContext) : IProdutoWriteOn
 
 		return resultado;
 	}
+
+	public async Task<(IList<Produto> Produtos, int TotalItens)> Buscar(BuscaProdutosCriteria criteria)
+	{
+		IQueryable<Produto> query = dbContext.Produto.AsNoTracking().Include(p => p.Usuario).Where(p => p.Ativo);
+
+		if (!string.IsNullOrWhiteSpace(criteria.Termo))
+		{
+			query = query.Where(p =>
+				EF.Functions.ILike(PetDeliveryDbContext.Unaccent(p.Nome), "%" + PetDeliveryDbContext.Unaccent(criteria.Termo) + "%") ||
+				EF.Functions.ILike(PetDeliveryDbContext.Unaccent(p.Descricao), "%" + PetDeliveryDbContext.Unaccent(criteria.Termo) + "%")
+			);
+		}
+
+		if (criteria.PrecoMin.HasValue)
+		{
+			query = query.Where(p => p.Valor >= criteria.PrecoMin.Value);
+		}
+
+		if (criteria.PrecoMax.HasValue)
+		{
+			query = query.Where(p => p.Valor <= criteria.PrecoMax.Value);
+		}
+
+		query = criteria.OrdenarPor?.ToLowerInvariant() switch
+		{
+			"precoasc" => query.OrderBy(p => p.Valor),
+			"precodesc" => query.OrderByDescending(p => p.Valor),
+			"nome" => query.OrderBy(p => p.Nome),
+			_ => query.OrderBy(p => p.Nome)
+		};
+
+		int totalItens = await query.CountAsync();
+
+		List<Produto> produtos = await query
+			.Skip((criteria.Pagina - 1) * criteria.ItensPorPagina)
+			.Take(criteria.ItensPorPagina)
+			.ToListAsync();
+
+		return (produtos, totalItens);
+	}
+
+	public async Task<(IList<Produto> Produtos, int TotalItens)> ObterEmPromocaoAsync(int pagina, int itensPorPagina)
+	{
+		IQueryable<Produto> query = dbContext.Produto
+			.AsNoTracking()
+			.Include(p => p.Usuario)
+			.Where(p => p.Ativo && p.ValorDesconto != null && p.ValorDesconto > 0);
+
+		int totalItens = await query.CountAsync();
+
+		List<Produto> produtos = await query
+			.OrderByDescending(p => p.Id)
+			.Skip((pagina - 1) * itensPorPagina)
+			.Take(itensPorPagina)
+			.ToListAsync();
+
+		return (produtos, totalItens);
+	}
+
+	public async Task<IList<Produto>> ObterRelacionadosAsync(long produtoId, CategoriaProduto categoria, int itensPorPagina)
+	{
+		return await dbContext.Produto
+			.AsNoTracking()
+			.Include(p => p.Usuario)
+			.Where(p => p.Categoria == categoria && p.Id != produtoId && p.Ativo)
+			.OrderByDescending(p => p.Id)
+			.Take(itensPorPagina)
+			.ToListAsync();
+	}
+
+	public async Task<IList<Produto>> ObterPorIdsAsync(IEnumerable<long> produtoIds)
+	{
+		return await dbContext.Produto
+			.AsNoTracking()
+			.Include(p => p.Usuario) // Essencial para a URL da imagem
+			.Where(p => produtoIds.Contains(p.Id) && p.Ativo)
+			.ToListAsync();
+	}
 }
+
