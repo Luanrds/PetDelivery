@@ -10,4 +10,7 @@ public class ResponseItemPedidoJson
 	public int? TipoDesconto { get; set; }
 	public int Quantidade { get; set; }
 	public decimal SubTotal { get; set; }
+	public long VendedorId { get; set; }
+	public string NomeVendedor { get; set; } = string.Empty;
+	public string NumeroVendedor { get; set; } = string.Empty;
 }

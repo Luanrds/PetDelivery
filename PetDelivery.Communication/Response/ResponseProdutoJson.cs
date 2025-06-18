@@ -14,4 +14,7 @@ public class ResponseProdutoJson
 	public int QuantidadeEstoque { get; set; }
 	public string? ImagemUrl { get; set; }
 	public List<string>? ImagensUrl { get; set; }
+	public long VendedorId { get; set; }
+	public string NomeVendedor { get; set; } = string.Empty;
+	public string NumeroVendedor { get; set; } = string.Empty;
 }

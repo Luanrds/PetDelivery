@@ -48,7 +48,7 @@ public class CriarPedidoUseCase : ICriarPedidoUseCase
 	{
 		var usuario = await _usuarioLogado.Usuario();
 
-		_ = await _enderecoRepository.GetById(request.EnderecoId, usuario.Id)
+		_ = await _enderecoRepository.GetById(usuario.Id, request.EnderecoId)
 			?? throw new NotFoundException($"Endereço com ID {request.EnderecoId} não foi encontrado ou não pertence a este usuário.");
 
 		var carrinho = await _carrinhoReadOnly.ObtenhaCarrinhoAtivo(usuario.Id);

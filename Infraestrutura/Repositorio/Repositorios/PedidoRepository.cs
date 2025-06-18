@@ -13,6 +13,7 @@ public class PedidoRepository(PetDeliveryDbContext dbContext) : IPedidoReadOnly,
 			.AsNoTracking()
 			.Include(p => p.Itens)
 				.ThenInclude(i => i.Produto)
+				.ThenInclude(p => p.Usuario)
 			.Include(p => p.Pagamento)
 			.Include(p => p.Endereco)
 			.FirstOrDefaultAsync(p => p.Id == pedidoId);
